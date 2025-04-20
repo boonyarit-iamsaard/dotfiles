@@ -1,0 +1,51 @@
+" .ideavimrc is a configuration file for IdeaVim plugin. It uses
+"   the same commands as the original .vimrc configuration.
+" You can find a list of commands here: https://jb.gg/h38q75
+" Find more examples here: https://jb.gg/share-ideavimrc
+
+"" -- General --
+""" Map leader to space ---------------------
+let mapleader=" "
+
+""" Plugins  --------------------------------
+set surround
+set multiple-cursors
+set commentary
+set argtextobj
+set easymotion
+set textobj-entire
+set ReplaceWithRegister
+
+""" Plugin settings -------------------------
+let g:argtextobj_pairs="[:],(:),<:>"
+
+""" Common settings -------------------------
+set showmode
+set so=5
+set incsearch
+""" set nu
+set clipboard=unnamedplus
+
+""" Idea specific settings ------------------
+set clipboard^=ideaput
+set ideajoin
+set idearefactormode=keep
+set ideastatusicon=gray
+
+""" Mappings --------------------------------
+inoremap jj <esc>
+
+nnoremap o o<esc>
+nnoremap O O<esc>
+
+map <leader>fd <Action>(ActivateDatabaseToolWindow)
+map <leader>fe <Action>(ActivateProjectToolWindow)
+map <leader>fr <Action>(RecentFiles)
+map <leader>ft <Action>(ActivateTerminalToolWindow)
+
+map <leader>wv <Action>(SplitVertically)
+map <leader>wl <Action>(NextSplitter)
+map <leader>wh <Action>(PrevSplitter)
+
+map <S-l> <Action>(NextTab)
+map <S-h> <Action>(PreviousTab)
