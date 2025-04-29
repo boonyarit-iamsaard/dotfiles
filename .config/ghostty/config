@@ -1,0 +1,47 @@
+# for font-size 16px and line-height 1.5 (default) in vscode
+
+adjust-cell-height      = 10%
+font-family             = "MesloLGM Nerd Font Mono"
+
+# adjust-cell-height      = 12.5%
+# font-family             = "JetBrainsMono Nerd Font Mono"
+
+# adjust-cell-height      = 37.5%
+# font-family             = "Hack Nerd Font Mono"
+
+# adjust-cell-height      = 20%
+# font-family             = "FiraCode Nerd Font Mono"
+ 
+# font-size 16px and line-height 1.6 in vscode
+
+# adjust-cell-height      = 17.5%
+# font-family             = "MesloLGM Nerd Font Mono"
+
+# adjust-cell-height      = 30%
+# font-family             = "FiraCode Nerd Font Mono"
+
+# adjust-cell-height      = 37.5%
+# font-family             = "Hack Nerd Font Mono"
+
+# adjust-cell-height      = 20%
+# font-family             = "JetBrainsMono Nerd Font Mono"
+
+# font-size 16px and line-height 1.7 in vscode
+
+# adjust-cell-height      = 25%
+# font-family             = "JetBrainsMono Nerd Font Mono"
+
+# adjust-cell-height      = 42.5%
+# font-family             = "Hack Nerd Font Mono"
+
+# adjust-cell-height      = 35%
+# font-family             = "FiraCode Nerd Font Mono"
+
+background-opacity      = 0.8
+background-blur-radius  = 20
+cursor-invert-fg-bg     = true
+font-size               = 16
+adjust-cursor-thickness = 2
+macos-titlebar-style    = "transparent"
+theme                   = "catppuccin-mocha"
+window-colorspace       = "display-p3"
