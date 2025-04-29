@@ -145,7 +145,7 @@ export JAVA_HOME=$HOME/OpenJDK/jdk-17.0.1.jdk/Contents/Home
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Starship prompt setup
-# export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
+export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
 eval "$(starship init zsh)"
 
 # Bun completions
