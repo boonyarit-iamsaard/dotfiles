@@ -29,42 +29,33 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "Mofiqul/dracula.nvim",
-  --   opts = {
-  --     transparent_bg = true,
-  --   },
-  -- },
-
-  -- {
-  --   "lalitmee/cobalt2.nvim",
-  --   event = { "ColorSchemePre" }, -- if you want to lazy load
-  --   dependencies = { "tjdevries/colorbuddy.nvim", tag = "v1.0.0" },
-  --   init = function()
-  --     require("colorbuddy").colorscheme("cobalt2")
-  --   end,
-  -- },
-
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
+    "Mofiqul/dracula.nvim",
     opts = {
-      -- background = {
-      --   light = "latte",
-      --   dark = "macchiato",
-      -- },
-      -- flavour = "auto",
-      -- flavour = "macchiato",
-      transparent_background = true,
+      transparent_bg = true,
     },
   },
+
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {
+  --     -- background = {
+  --     --   light = "latte",
+  --     --   dark = "macchiato",
+  --     -- },
+  --     -- flavour = "auto",
+  --     -- flavour = "macchiato",
+  --     transparent_background = true,
+  --   },
+  -- },
 
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "dracula",
     },
   },
 }
