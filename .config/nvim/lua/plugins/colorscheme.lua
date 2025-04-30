@@ -29,33 +29,33 @@ return {
   --   end,
   -- },
 
-  {
-    "Mofiqul/dracula.nvim",
-    opts = {
-      transparent_bg = true,
-    },
-  },
-
   -- {
-  --   "catppuccin/nvim",
-  --   name = "catppuccin",
-  --   lazy = false,
-  --   priority = 1000,
+  --   "Mofiqul/dracula.nvim",
   --   opts = {
-  --     -- background = {
-  --     --   light = "latte",
-  --     --   dark = "macchiato",
-  --     -- },
-  --     -- flavour = "auto",
-  --     -- flavour = "macchiato",
-  --     transparent_background = true,
+  --     transparent_bg = true,
   --   },
   -- },
 
   {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      -- background = {
+      --   light = "latte",
+      --   dark = "macchiato",
+      -- },
+      -- flavour = "auto",
+      -- flavour = "macchiato",
+      transparent_background = true,
+    },
+  },
+
+  {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "dracula",
+      colorscheme = "catppuccin",
     },
   },
 }
