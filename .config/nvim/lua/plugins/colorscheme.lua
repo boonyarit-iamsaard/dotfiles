@@ -36,36 +36,36 @@ return {
   --   },
   -- },
 
-  {
-    "oxfist/night-owl.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("night-owl").setup()
-      vim.cmd.colorscheme("night-owl")
-    end,
-  },
-
   -- {
-  --   "catppuccin/nvim",
-  --   name = "catppuccin",
+  --   "oxfist/night-owl.nvim",
   --   lazy = false,
   --   priority = 1000,
-  --   opts = {
-  --     -- background = {
-  --     --   light = "latte",
-  --     --   dark = "macchiato",
-  --     -- },
-  --     -- flavour = "auto",
-  --     -- flavour = "macchiato",
-  --     transparent_background = true,
-  --   },
+  --   config = function()
+  --     require("night-owl").setup()
+  --     vim.cmd.colorscheme("night-owl")
+  --   end,
   -- },
 
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "dracula",
-  --   },
-  -- },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      -- background = {
+      --   light = "latte",
+      --   dark = "macchiato",
+      -- },
+      -- flavour = "auto",
+      -- flavour = "macchiato",
+      transparent_background = true,
+    },
+  },
+
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
 }
