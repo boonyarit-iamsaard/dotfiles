@@ -29,22 +29,22 @@ return {
   --   end,
   -- },
 
-  {
-    "Mofiqul/dracula.nvim",
-    opts = {
-      transparent_bg = true,
-    },
-  },
-
   -- {
-  --   "oxfist/night-owl.nvim",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require("night-owl").setup()
-  --     vim.cmd.colorscheme("night-owl")
-  --   end,
+  --   "Mofiqul/dracula.nvim",
+  --   opts = {
+  --     transparent_bg = true,
+  --   },
   -- },
+
+  {
+    "oxfist/night-owl.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("night-owl").setup()
+      vim.cmd.colorscheme("night-owl")
+    end,
+  },
 
   -- {
   --   "catppuccin/nvim",
@@ -62,10 +62,10 @@ return {
   --   },
   -- },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "dracula",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "dracula",
+  --   },
+  -- },
 }
