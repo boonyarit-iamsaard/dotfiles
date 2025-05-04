@@ -29,12 +29,12 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "Mofiqul/dracula.nvim",
-  --   opts = {
-  --     transparent_bg = true,
-  --   },
-  -- },
+  {
+    "Mofiqul/dracula.nvim",
+    opts = {
+      transparent_bg = true,
+    },
+  },
 
   -- {
   --   "oxfist/night-owl.nvim",
@@ -65,7 +65,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "dracula",
     },
   },
 }
