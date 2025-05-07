@@ -3,14 +3,14 @@
 # adjust-cell-height      = 10%
 # font-family             = "MesloLGM Nerd Font Mono"
 
-# adjust-cell-height      = 12.5%
-# font-family             = "JetBrainsMono Nerd Font Mono"
+adjust-cell-height      = 12.5%
+font-family             = "JetBrainsMono Nerd Font Mono"
 
 # adjust-cell-height      = 27.5%
 # font-family             = "Hack Nerd Font Mono"
 
-adjust-cell-height      = 20%
-font-family             = "FiraCode Nerd Font Mono"
+# adjust-cell-height      = 20%
+# font-family             = "FiraCode Nerd Font Mono"
  
 # font-size 16px and line-height 1.6 in vscode
 
@@ -43,6 +43,6 @@ cursor-invert-fg-bg     = true
 font-size               = 16
 adjust-cursor-thickness = 2
 macos-titlebar-style    = "transparent"
-# theme                   = "catppuccin-mocha"
-theme                   = "Dracula"
+theme                   = "catppuccin-mocha"
+# theme                   = "Dracula"
 window-colorspace       = "display-p3"
