@@ -4,11 +4,13 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+COMPLETION_WAITING_DOTS="true"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
+ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -70,12 +72,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git
-  vi-mode
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-)
+plugins=(git vi-mode zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -90,7 +87,7 @@ source $ZSH/oh-my-zsh.sh
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
-#   export EDITOR='mvim'
+#   export EDITOR='nvim'
 # fi
 
 # Compilation flags
@@ -107,12 +104,9 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias cs="cursor"
 alias nv="nvim"
-alias ps="phpstorm"
 alias ws="windsurf"
 alias vs="code"
-alias vsi="code-insiders"
 
 alias lzd='lazydocker'
 alias lzg="lazygit"
@@ -120,42 +114,12 @@ alias lzg="lazygit"
 # Bind keys for vi mode
 bindkey jj vi-cmd-mode
 
-# Herd setup
-export PATH="/Users/boonyarit.i/Library/Application Support/Herd/bin:$PATH"
-export HERD_PHP_82_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/82/"
-export HERD_PHP_83_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/83/"
-export HERD_PHP_84_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/84/"
-
-# .NET tools setup
-export PATH=$HOME/.dotnet/tools:$PATH
-
-# Go setup
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-export PATH=$PATH:$(go env GOPATH)
-
-# Windsurf setup
-export PATH="/Applications/Windsurf.app/Contents/Resources/app/bin:$PATH"
-
-# Custom environment variables
-. "$HOME/.local/bin/env"
-
-# Java setup
-export JAVA_HOME=$HOME/OpenJDK/jdk-17.0.1.jdk/Contents/Home
-export PATH=$JAVA_HOME/bin:$PATH
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Starship prompt setup
 # export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
 eval "$(starship init zsh)"
 
-# Bun completions
-[ -s "/Users/boonyarit.i/.bun/_bun" ] && source "/Users/boonyarit.i/.bun/_bun"
-
-# Bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# Node Version Manager (NVM)
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
