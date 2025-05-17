@@ -30,6 +30,11 @@ return {
   -- },
 
   {
+    "rose-pine/neovim",
+    name = "rose-pine",
+  },
+
+  {
     "Mofiqul/dracula.nvim",
     opts = {
       transparent_bg = true,
@@ -65,7 +70,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "rose-pine",
     },
   },
 }
