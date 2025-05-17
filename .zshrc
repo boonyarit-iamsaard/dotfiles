@@ -123,3 +123,5 @@ eval "$(starship init zsh)"
 # asdf
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
+# Start keychain and load SSH keys
+eval $(keychain --eval --quiet ~/.ssh/id_ed25519_github)
