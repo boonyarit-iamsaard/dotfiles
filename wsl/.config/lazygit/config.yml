@@ -2,33 +2,32 @@ git:
   log:
     showWholeGraph: false
 # catppuccin mocha
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#f9e2af"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a6adc8"
-#     optionsTextColor:
-#       - "#89b4fa"
-#     selectedLineBgColor:
-#       - "#313244"
-#     cherryPickedCommitBgColor:
-#       - "#45475a"
-#     cherryPickedCommitFgColor:
-#       - "#f9e2af"
-#     unstagedChangesColor:
-#       - "#f38ba8"
-#     defaultFgColor:
-#       - "#cdd6f4"
-#     searchingActiveBorderColor:
-#       - "#f9e2af"
-#
-#   authorColors:
-#     "*": "#b4befe"
-
-# rose pine
 gui:
   theme:
+    activeBorderColor:
+      - "#f9e2af"
+      - bold
+    inactiveBorderColor:
+      - "#a6adc8"
+    optionsTextColor:
+      - "#89b4fa"
     selectedLineBgColor:
-      - "#6e6a86"
+      - "#313244"
+    cherryPickedCommitBgColor:
+      - "#45475a"
+    cherryPickedCommitFgColor:
+      - "#f9e2af"
+    unstagedChangesColor:
+      - "#f38ba8"
+    defaultFgColor:
+      - "#cdd6f4"
+    searchingActiveBorderColor:
+      - "#f9e2af"
+
+  authorColors:
+    "*": "#b4befe"
+# rose pine
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#6e6a86"
