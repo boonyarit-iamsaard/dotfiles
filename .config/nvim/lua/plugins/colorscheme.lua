@@ -13,21 +13,21 @@ return {
   --   },
   -- },
 
-  -- {
-  --   "projekt0n/github-nvim-theme",
-  --   name = "github-theme",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require("github-theme").setup({
-  --       --
-  --     })
-  --
-  --     local appearance = helpers.get_macos_appearance()
-  --     local theme = appearance == "light" and "github_light_default" or "github_dark_default"
-  --     vim.cmd("colorscheme " .. theme)
-  --   end,
-  -- },
+  {
+    "projekt0n/github-nvim-theme",
+    name = "github-theme",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("github-theme").setup({
+        --
+      })
+
+      -- local appearance = helpers.get_macos_appearance()
+      -- local theme = appearance == "light" and "github_light_default" or "github_dark_default"
+      -- vim.cmd("colorscheme " .. theme)
+    end,
+  },
 
   {
     "Mofiqul/dracula.nvim",
@@ -41,10 +41,26 @@ return {
   --   lazy = false,
   --   priority = 1000,
   --   config = function()
-  --     require("night-owl").setup()
+  --     require("night-owl").setup({
+  --       --
+  --     })
   --     -- vim.cmd.colorscheme("night-owl")
   --   end,
   -- },
+
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    config = function()
+      require("rose-pine").setup({
+        variant = "main",
+        styles = {
+          transparency = true,
+        },
+      })
+      vim.cmd("colorscheme rose-pine")
+    end,
+  },
 
   {
     "catppuccin/nvim",
@@ -62,10 +78,10 @@ return {
     },
   },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "rose-pine",
+  --   },
+  -- },
 }
