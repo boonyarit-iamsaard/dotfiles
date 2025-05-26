@@ -1,17 +1,17 @@
 -- local helpers = require("helpers")
 
 return {
-  -- {
-  --   "folke/tokyonight.nvim",
-  --   opts = {
-  --     transparent = true,
-  --     -- style = "storm",
-  --     styles = {
-  --       sidebars = "transparent",
-  --       floats = "transparent",
-  --     },
-  --   },
-  -- },
+  {
+    "folke/tokyonight.nvim",
+    opts = {
+      transparent = true,
+      -- style = "storm",
+      styles = {
+        sidebars = "transparent",
+        floats = "transparent",
+      },
+    },
+  },
 
   {
     "projekt0n/github-nvim-theme",
@@ -78,10 +78,10 @@ return {
     },
   },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "catppuccin",
+  --   },
+  -- },
 }
