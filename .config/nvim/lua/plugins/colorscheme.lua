@@ -36,17 +36,21 @@ return {
     },
   },
 
-  -- {
-  --   "oxfist/night-owl.nvim",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require("night-owl").setup({
-  --       --
-  --     })
-  --     -- vim.cmd.colorscheme("night-owl")
-  --   end,
-  -- },
+  {
+    "oxfist/night-owl.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("night-owl").setup({
+        bold = true,
+        italics = true,
+        underline = true,
+        undercurl = true,
+        transparent_background = true,
+      })
+      -- vim.cmd.colorscheme("night-owl")
+    end,
+  },
 
   {
     "rose-pine/neovim",
@@ -81,7 +85,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "night-owl",
     },
   },
 }
