@@ -1,6 +1,6 @@
 git:
   log:
-    showWholeGraph: false
+    showWholeGraph: true
 # catppuccin mocha
 gui:
   theme:
