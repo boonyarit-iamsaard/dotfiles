@@ -37,7 +37,7 @@ font-family             = "JetBrainsMono Nerd Font Mono"
 # adjust-cell-height      = 35%
 # font-family             = "FiraCode Nerd Font Mono"
 
-background-opacity      = 0.8
+background-opacity      = 0.9
 background-blur-radius  = 20
 cursor-invert-fg-bg     = true
 font-size               = 16
@@ -49,4 +49,5 @@ theme                   = "catppuccin-mocha"
 # theme                   = "github-dark-default"
 # theme                   = "rose-pine"
 # theme                   = "tokyonight-moon"
+# theme                   = "Kanagawa Wave"
 window-colorspace       = "display-p3"
