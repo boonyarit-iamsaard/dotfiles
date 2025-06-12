@@ -29,7 +29,7 @@
   // "editor.guides.bracketPairs": false,
   // "editor.guides.indentation": false,
   "editor.hideCursorInOverviewRuler": true,
-  // "editor.lineHeight": 1.7,
+  "editor.lineHeight": 1.5,
   "editor.lineNumbers": "on",
   "editor.minimap.enabled": false,
   "explorer.autoReveal": false,
@@ -41,7 +41,7 @@
   // "terminal.integrated.lineHeight": 1.3, // for editor line-height 1.7
   // "terminal.integrated.lineHeight": 1.275, // for editor line-height 1.5 (default) for Hack
   // "terminal.integrated.lineHeight": 1.25,  // for editor line-height 1.6
-  // "terminal.integrated.lineHeight": 1.2,   // for editor line-height 1.5 (default) for Fira Code
+  // "terminal.integrated.lineHeight": 1.2, // for editor line-height 1.5 (default) for Fira Code
   "terminal.integrated.lineHeight": 1.15, // for editor line-height 1.5 (default)
   "terminal.integrated.minimumContrastRatio": 1,
   "terminal.integrated.persistentSessionReviveProcess": "never",
@@ -419,5 +419,7 @@
       "expiresOn": 0
     }
   ],
-  "json.schemaDownload.enable": true
+  "json.schemaDownload.enable": true,
+  "docker.extension.enableComposeLanguageServer": false,
+  "cursor.cpp.disabledLanguages": ["plaintext"]
 }
