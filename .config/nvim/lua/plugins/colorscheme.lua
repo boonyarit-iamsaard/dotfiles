@@ -41,15 +41,15 @@ return {
     },
   },
 
-  {
-    "oxfist/night-owl.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("night-owl").setup()
-      vim.cmd.colorscheme("night-owl")
-    end,
-  },
+  -- {
+  --   "oxfist/night-owl.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require("night-owl").setup()
+  --     vim.cmd.colorscheme("night-owl")
+  --   end,
+  -- },
 
   {
     "catppuccin/nvim",
@@ -67,10 +67,10 @@ return {
     },
   },
 
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "catppuccin",
-  --   },
-  -- },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
 }
