@@ -37,7 +37,7 @@ return {
   {
     "Mofiqul/dracula.nvim",
     opts = {
-      transparent_bg = true,
+      transparent_bg = false,
     },
   },
 
@@ -70,7 +70,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "dracula",
     },
   },
 }
