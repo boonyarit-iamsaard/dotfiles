@@ -1,0 +1,62 @@
+# Night Owl Theme for superfile
+# Based on: https://github.com/yorukot/superfile 
+# Colors adapted from: https://github.com/BeanieBarrow  (Night Owl palette)
+
+# Code syntax highlight theme (you can check here for compatible themes: https://github.com/alecthomas/chroma/blob/master/styles) 
+code_syntax_highlight = "night-owl"
+
+# ========= Border =========
+file_panel_border = "#5f7e97"
+sidebar_border = "#021727"
+footer_border = "#5f7e97"
+
+# ========= Border Active =========
+file_panel_border_active = "#7e97ac"
+sidebar_border_active = "#7e97ac"
+footer_border_active = "#7e97ac"
+modal_border_active = "#7e97ac"
+
+# ========= Background (bg) =========
+full_screen_bg = "#021727"
+file_panel_bg = "#021727"
+sidebar_bg = "#021727"
+footer_bg = "#021727"
+modal_bg = "#021727"
+
+# ========= Foreground (fg) =========
+full_screen_fg = "#d6deeb"
+file_panel_fg = "#d6deeb"
+sidebar_fg = "#d6deeb"
+footer_fg = "#d6deeb"
+modal_fg = "#d6deeb"
+
+# ========= Special Color =========
+cursor = "#80a4c2"
+correct = "#6CC85E"
+error = "#ef5350"
+hint = "#6ae9f0"
+cancel = "#5f7e97"
+gradient_color = ["#6CC85E", "#ef5350"]  # Green to Red gradient
+
+# ========= File Panel Special Items =========
+file_panel_top_directory_icon = "#6CC85E"
+file_panel_top_path = "#6ae9f0"
+file_panel_item_selected_fg = "#ffcb8b"
+file_panel_item_selected_bg = "#021727"
+
+# ========= Sidebar Special Items =========
+sidebar_title = "#82aaff"
+sidebar_item_selected_fg = "#ffcb8b"
+sidebar_item_selected_bg = "#021727"
+sidebar_divider = "#4b6479"
+
+# ========= Modal Special Items =========
+modal_cancel_fg = "#d6deeb"
+modal_cancel_bg = "#5f7e97"
+
+modal_confirm_fg = "#d6deeb"
+modal_confirm_bg = "#ffcb8b"
+
+# ========= Help Menu =========
+help_menu_hotkey = "#ffcb8b"
+help_menu_title = "#82aaff"
