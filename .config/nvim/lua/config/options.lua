@@ -41,6 +41,7 @@ if vim.fn.has("wsl") == 1 then
     cache_enabled = false,
   }
 end
+
 vim.g.lazyvim_php_lsp = "intelephense"
 
 local opt = vim.opt
