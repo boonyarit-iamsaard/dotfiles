@@ -26,13 +26,14 @@ return {
       -- local appearance = helpers.get_macos_appearance()
       -- local theme = appearance == "light" and "github_light_default" or "github_dark_default"
       -- vim.cmd("colorscheme " .. theme)
+      -- vim.cmd("colorscheme github_dark_default")
     end,
   },
 
   {
     "Mofiqul/dracula.nvim",
     opts = {
-      transparent_bg = true,
+      transparent_bg = false,
     },
   },
 

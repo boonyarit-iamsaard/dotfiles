@@ -1,3 +1,8 @@
+# common
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#6e6a86"
 # catppuccin mocha
 gui:
   theme:
@@ -23,8 +28,3 @@ gui:
 
   authorColors:
     "*": "#b4befe"
-# rose pine
-# gui:
-#   theme:
-#     selectedLineBgColor:
-#       - "#6e6a86"
