@@ -1,4 +1,4 @@
--- local helpers = require("helpers")
+local helpers = require("helpers")
 
 return {
   {
@@ -35,6 +35,20 @@ return {
     opts = {
       transparent_bg = false,
     },
+  },
+
+  {
+    "olimorris/onedarkpro.nvim",
+    priority = 1000, -- Ensure it loads first
+    config = function()
+      require("onedarkpro").setup({
+        --
+      })
+
+      local appearance = helpers.get_macos_appearance()
+      local theme = appearance == "light" and "onelight" or "onedark"
+      vim.cmd("colorscheme " .. theme)
+    end,
   },
 
   -- {
@@ -83,10 +97,10 @@ return {
     },
   },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "onedark",
+  --   },
+  -- },
 }
