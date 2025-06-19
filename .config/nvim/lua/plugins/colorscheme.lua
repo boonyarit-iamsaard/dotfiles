@@ -1,4 +1,4 @@
-local helpers = require("helpers")
+-- local helpers = require("helpers")
 
 return {
   {
@@ -45,9 +45,9 @@ return {
         --
       })
 
-      local appearance = helpers.get_macos_appearance()
-      local theme = appearance == "light" and "onelight" or "onedark"
-      vim.cmd("colorscheme " .. theme)
+      -- local appearance = helpers.get_macos_appearance()
+      -- local theme = appearance == "light" and "onelight" or "onedark"
+      -- vim.cmd("colorscheme " .. theme)
     end,
   },
 
@@ -97,10 +97,10 @@ return {
     },
   },
 
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "onedark",
-  --   },
-  -- },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
 }
