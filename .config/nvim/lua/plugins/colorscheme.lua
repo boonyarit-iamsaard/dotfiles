@@ -13,22 +13,22 @@ return {
     },
   },
 
-  {
-    "projekt0n/github-nvim-theme",
-    name = "github-theme",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("github-theme").setup({
-        --
-      })
-
-      -- local appearance = helpers.get_macos_appearance()
-      -- local theme = appearance == "light" and "github_light_default" or "github_dark_default"
-      -- vim.cmd("colorscheme " .. theme)
-      -- vim.cmd("colorscheme github_dark_default")
-    end,
-  },
+  -- {
+  --   "projekt0n/github-nvim-theme",
+  --   name = "github-theme",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require("github-theme").setup({
+  --       --
+  --     })
+  --
+  --     -- local appearance = helpers.get_macos_appearance()
+  --     -- local theme = appearance == "light" and "github_light_default" or "github_dark_default"
+  --     -- vim.cmd("colorscheme " .. theme)
+  --     -- vim.cmd("colorscheme github_dark_default")
+  --   end,
+  -- },
 
   {
     "Mofiqul/dracula.nvim",
@@ -37,49 +37,19 @@ return {
     },
   },
 
-  {
-    "olimorris/onedarkpro.nvim",
-    priority = 1000, -- Ensure it loads first
-    config = function()
-      require("onedarkpro").setup({
-        --
-      })
-
-      -- local appearance = helpers.get_macos_appearance()
-      -- local theme = appearance == "light" and "onelight" or "onedark"
-      -- vim.cmd("colorscheme " .. theme)
-    end,
-  },
-
   -- {
-  --   "oxfist/night-owl.nvim",
-  --   lazy = false,
-  --   priority = 1000,
+  --   "rose-pine/neovim",
+  --   name = "rose-pine",
   --   config = function()
-  --     require("night-owl").setup({
-  --       bold = true,
-  --       italics = true,
-  --       underline = true,
-  --       undercurl = true,
-  --       transparent_background = true,
+  --     require("rose-pine").setup({
+  --       variant = "main",
+  --       styles = {
+  --         transparency = true,
+  --       },
   --     })
-  --     -- vim.cmd.colorscheme("night-owl")
+  --     -- vim.cmd("colorscheme rose-pine")
   --   end,
   -- },
-
-  {
-    "rose-pine/neovim",
-    name = "rose-pine",
-    config = function()
-      require("rose-pine").setup({
-        variant = "main",
-        styles = {
-          transparency = true,
-        },
-      })
-      -- vim.cmd("colorscheme rose-pine")
-    end,
-  },
 
   {
     "catppuccin/nvim",
@@ -100,7 +70,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "dracula",
     },
   },
 }

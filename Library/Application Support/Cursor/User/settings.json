@@ -18,12 +18,12 @@
   /*
     Appearance
   */
-  "debug.console.fontFamily": "JetBrainsMono Nerd Font Mono",
+  "debug.console.fontFamily": "Hack Nerd Font",
   "debug.console.fontSize": 16,
   "debug.toolBarLocation": "docked",
   "editor.bracketPairColorization.enabled": true,
   "editor.cursorSmoothCaretAnimation": "on",
-  "editor.fontFamily": "JetBrainsMono Nerd Font Mono",
+  "editor.fontFamily": "Hack Nerd Font",
   "editor.fontLigatures": true,
   "editor.fontSize": 16,
   // "editor.guides.bracketPairs": false,
@@ -35,29 +35,29 @@
   "explorer.autoReveal": false,
   "explorer.compactFolders": false,
   "security.workspace.trust.untrustedFiles": "open",
-  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font Mono",
+  "terminal.integrated.fontFamily": "Hack Nerd Font",
   "terminal.integrated.fontSize": 16,
-  // "terminal.integrated.lineHeight": 1.35,  // for editor line-height 1.75
+  // "terminal.integrated.lineHeight": 1.35, // for editor line-height 1.75
   // "terminal.integrated.lineHeight": 1.3, // for editor line-height 1.7
-  // "terminal.integrated.lineHeight": 1.275, // for editor line-height 1.5 (default) for Hack
+  "terminal.integrated.lineHeight": 1.275, // for editor line-height 1.5 (default) for Hack and SF Mono
   // "terminal.integrated.lineHeight": 1.25,  // for editor line-height 1.6
   // "terminal.integrated.lineHeight": 1.2, // for editor line-height 1.5 (default) for Fira Code
-  "terminal.integrated.lineHeight": 1.15, // for editor line-height 1.5 (default)
+  // "terminal.integrated.lineHeight": 1.15, // for editor line-height 1.5 (default)
   "terminal.integrated.minimumContrastRatio": 1,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.tabs.enabled": true,
-  "window.autoDetectColorScheme": true,
+  "window.autoDetectColorScheme": false,
   // "window.menuBarVisibility": "toggle",
   "window.titleBarStyle": "custom",
   // "window.nativeTabs": true,
   "workbench.activityBar.location": "hidden",
   "workbench.activityBar.orientation": "vertical",
-  "workbench.colorTheme": "Atom One Dark",
+  "workbench.colorTheme": "Dracula Theme",
   "workbench.editor.empty.hint": "hidden",
-  "workbench.fontAliasing": "auto",
-  "workbench.iconTheme": "vs-seti",
-  "workbench.preferredDarkColorTheme": "Atom One Dark",
-  "workbench.preferredLightColorTheme": "Atom One Light",
+  "workbench.fontAliasing": "default",
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.preferredDarkColorTheme": "Default Dark Modern",
+  "workbench.preferredLightColorTheme": "Default Light Modern",
   "workbench.editor.limit.enabled": true,
   "workbench.editor.limit.excludeDirty": false,
   "workbench.editor.limit.perEditorGroup": true,
@@ -150,13 +150,9 @@
     Extensions
   */
   "color-highlight.markerType": "dot-before",
-  "errorLens.enabledDiagnosticLevels": ["warning", "error"],
-  "errorLens.excludeBySource": ["cSpell", "Grammarly"],
   "extensions.experimental.affinity": {
     "vscodevim.vim": 1
   },
-  "gruvboxMaterial.darkContrast": "hard",
-  "gruvboxMaterial.colorfulSyntax": true,
   "laravel-pint.enable": false,
   "prettier.enable": true,
   "redhat.telemetry.enabled": true,
