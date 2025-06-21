@@ -112,12 +112,12 @@ alias vs="code"
 alias lzd='lazydocker'
 alias lzg="lazygit"
 
-# Bind keys for vi mode
+# bind keys for vi mode
 bindkey jj vi-cmd-mode
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-# Starship prompt setup
+# starship prompt setup
 # export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
 eval "$(starship init zsh)"
 
@@ -160,6 +160,6 @@ load-nvmrc() {
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
-# Start keychain and load SSH keys
+# start keychain and load SSH keys
 eval $(keychain --eval --quiet ~/.ssh/id_ed25519_github)
 
