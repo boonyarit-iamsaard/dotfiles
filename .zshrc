@@ -163,3 +163,5 @@ load-nvmrc
 # start keychain and load SSH keys
 eval $(keychain --eval --quiet ~/.ssh/id_ed25519_github)
 
+# enable lazydocker to work with podman
+export DOCKER_HOST="unix:///run/user/$(id -u)/podman/podman.sock"
