@@ -117,10 +117,10 @@ alias vsi="code-insiders"
 alias lzd='lazydocker'
 alias lzg="lazygit"
 
-# Bind keys for vi mode
+# bind keys for vi mode
 bindkey jj vi-cmd-mode
 
-# Herd setup
+# herd setup
 export PATH="/Users/boonyarit.i/Library/Application Support/Herd/bin:$PATH"
 export HERD_PHP_82_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/82/"
 export HERD_PHP_83_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/83/"
@@ -129,32 +129,36 @@ export HERD_PHP_84_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/
 # .NET tools setup
 export PATH=$HOME/.dotnet/tools:$PATH
 
-# Go setup
+# go setup
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 export PATH=$PATH:$(go env GOPATH)
 
-# Windsurf setup
+# windsurf setup
 export PATH="/Applications/Windsurf.app/Contents/Resources/app/bin:$PATH"
 
-# Custom environment variables
+# custom environment variables
 . "$HOME/.local/bin/env"
 
-# Java setup
+# java setup
 export JAVA_HOME=$HOME/OpenJDK/jdk-17.0.1.jdk/Contents/Home
 export PATH=$JAVA_HOME/bin:$PATH
 
-# Starship prompt setup
+# starship prompt setup
 # export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
 eval "$(starship init zsh)"
 
-# Bun completions
+# bun completions
 [ -s "/Users/boonyarit.i/.bun/_bun" ] && source "/Users/boonyarit.i/.bun/_bun"
 
-# Bun
+# bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+# podman
+export PATH=/opt/podman/bin:$PATH
+# podman for lazydocker (macOS)
+export DOCKER_HOST="unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
