@@ -1,4 +1,4 @@
--- local helpers = require("helpers")
+local helpers = require("helpers")
 
 return {
   {
@@ -23,9 +23,9 @@ return {
   --       --
   --     })
   --
-  --     -- local appearance = helpers.get_macos_appearance()
-  --     -- local theme = appearance == "light" and "github_light_default" or "github_dark_default"
-  --     -- vim.cmd("colorscheme " .. theme)
+  --     local appearance = helpers.get_macos_appearance()
+  --     local theme = appearance == "light" and "github_light_default" or "github_dark_default"
+  --     vim.cmd("colorscheme " .. theme)
   --     -- vim.cmd("colorscheme github_dark_default")
   --   end,
   -- },
@@ -42,12 +42,13 @@ return {
   --   name = "rose-pine",
   --   config = function()
   --     require("rose-pine").setup({
-  --       variant = "main",
+  --       variant = "auto",
   --       styles = {
-  --         transparency = true,
+  --         -- transparency = true,
   --       },
   --     })
-  --     -- vim.cmd("colorscheme rose-pine")
+  --
+  --     vim.cmd("colorscheme rose-pine")
   --   end,
   -- },
 
@@ -59,10 +60,10 @@ return {
     opts = {
       -- background = {
       --   light = "latte",
-      --   dark = "macchiato",
+      --   dark = "mocha",
       -- },
       -- flavour = "auto",
-      -- flavour = "macchiato",
+      flavour = "mocha",
       -- transparent_background = true,
     },
   },
