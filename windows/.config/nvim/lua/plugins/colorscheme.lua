@@ -29,17 +29,17 @@ return {
   --   end,
   -- },
 
-  {
-    "rose-pine/neovim",
-    name = "rose-pine",
-  },
+  -- {
+  --   "rose-pine/neovim",
+  --   name = "rose-pine",
+  -- },
 
-  {
-    "Mofiqul/dracula.nvim",
-    opts = {
-      transparent_bg = false,
-    },
-  },
+  -- {
+  --   "Mofiqul/dracula.nvim",
+  --   opts = {
+  --     transparent_bg = false,
+  --   },
+  -- },
 
   -- {
   --   "oxfist/night-owl.nvim",
@@ -63,7 +63,7 @@ return {
       -- },
       -- flavour = "auto",
       -- flavour = "macchiato",
-      transparent_background = true,
+      -- transparent_background = true,
     },
   },
 
