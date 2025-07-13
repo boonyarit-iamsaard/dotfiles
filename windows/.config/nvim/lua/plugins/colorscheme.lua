@@ -34,12 +34,12 @@ return {
   --   name = "rose-pine",
   -- },
 
-  -- {
-  --   "Mofiqul/dracula.nvim",
-  --   opts = {
-  --     transparent_bg = false,
-  --   },
-  -- },
+  {
+    "Mofiqul/dracula.nvim",
+    opts = {
+      transparent_bg = false,
+    },
+  },
 
   -- {
   --   "oxfist/night-owl.nvim",
@@ -70,7 +70,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "dracula",
     },
   },
 }
