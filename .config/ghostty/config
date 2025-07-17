@@ -3,14 +3,14 @@
 # adjust-cell-height      = 10%
 # font-family             = "MesloLGM Nerd Font Mono"
 
-adjust-cell-height      = 12.5%
-font-family             = "JetBrainsMono Nerd Font Mono"
+# adjust-cell-height      = 12.5%
+# font-family             = "JetBrainsMono Nerd Font Mono"
 
 # adjust-cell-height      = 27.5%
 # font-family             = "Hack Nerd Font Mono"
 
-# adjust-cell-height      = 22.5%
-# font-family             = "Liga SFMono Nerd Font"
+adjust-cell-height      = 22.5%
+font-family             = "Liga SFMono Nerd Font"
 
 # adjust-cell-height      = 20%
 # font-family             = "FiraCode Nerd Font Mono"
@@ -45,6 +45,6 @@ font-family             = "JetBrainsMono Nerd Font Mono"
 cursor-invert-fg-bg     = true
 font-size               = 16
 adjust-cursor-thickness = 2
-macos-titlebar-style    = "transparent"
-theme                   = "catppuccin-mocha"
+# macos-titlebar-style    = "transparent"
+theme                   = "light:edge-light,dark:edge-dark"
 window-colorspace       = "display-p3"

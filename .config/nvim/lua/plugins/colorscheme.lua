@@ -13,6 +13,18 @@ return {
     },
   },
 
+  {
+    "sainnhe/edge",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.edge_enable_italic = true
+      vim.cmd.colorscheme("edge")
+    end,
+  },
+
   -- {
   --   "projekt0n/github-nvim-theme",
   --   name = "github-theme",
@@ -24,9 +36,9 @@ return {
   --     })
   --
   --     local appearance = helpers.get_macos_appearance()
-  --     local theme = appearance == "light" and "github_light_default" or "github_dark_default"
+  --     local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
   --     vim.cmd("colorscheme " .. theme)
-  --     -- vim.cmd("colorscheme github_dark_default")
+  --     -- vim.cmd("colorscheme github_dark_dimmed")
   --   end,
   -- },
 
@@ -36,21 +48,6 @@ return {
       transparent_bg = false,
     },
   },
-
-  -- {
-  --   "rose-pine/neovim",
-  --   name = "rose-pine",
-  --   config = function()
-  --     require("rose-pine").setup({
-  --       variant = "auto",
-  --       styles = {
-  --         -- transparency = true,
-  --       },
-  --     })
-  --
-  --     vim.cmd("colorscheme rose-pine")
-  --   end,
-  -- },
 
   {
     "catppuccin/nvim",
@@ -68,10 +65,10 @@ return {
     },
   },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "catppuccin",
+  --   },
+  -- },
 }
