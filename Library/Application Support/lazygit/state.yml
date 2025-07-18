@@ -1,0 +1,26 @@
+lastupdatecheck: 1726490949
+recentrepos:
+    - /Users/boonyarit.i/dotfiles
+    - /Users/boonyarit.i/workspace/opn/report-engine
+    - /Users/boonyarit.i/workspace/personal/laravel-basic-kit
+    - /Users/boonyarit.i/workspace/opn/cs-ops-portal
+    - /Users/boonyarit.i/workspace/opn/aia-payment-portal-api
+    - /Users/boonyarit.i/workspace/opn/flux-staging
+    - /Users/boonyarit.i/workspace/opn/external-reconciliation
+    - /Users/boonyarit.i/workspace/opn/opn-product-argocd
+    - /Users/boonyarit.i/workspace/personal/personal-vault
+startuppopupversion: 5
+lastversion: 0.53.0
+customcommandshistory:
+    - w
+    - git merge master --ff-only
+    - git merge master --only-ff
+    - git fetch --prune
+hidecommandlog: true
+ignorewhitespaceindiffview: true
+diffcontextsize: 2
+renamesimilaritythreshold: 50
+localbranchsortorder: recency
+remotebranchsortorder: alphabetical
+gitlogorder: topo-order
+gitlogshowgraph: always
