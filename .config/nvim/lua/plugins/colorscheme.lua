@@ -49,24 +49,24 @@ return {
     },
   },
 
-  {
-    "olimorris/onedarkpro.nvim",
-    priority = 1000, -- Ensure it loads first
-    config = function()
-      require("onedarkpro").setup({
-        --
-      })
-
-      -- local appearance = helpers.get_macos_appearance()
-      -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
-      -- vim.cmd("colorscheme " .. theme)
-      -- if vim.o.background == "dark" then
-      --   vim.cmd("colorscheme onelight")
-      -- else
-      --   vim.cmd("colorscheme onedark")
-      -- end
-    end,
-  },
+  -- {
+  --   "olimorris/onedarkpro.nvim",
+  --   priority = 1000, -- Ensure it loads first
+  --   config = function()
+  --     require("onedarkpro").setup({
+  --       --
+  --     })
+  --
+  --     -- local appearance = helpers.get_macos_appearance()
+  --     -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
+  --     -- vim.cmd("colorscheme " .. theme)
+  --     -- if vim.o.background == "dark" then
+  --     --   vim.cmd("colorscheme onelight")
+  --     -- else
+  --     --   vim.cmd("colorscheme onedark")
+  --     -- end
+  --   end,
+  -- },
 
   {
     "catppuccin/nvim",
@@ -87,7 +87,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "onedark",
+      colorscheme = "catppuccin",
     },
   },
 }
