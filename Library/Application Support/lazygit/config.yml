@@ -32,27 +32,52 @@ git:
 #   authorColors:
 #     "*": "#b4befe"
 # catppuccin macchiato
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#c6a0f6"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a5adcb"
+#     optionsTextColor:
+#       - "#8aadf4"
+#     selectedLineBgColor:
+#       - "#363a4f"
+#     cherryPickedCommitBgColor:
+#       - "#494d64"
+#     cherryPickedCommitFgColor:
+#       - "#c6a0f6"
+#     unstagedChangesColor:
+#       - "#ed8796"
+#     defaultFgColor:
+#       - "#cad3f5"
+#     searchingActiveBorderColor:
+#       - "#eed49f"
+#
+#   authorColors:
+#     "*": "#b7bdf8"
+# one dark pro
 gui:
   theme:
     activeBorderColor:
-      - "#c6a0f6"
+      - "#61afef"
       - bold
     inactiveBorderColor:
-      - "#a5adcb"
+      - "#5c6370"
     optionsTextColor:
-      - "#8aadf4"
+      - "#61afef"
     selectedLineBgColor:
-      - "#363a4f"
+      - "#3b4048"
     cherryPickedCommitBgColor:
-      - "#494d64"
+      - "#30333d"
     cherryPickedCommitFgColor:
-      - "#c6a0f6"
+      - "#c678dd"
     unstagedChangesColor:
-      - "#ed8796"
+      - "#e06c75"
     defaultFgColor:
-      - "#cad3f5"
+      - "#abb2bf"
     searchingActiveBorderColor:
-      - "#eed49f"
+      - "#e5c07b"
 
   authorColors:
-    "*": "#b7bdf8"
+    "*": "#98c379"
