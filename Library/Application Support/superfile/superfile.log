@@ -20419,3 +20419,156 @@ time=2025-07-22T18:27:27.247+07:00 level=ERROR msg="Error parsing pinned data" e
 time=2025-07-22T18:27:27.250+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
 time=2025-07-22T18:27:27.253+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
 time=2025-07-22T18:27:28.327+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:40.651+07:00 level=ERROR msg="Could not read user's theme file. Falling back to default theme" path="/Users/boonyarit.i/Library/Application Support/superfile/theme/catppuccion-macchiato.toml" error="open /Users/boonyarit.i/Library/Application Support/superfile/theme/catppuccion-macchiato.toml: no such file or directory"
+time=2025-07-23T17:52:40.653+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:40.653+07:00 level=INFO msg="Successfully detected terminal cell size via ioctl" pixels_per_column=20 pixels_per_row=48
+time=2025-07-23T17:52:40.654+07:00 level=INFO msg="Terminal cell size detection" pixels_per_column=20 pixels_per_row=48
+time=2025-07-23T17:52:40.654+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:40.660+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:40.665+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:40.810+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:40.815+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:40.819+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:41.299+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:41.451+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:41.801+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:41.883+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:41.968+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:42.048+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:42.135+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:42.286+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:42.916+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:44.180+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:44.331+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:44.392+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:44.542+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:44.588+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:44.739+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:45.131+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:45.541+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:45.691+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:45.789+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:45.940+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:46.022+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:46.173+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:46.263+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:46.414+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:46.496+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:46.647+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:46.773+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:48.266+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:48.287+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:49.469+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:49.974+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:50.124+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:50.348+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:50.819+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:50.971+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:51.256+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:51.894+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:53.008+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:53.888+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:53.910+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:54.507+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:54.527+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:54.658+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:54.683+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:56.606+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:56.624+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:56.628+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:56.648+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:57.410+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:57.434+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:57.438+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:57.458+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:57.461+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:57.475+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:58.257+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:58.277+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:58.408+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:58.433+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:59.356+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:59.375+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:52:59.379+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:52:59.398+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:00.014+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:00.021+07:00 level=ERROR msg="Error get file info" error="stat /Users/boonyarit.i/workspace/opn/report-engine/apps/report-engine-worker/test/unit/processors/dataset/query/fixtures/test-mode.generated.sql: no such file or directory"
+time=2025-07-23T17:53:00.025+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:00.047+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:00.050+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:00.067+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:01.398+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:01.419+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:03.078+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:03.101+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:03.302+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:03.323+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:03.328+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:03.346+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:03.833+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:03.854+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:03.860+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:03.879+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:03.882+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:03.896+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.043+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.067+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.072+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.089+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.386+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.407+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.412+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.431+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.585+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.611+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.617+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.636+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.808+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.830+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.836+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:04.854+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:04.988+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:05.008+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:05.013+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:05.033+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:05.211+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:05.235+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:05.241+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:05.259+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:05.742+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:05.769+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:05.886+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:05.905+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:06.272+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:06.293+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:06.742+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:06.765+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:06.893+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:06.924+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:07.851+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:07.872+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:08.890+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:08.913+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:09.165+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:09.186+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:09.192+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:09.212+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:09.372+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:09.395+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:09.400+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:09.420+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:09.594+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:09.616+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:09.622+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:09.641+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:09.991+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:10.013+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:10.018+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:10.037+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:10.476+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:10.495+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:10.521+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:10.540+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:12.166+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-07-23T17:53:12.190+07:00 level=ERROR msg="Max lines reached" maxLines=29
+time=2025-07-23T17:53:12.212+07:00 level=ERROR msg="Max lines reached" maxLines=29
