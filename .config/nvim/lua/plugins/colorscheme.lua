@@ -35,10 +35,10 @@ return {
   --       --
   --     })
   --
-  --     -- local appearance = helpers.get_macos_appearance()
-  --     -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
-  --     -- vim.cmd("colorscheme " .. theme)
-  --     vim.cmd("colorscheme github_dark_dimmed")
+  --     local appearance = helpers.get_macos_appearance()
+  --     local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
+  --     vim.cmd("colorscheme " .. theme)
+  --     -- vim.cmd("colorscheme github_dark_dimmed")
   --   end,
   -- },
 
@@ -68,9 +68,9 @@ return {
   --   end,
   -- },
 
-  {
-    "Mofiqul/vscode.nvim",
-  },
+  -- {
+  --   "Mofiqul/vscode.nvim",
+  -- },
 
   {
     "catppuccin/nvim",
