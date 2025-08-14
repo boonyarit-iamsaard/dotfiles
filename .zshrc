@@ -170,9 +170,8 @@ load-nvmrc() {
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
-# start keychain and load SSH keys
-eval $(keychain --eval --quiet ~/.ssh/id_ed25519_github)
-
-
 # bun completions
 [ -s "/home/boonyarit-iamsaard/.bun/_bun" ] && source "/home/boonyarit-iamsaard/.bun/_bun"
+
+# start keychain and load SSH keys
+eval $(keychain --eval --quiet ~/.ssh/id_ed25519_github)
