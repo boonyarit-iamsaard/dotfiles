@@ -4,8 +4,6 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-COMPLETION_WAITING_DOTS="true"
-
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -105,8 +103,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias nv="nvim"
-alias ws="windsurf"
-alias vs="code"
 
 alias lzd='lazydocker'
 alias lzg="lazygit"
@@ -115,37 +111,13 @@ alias lzg="lazygit"
 bindkey jj vi-cmd-mode
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-# starship prompt setup
-# export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
 eval "$(starship init zsh)"
 
-# pipx
-export PATH="$PATH:/home/boonyarit-iamsaard/.local/bin"
-
-# spin
-export PATH="$HOME/.spin/bin:$PATH"
-
-# go
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:$(go env GOPATH)/bin
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# composer
-export PATH="$HOME/.config/composer/vendor/bin:$PATH"
-
-# enable lazydocker to work with podman
-export DOCKER_HOST="unix:///run/user/$(id -u)/podman/podman.sock"
-
-# nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# nvm initialization
+# place this after nvm initialization!
 autoload -U add-zsh-hook
 
 load-nvmrc() {
@@ -170,8 +142,3 @@ load-nvmrc() {
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
-# bun completions
-[ -s "/home/boonyarit-iamsaard/.bun/_bun" ] && source "/home/boonyarit-iamsaard/.bun/_bun"
-
-# start keychain and load SSH keys
-eval $(keychain --eval --quiet ~/.ssh/id_ed25519_github)
