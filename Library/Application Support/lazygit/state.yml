@@ -1,7 +1,7 @@
 lastupdatecheck: 1726490949
 recentrepos:
     - /Users/boonyarit.i/dotfiles
-    - /Users/boonyarit.i/workspace/personal/next-solution
+    - /Users/boonyarit.i/workspace/personal/next-starter-kit
     - /Users/boonyarit.i/workspace/opn/report-engine
     - /Users/boonyarit.i/workspace/opn/cs-ops-portal
     - /Users/boonyarit.i/workspace/opn/aia-payment-portal-api
@@ -10,7 +10,7 @@ recentrepos:
     - /Users/boonyarit.i/workspace/opn/opn-product-argocd
 startuppopupversion: 5
 didshowhunkstaginghint: false
-lastversion: 0.54.1
+lastversion: 0.54.2
 customcommandshistory:
     - w
     - git merge master --ff-only
