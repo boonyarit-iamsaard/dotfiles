@@ -103,8 +103,9 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias update-system="~/update-system.sh"
-alias nv="nvim"
+alias docker-clean="docker rm -f $(docker ps -aq) && docker volume prune -af && docker network prune -f && docker builder prune -af && docker system df"
 
+alias nv="nvim"
 alias lzd='lazydocker'
 alias lzg="lazygit"
 
@@ -113,6 +114,11 @@ bindkey jj vi-cmd-mode
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(starship init zsh)"
+
+# load local environment variables i.e., GEMINI_API_KEY if the file exists
+if [ -f ~/.env.local ]; then
+  source ~/.env.local
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
