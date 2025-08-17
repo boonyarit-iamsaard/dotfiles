@@ -103,7 +103,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias update-system="~/update-system.sh"
-alias docker-clean="docker rm -f $(docker ps -aq) && docker volume prune -af && docker network prune -f && docker builder prune -af && docker system df"
 
 alias nv="nvim"
 alias lzd='lazydocker'
