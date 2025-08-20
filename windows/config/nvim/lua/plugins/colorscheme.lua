@@ -56,15 +56,24 @@ return {
     name = "catppuccin",
     lazy = false,
     priority = 1000,
-    opts = {
-      -- background = {
-      --   light = "latte",
-      --   dark = "macchiato",
-      -- },
-      -- flavour = "auto",
-      -- flavour = "macchiato",
-      -- transparent_background = true,
-    },
+    config = function()
+      -- Fix LazyVim's bufferline integration
+      local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
+      if not bufferline_integration.get then
+        bufferline_integration.get = bufferline_integration.get_theme
+      end
+
+      ---@diagnostic disable-next-line: missing-fields
+      require("catppuccin").setup({
+        -- background = {
+        --   light = "latte",
+        --   dark = "macchiato",
+        -- },
+        -- flavour = "auto",
+        -- flavour = "macchiato",
+        -- transparent_background = true,
+      })
+    end,
   },
 
   {
