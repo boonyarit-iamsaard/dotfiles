@@ -35,10 +35,10 @@ return {
   --       --
   --     })
   --
-  --     local appearance = helpers.get_macos_appearance()
-  --     local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
-  --     vim.cmd("colorscheme " .. theme)
-  --     -- vim.cmd("colorscheme github_dark_dimmed")
+  -- -- local appearance = helpers.get_macos_appearance()
+  -- -- local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
+  -- -- vim.cmd("colorscheme " .. theme)
+  -- vim.cmd("colorscheme github_dark_dimmed")
   --   end,
   -- },
 
@@ -57,6 +57,7 @@ return {
   --       --
   --     })
   --
+  --     vim.cmd("colorscheme onelight")
   --     -- local appearance = helpers.get_macos_appearance()
   --     -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
   --     -- vim.cmd("colorscheme " .. theme)
@@ -68,39 +69,40 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "catppuccin/nvim",
-  --   name = "catppuccin",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     -- Fix LazyVim's bufferline integration
-  --     local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
-  --     if not bufferline_integration.get then
-  --       bufferline_integration.get = bufferline_integration.get_theme
-  --     end
-  --
-  --     ---@diagnostic disable-next-line: missing-fields
-  --     require("catppuccin").setup({
-  --       -- background = {
-  --       --   light = "latte",
-  --       --   dark = "macchiato",
-  --       -- },
-  --       -- flavour = "auto",
-  --       -- transparent_background = true,
-  --     })
-  --   end,
-  -- },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Fix LazyVim's bufferline integration
+      local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
+      if not bufferline_integration.get then
+        bufferline_integration.get = bufferline_integration.get_theme
+      end
+
+      ---@diagnostic disable-next-line: missing-fields
+      require("catppuccin").setup({
+        -- background = {
+        --   light = "latte",
+        --   dark = "macchiato",
+        -- },
+        -- flavour = "macchiato",
+        -- transparent_background = true,
+      })
+    end,
+  },
 
   {
-    "sainnhe/edge",
+    "sainnhe/gruvbox-material",
     lazy = false,
     priority = 1000,
     config = function()
       -- Optionally configure and load the colorscheme
       -- directly inside the plugin declaration.
-      vim.g.edge_enable_italic = true
-      vim.cmd.colorscheme("edge")
+      vim.g.gruvbox_material_background = "hard"
+      vim.g.gruvbox_material_enable_italic = true
+      vim.cmd.colorscheme("gruvbox-material")
     end,
   },
 

@@ -7,11 +7,11 @@ git:
 #   theme:
 #     selectedLineBgColor:
 #       - "#6272a4"
-# edge dark
+# gruvbox material dark hard
 gui:
   theme:
     selectedLineBgColor:
-      - "#424553"
+      - "#46403d"
 # catppuccin mocha
 # gui:
 #   theme:

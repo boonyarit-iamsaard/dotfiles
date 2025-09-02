@@ -1,0 +1,20 @@
+-- return {
+--   {
+--     "zbirenbaum/copilot.lua",
+--     opts = {
+--       suggestion = {
+--         enabled = true,
+--         auto_trigger = true,
+--       },
+--       panel = { enabled = false },
+--       -- Add buffer validation to prevent invalid buffer ID errors
+--       filetypes = {
+--         ["*"] = function()
+--           local bufnr = vim.api.nvim_get_current_buf()
+--           return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
+--         end,
+--       },
+--     },
+--   },
+-- }
+
