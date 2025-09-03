@@ -34,12 +34,12 @@ return {
   --   name = "rose-pine",
   -- },
 
-  {
-    "Mofiqul/dracula.nvim",
-    opts = {
-      transparent_bg = false,
-    },
-  },
+  -- {
+  --   "Mofiqul/dracula.nvim",
+  --   opts = {
+  --     transparent_bg = false,
+  --   },
+  -- },
 
   -- {
   --   "oxfist/night-owl.nvim",
@@ -65,30 +65,30 @@ return {
     end,
   },
 
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      -- Fix LazyVim's bufferline integration
-      local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
-      if not bufferline_integration.get then
-        bufferline_integration.get = bufferline_integration.get_theme
-      end
-
-      ---@diagnostic disable-next-line: missing-fields
-      require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
-        -- flavour = "auto",
-        -- flavour = "macchiato",
-        -- transparent_background = true,
-      })
-    end,
-  },
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     -- Fix LazyVim's bufferline integration
+  --     local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
+  --     if not bufferline_integration.get then
+  --       bufferline_integration.get = bufferline_integration.get_theme
+  --     end
+  --
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require("catppuccin").setup({
+  --       -- background = {
+  --       --   light = "latte",
+  --       --   dark = "macchiato",
+  --       -- },
+  --       -- flavour = "auto",
+  --       -- flavour = "macchiato",
+  --       -- transparent_background = true,
+  --     })
+  --   end,
+  -- },
 
   -- {
   --   "LazyVim/LazyVim",
