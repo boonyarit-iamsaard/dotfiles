@@ -51,49 +51,49 @@ return {
   --   end,
   -- },
 
-  {
-    "sainnhe/gruvbox-material",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      -- Optionally configure and load the colorscheme
-      -- directly inside the plugin declaration.
-      vim.g.gruvbox_material_enable_italic = true
-      vim.g.gruvbox_material_background = "hard"
-      -- vim.g.gruvbox_material_ui_contrast = "high"
-      vim.cmd.colorscheme("gruvbox-material")
-    end,
-  },
-
   -- {
-  --   "catppuccin/nvim",
-  --   name = "catppuccin",
+  --   "sainnhe/gruvbox-material",
   --   lazy = false,
   --   priority = 1000,
   --   config = function()
-  --     -- Fix LazyVim's bufferline integration
-  --     local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
-  --     if not bufferline_integration.get then
-  --       bufferline_integration.get = bufferline_integration.get_theme
-  --     end
-  --
-  --     ---@diagnostic disable-next-line: missing-fields
-  --     require("catppuccin").setup({
-  --       -- background = {
-  --       --   light = "latte",
-  --       --   dark = "macchiato",
-  --       -- },
-  --       -- flavour = "auto",
-  --       -- flavour = "macchiato",
-  --       -- transparent_background = true,
-  --     })
+  --     -- Optionally configure and load the colorscheme
+  --     -- directly inside the plugin declaration.
+  --     vim.g.gruvbox_material_enable_italic = true
+  --     vim.g.gruvbox_material_background = "hard"
+  --     -- vim.g.gruvbox_material_ui_contrast = "high"
+  --     vim.cmd.colorscheme("gruvbox-material")
   --   end,
   -- },
 
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "catppuccin",
-  --   },
-  -- },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Fix LazyVim's bufferline integration
+      local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
+      if not bufferline_integration.get then
+        bufferline_integration.get = bufferline_integration.get_theme
+      end
+
+      ---@diagnostic disable-next-line: missing-fields
+      require("catppuccin").setup({
+        -- background = {
+        --   light = "latte",
+        --   dark = "macchiato",
+        -- },
+        -- flavour = "auto",
+        -- flavour = "macchiato",
+        -- transparent_background = true,
+      })
+    end,
+  },
+
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
 }
