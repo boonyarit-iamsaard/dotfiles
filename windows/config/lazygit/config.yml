@@ -1,6 +1,7 @@
 git:
   log:
     showWholeGraph: true
+  overrideGpg: true
 # common
 # gui:
 #   theme:
