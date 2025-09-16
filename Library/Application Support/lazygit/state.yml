@@ -2,8 +2,9 @@ lastupdatecheck: 1726490949
 recentrepos:
     - /Users/boonyarit.i/dotfiles
     - /Users/boonyarit.i/workspace/opn/report-engine
-    - /Users/boonyarit.i/workspace/personal/laravel-basic-kit
+    - /Users/boonyarit.i/workspace/personal/laravel-shop
     - /Users/boonyarit.i/workspace/personal/next-starter-kit
+    - /Users/boonyarit.i/workspace/personal/laravel-basic-kit
     - /Users/boonyarit.i/workspace/opn/cs-ops-portal
     - /Users/boonyarit.i/workspace/opn/aia-payment-portal-api
     - /Users/boonyarit.i/workspace/opn/flux-staging
@@ -11,7 +12,7 @@ recentrepos:
     - /Users/boonyarit.i/workspace/opn/opn-product-argocd
 startuppopupversion: 5
 didshowhunkstaginghint: true
-lastversion: 0.54.2
+lastversion: 0.55.0
 customcommandshistory:
     - w
     - git merge master --ff-only

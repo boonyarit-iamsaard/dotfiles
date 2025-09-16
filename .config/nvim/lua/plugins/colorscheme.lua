@@ -4,26 +4,26 @@ return {
   -- {
   --   "folke/tokyonight.nvim",
   --   opts = {
-  --     transparent = true,
-  --     -- style = "storm",
-  --     styles = {
-  --       sidebars = "transparent",
-  --       floats = "transparent",
-  --     },
+  --     -- transparent = true,
+  --     style = "moon",
+  --     -- styles = {
+  --     --   sidebars = "transparent",
+  --     --   floats = "transparent",
+  --     -- },
   --   },
   -- },
 
-  -- {
-  --   "sainnhe/edge",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     -- Optionally configure and load the colorscheme
-  --     -- directly inside the plugin declaration.
-  --     vim.g.edge_enable_italic = true
-  --     vim.cmd.colorscheme("edge")
-  --   end,
-  -- },
+  {
+    "sainnhe/edge",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.edge_enable_italic = true
+      vim.cmd.colorscheme("edge")
+    end,
+  },
 
   -- {
   --   "projekt0n/github-nvim-theme",
@@ -35,10 +35,10 @@ return {
   --       --
   --     })
   --
-  -- -- local appearance = helpers.get_macos_appearance()
-  -- -- local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
-  -- -- vim.cmd("colorscheme " .. theme)
-  -- vim.cmd("colorscheme github_dark_dimmed")
+  --     -- local appearance = helpers.get_macos_appearance()
+  --     -- local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
+  --     -- vim.cmd("colorscheme " .. theme)
+  --     vim.cmd("colorscheme github_dark_dimmed")
   --   end,
   -- },
 
@@ -69,29 +69,29 @@ return {
   --   end,
   -- },
 
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      -- Fix LazyVim's bufferline integration
-      local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
-      if not bufferline_integration.get then
-        bufferline_integration.get = bufferline_integration.get_theme
-      end
-
-      ---@diagnostic disable-next-line: missing-fields
-      require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
-        -- flavour = "macchiato",
-        -- transparent_background = true,
-      })
-    end,
-  },
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     -- Fix LazyVim's bufferline integration
+  --     local bufferline_integration = require("catppuccin.groups.integrations.bufferline")
+  --     if not bufferline_integration.get then
+  --       bufferline_integration.get = bufferline_integration.get_theme
+  --     end
+  --
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require("catppuccin").setup({
+  --       -- background = {
+  --       --   light = "latte",
+  --       --   dark = "macchiato",
+  --       -- },
+  --       -- flavour = "macchiato",
+  --       -- transparent_background = true,
+  --     })
+  --   end,
+  -- },
 
   -- {
   --   "sainnhe/gruvbox-material",
@@ -106,10 +106,10 @@ return {
   --   end,
   -- },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "catppuccin",
+  --   },
+  -- },
 }
