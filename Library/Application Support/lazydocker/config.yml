@@ -4,40 +4,40 @@
 #     selectedLineBgColor:
 #       - "#6272a4"
 # edge dark
-gui:
-  theme:
-    selectedLineBgColor:
-      - "#424553"
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#424553"
 # gruvbox material dark hard
 # gui:
 #   theme:
 #     selectedLineBgColor:
 #       - "#46403d"
 # catppuccin mocha
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#cba6f7"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a6adc8"
-#     optionsTextColor:
-#       - "#89b4fa"
-#     selectedLineBgColor:
-#       - "#313244"
-#     cherryPickedCommitBgColor:
-#       - "#45475a"
-#     cherryPickedCommitFgColor:
-#       - "#cba6f7"
-#     unstagedChangesColor:
-#       - "#f38ba8"
-#     defaultFgColor:
-#       - "#cdd6f4"
-#     searchingActiveBorderColor:
-#       - "#f9e2af"
-#
-#   authorColors:
-#     "*": "#b4befe"
+gui:
+  theme:
+    activeBorderColor:
+      - "#cba6f7"
+      - bold
+    inactiveBorderColor:
+      - "#a6adc8"
+    optionsTextColor:
+      - "#89b4fa"
+    selectedLineBgColor:
+      - "#313244"
+    cherryPickedCommitBgColor:
+      - "#45475a"
+    cherryPickedCommitFgColor:
+      - "#cba6f7"
+    unstagedChangesColor:
+      - "#f38ba8"
+    defaultFgColor:
+      - "#cdd6f4"
+    searchingActiveBorderColor:
+      - "#f9e2af"
+
+  authorColors:
+    "*": "#b4befe"
 # catppuccin macchiato
 # gui:
 #   theme:
