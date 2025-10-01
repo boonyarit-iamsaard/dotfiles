@@ -25,22 +25,22 @@ return {
   --   end,
   -- },
 
-  {
-    "projekt0n/github-nvim-theme",
-    name = "github-theme",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("github-theme").setup({
-        --
-      })
-
-      -- local appearance = helpers.get_macos_appearance()
-      -- local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
-      -- vim.cmd("colorscheme " .. theme)
-      -- vim.cmd("colorscheme github_dark_default")
-    end,
-  },
+  -- {
+  --   "projekt0n/github-nvim-theme",
+  --   name = "github-theme",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require("github-theme").setup({
+  --       --
+  --     })
+  --
+  --     -- local appearance = helpers.get_macos_appearance()
+  --     -- local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
+  --     -- vim.cmd("colorscheme " .. theme)
+  --     -- vim.cmd("colorscheme github_dark_default")
+  --   end,
+  -- },
 
   -- {
   --   "Mofiqul/dracula.nvim",
@@ -69,9 +69,9 @@ return {
   --   end,
   -- },
 
-  {
-    "Mofiqul/vscode.nvim",
-  },
+  -- {
+  --   "Mofiqul/vscode.nvim",
+  -- },
 
   {
     "catppuccin/nvim",
@@ -104,16 +104,16 @@ return {
   --   end,
   -- },
 
-  {
-    "Shatur/neovim-ayu",
-    config = function()
-      require("ayu").setup({
-        mirage = true,
-        terminal = true,
-        overrides = {},
-      })
-    end,
-  },
+  -- {
+  --   "Shatur/neovim-ayu",
+  --   config = function()
+  --     require("ayu").setup({
+  --       mirage = true,
+  --       terminal = true,
+  --       overrides = {},
+  --     })
+  --   end,
+  -- },
 
   {
     "LazyVim/LazyVim",
