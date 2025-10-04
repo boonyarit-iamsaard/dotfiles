@@ -1,17 +1,17 @@
 -- local helpers = require("helpers")
 
 return {
-  -- {
-  --   "folke/tokyonight.nvim",
-  --   opts = {
-  --     transparent = true,
-  --     -- style = "storm",
-  --     styles = {
-  --       sidebars = "transparent",
-  --       floats = "transparent",
-  --     },
-  --   },
-  -- },
+  {
+    "folke/tokyonight.nvim",
+    opts = {
+      -- transparent = true,
+      style = "moon",
+      -- styles = {
+      --   sidebars = "transparent",
+      --   floats = "transparent",
+      -- },
+    },
+  },
 
   -- {
   --   "projekt0n/github-nvim-theme",
@@ -46,44 +46,44 @@ return {
   --   end,
   -- },
 
-  {
-    "Mofiqul/vscode.nvim",
-  },
+  -- {
+  --   "Mofiqul/vscode.nvim",
+  -- },
 
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
-        flavour = "mocha",
-        -- flavour = "auto",
-        -- transparent_background = true,
-      })
-    end,
-  },
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require("catppuccin").setup({
+  --       -- background = {
+  --       --   light = "latte",
+  --       --   dark = "macchiato",
+  --       -- },
+  --       flavour = "mocha",
+  --       -- flavour = "auto",
+  --       -- transparent_background = true,
+  --     })
+  --   end,
+  -- },
 
-  {
-    "Shatur/neovim-ayu",
-    config = function()
-      require("ayu").setup({
-        mirage = true,
-        terminal = true,
-        overrides = {},
-      })
-    end,
-  },
+  -- {
+  --   "Shatur/neovim-ayu",
+  --   config = function()
+  --     require("ayu").setup({
+  --       mirage = true,
+  --       terminal = true,
+  --       overrides = {},
+  --     })
+  --   end,
+  -- },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "catppuccin",
+  --   },
+  -- },
 }
