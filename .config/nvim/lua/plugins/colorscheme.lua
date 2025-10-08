@@ -13,17 +13,17 @@ return {
   --   },
   -- },
 
-  -- {
-  --   "sainnhe/edge",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     -- Optionally configure and load the colorscheme
-  --     -- directly inside the plugin declaration.
-  --     vim.g.edge_enable_italic = true
-  --     vim.cmd.colorscheme("edge")
-  --   end,
-  -- },
+  {
+    "sainnhe/edge",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.edge_enable_italic = true
+      vim.cmd.colorscheme("edge")
+    end,
+  },
 
   -- {
   --   "projekt0n/github-nvim-theme",
@@ -50,6 +50,18 @@ return {
   -- },
 
   -- {
+  --   "navarasu/onedark.nvim",
+  --   priority = 1000, -- make sure to load this before all the other start plugins
+  --   config = function()
+  --     require("onedark").setup({
+  --       style = "dark",
+  --     })
+  --     -- Enable theme
+  --     require("onedark").load()
+  --   end,
+  -- },
+
+  -- {
   --   "olimorris/onedarkpro.nvim",
   --   priority = 1000, -- Ensure it loads first
   --   config = function()
@@ -57,7 +69,7 @@ return {
   --       --
   --     })
   --
-  --     vim.cmd("colorscheme onelight")
+  --     vim.cmd("colorscheme onedark")
   --     -- local appearance = helpers.get_macos_appearance()
   --     -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
   --     -- vim.cmd("colorscheme " .. theme)
@@ -73,34 +85,21 @@ return {
   --   "Mofiqul/vscode.nvim",
   -- },
 
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
-        -- flavour = "macchiato",
-        -- transparent_background = true,
-      })
-    end,
-  },
-
   -- {
-  --   "sainnhe/gruvbox-material",
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
   --   lazy = false,
   --   priority = 1000,
   --   config = function()
-  --     -- Optionally configure and load the colorscheme
-  --     -- directly inside the plugin declaration.
-  --     vim.g.gruvbox_material_background = "hard"
-  --     vim.g.gruvbox_material_enable_italic = true
-  --     vim.cmd.colorscheme("gruvbox-material")
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require("catppuccin").setup({
+  --       -- background = {
+  --       --   light = "latte",
+  --       --   dark = "macchiato",
+  --       -- },
+  --       -- flavour = "macchiato",
+  --       -- transparent_background = true,
+  --     })
   --   end,
   -- },
 
@@ -115,10 +114,10 @@ return {
   --   end,
   -- },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "catppuccin",
+  --   },
+  -- },
 }
