@@ -3,8 +3,8 @@
 # adjust-cell-height      = 10%
 # font-family             = "MesloLGM Nerd Font Mono"
 
-adjust-cell-height      = 12.5%
-font-family             = "JetBrainsMono Nerd Font Mono"
+# adjust-cell-height      = 12.5%
+# font-family             = "JetBrainsMono Nerd Font Mono"
 
 # adjust-cell-height      = 27.5%
 # font-family             = "Hack Nerd Font Mono"
@@ -26,8 +26,8 @@ font-family             = "JetBrainsMono Nerd Font Mono"
 # adjust-cell-height      = 37.5%
 # font-family             = "Hack Nerd Font Mono"
 
-# adjust-cell-height      = 20%
-# font-family             = "JetBrainsMono Nerd Font Mono"
+adjust-cell-height      = 20%
+font-family             = "JetBrainsMono Nerd Font Mono"
 
 # font-size 16px and line-height 1.7 in vscode
 
