@@ -13,18 +13,18 @@ return {
   --   },
   -- },
 
-  {
-    "sainnhe/edge",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      -- Optionally configure and load the colorscheme
-      -- directly inside the plugin declaration.
-      -- vim.g.edge_style = "neon"
-      vim.g.edge_enable_italic = true
-      vim.cmd.colorscheme("edge")
-    end,
-  },
+  -- {
+  --   "sainnhe/edge",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     -- Optionally configure and load the colorscheme
+  --     -- directly inside the plugin declaration.
+  --     -- vim.g.edge_style = "neon"
+  --     vim.g.edge_enable_italic = true
+  --     vim.cmd.colorscheme("edge")
+  --   end,
+  -- },
 
   -- {
   --   "projekt0n/github-nvim-theme",
@@ -93,10 +93,15 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "catppuccin",
-  --   },
-  -- },
+  {
+    "olimorris/onedarkpro.nvim",
+    priority = 1000, -- Ensure it loads first
+  },
+
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "onedark",
+    },
+  },
 }

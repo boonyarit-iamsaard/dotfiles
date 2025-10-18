@@ -3,15 +3,15 @@ git:
     showWholeGraph: true
   overrideGpg: true
 # common
-# gui:
-#   theme:
-#     selectedLineBgColor:
-#       - "#6e6a86"
-# edge dark
 gui:
   theme:
     selectedLineBgColor:
-      - "#424553"
+      - "#6e6a86"
+# edge dark
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#424553"
 # edge dark neon
 # gui:
 #   theme:
