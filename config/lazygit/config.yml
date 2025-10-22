@@ -3,10 +3,10 @@ git:
     showWholeGraph: true
   overrideGpg: true
 # common
-gui:
-  theme:
-    selectedLineBgColor:
-      - "#6e6a86"
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#6e6a86"
 # edge dark
 # gui:
 #   theme:
@@ -42,31 +42,28 @@ gui:
 #
 #   authorColors:
 #     "*": "#b4befe"
-# tokyo night moon
-# gui:
-#   nerdFontsVersion: "3"
-#   theme:
-#     activeBorderColor:
-#       - "#ff966c"
-#       - "bold"
-#     inactiveBorderColor:
-#       - "#589ed7"
-#     searchingActiveBorderColor:
-#       - "#ff966c"
-#       - "bold"
-#     optionsTextColor:
-#       - "#82aaff"
-#     selectedLineBgColor:
-#       - "#2d3f76"
-#     cherryPickedCommitFgColor:
-#       - "#82aaff"
-#     cherryPickedCommitBgColor:
-#       - "#c099ff"
-#     markedBaseCommitFgColor:
-#       - "#82aaff"
-#     markedBaseCommitBgColor:
-#       - "#ffc777"
-#     unstagedChangesColor:
-#       - "#c53b53"
-#     defaultFgColor:
-#       - "#c8d3f5"
+# catppuccin macchiato
+gui:
+  theme:
+    activeBorderColor:
+      - "#eed49f"
+      - bold
+    inactiveBorderColor:
+      - "#a5adcb"
+    optionsTextColor:
+      - "#8aadf4"
+    selectedLineBgColor:
+      - "#363a4f"
+    cherryPickedCommitBgColor:
+      - "#494d64"
+    cherryPickedCommitFgColor:
+      - "#eed49f"
+    unstagedChangesColor:
+      - "#ed8796"
+    defaultFgColor:
+      - "#cad3f5"
+    searchingActiveBorderColor:
+      - "#eed49f"
+
+  authorColors:
+    "*": "#b7bdf8"
