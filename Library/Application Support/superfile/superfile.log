@@ -22664,3 +22664,12 @@ time=2025-09-12T12:52:36.159+07:00 level=ERROR msg="Error parsing pinned data" e
 time=2025-09-12T12:52:36.513+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
 time=2025-09-12T12:52:36.690+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
 time=2025-09-12T12:52:37.285+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-10-15T15:08:04.469+07:00 level=ERROR msg="Could not read user's theme file. Falling back to default theme" path="/Users/boonyarit.i/Library/Application Support/superfile/theme/catppuccion.toml" error="open /Users/boonyarit.i/Library/Application Support/superfile/theme/catppuccion.toml: no such file or directory"
+time=2025-10-15T15:08:04.470+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-10-15T15:08:04.471+07:00 level=INFO msg="Successfully detected terminal cell size via ioctl" pixels_per_column=18 pixels_per_row=48
+time=2025-10-15T15:08:04.471+07:00 level=INFO msg="Terminal cell size detection" pixels_per_column=18 pixels_per_row=48
+time=2025-10-15T15:08:04.471+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-10-15T15:08:04.472+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-10-15T15:08:04.472+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-10-15T15:08:06.113+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"
+time=2025-10-15T15:08:07.557+07:00 level=ERROR msg="Error parsing pinned data" error="unexpected end of JSON input"

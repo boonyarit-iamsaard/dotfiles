@@ -62,47 +62,47 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "olimorris/onedarkpro.nvim",
-  --   priority = 1000, -- Ensure it loads first
-  --   config = function()
-  --     require("onedarkpro").setup({
-  --       --
-  --     })
-  --
-  --     vim.cmd("colorscheme onedark")
-  --     -- local appearance = helpers.get_macos_appearance()
-  --     -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
-  --     -- vim.cmd("colorscheme " .. theme)
-  --     -- if vim.o.background == "dark" then
-  --     --   vim.cmd("colorscheme onelight")
-  --     -- else
-  --     --   vim.cmd("colorscheme onedark")
-  --     -- end
-  --   end,
-  -- },
+  {
+    "olimorris/onedarkpro.nvim",
+    priority = 1000, -- Ensure it loads first
+    config = function()
+      require("onedarkpro").setup({
+        --
+      })
+
+      vim.cmd("colorscheme onedark")
+      -- local appearance = helpers.get_macos_appearance()
+      -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
+      -- vim.cmd("colorscheme " .. theme)
+      -- if vim.o.background == "dark" then
+      --   vim.cmd("colorscheme onelight")
+      -- else
+      --   vim.cmd("colorscheme onedark")
+      -- end
+    end,
+  },
 
   -- {
   --   "Mofiqul/vscode.nvim",
   -- },
 
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
-        -- flavour = "macchiato",
-        -- transparent_background = true,
-      })
-    end,
-  },
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require("catppuccin").setup({
+  --       -- background = {
+  --       --   light = "latte",
+  --       --   dark = "macchiato",
+  --       -- },
+  --       -- flavour = "macchiato",
+  --       -- transparent_background = true,
+  --     })
+  --   end,
+  -- },
 
   -- {
   --   "Shatur/neovim-ayu",
@@ -115,10 +115,10 @@ return {
   --   end,
   -- },
 
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "catppuccin",
+  --   },
+  -- },
 }
