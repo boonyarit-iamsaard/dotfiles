@@ -13,18 +13,18 @@ return {
   --   },
   -- },
 
-  -- {
-  --   "sainnhe/edge",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     -- Optionally configure and load the colorscheme
-  --     -- directly inside the plugin declaration.
-  --     vim.g.edge_style = "neon"
-  --     vim.g.edge_enable_italic = true
-  --     vim.cmd.colorscheme("edge")
-  --   end,
-  -- },
+  {
+    "sainnhe/edge",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.edge_style = "neon"
+      vim.g.edge_enable_italic = true
+      vim.cmd.colorscheme("edge")
+    end,
+  },
 
   -- {
   --   "projekt0n/github-nvim-theme",
@@ -62,25 +62,25 @@ return {
   --   end,
   -- },
 
-  {
-    "olimorris/onedarkpro.nvim",
-    priority = 1000, -- Ensure it loads first
-    config = function()
-      require("onedarkpro").setup({
-        --
-      })
-
-      vim.cmd("colorscheme onedark")
-      -- local appearance = helpers.get_macos_appearance()
-      -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
-      -- vim.cmd("colorscheme " .. theme)
-      -- if vim.o.background == "dark" then
-      --   vim.cmd("colorscheme onelight")
-      -- else
-      --   vim.cmd("colorscheme onedark")
-      -- end
-    end,
-  },
+  -- {
+  --   "olimorris/onedarkpro.nvim",
+  --   priority = 1000, -- Ensure it loads first
+  --   config = function()
+  --     require("onedarkpro").setup({
+  --       --
+  --     })
+  --
+  --     vim.cmd("colorscheme onedark")
+  --     -- local appearance = helpers.get_macos_appearance()
+  --     -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
+  --     -- vim.cmd("colorscheme " .. theme)
+  --     -- if vim.o.background == "dark" then
+  --     --   vim.cmd("colorscheme onelight")
+  --     -- else
+  --     --   vim.cmd("colorscheme onedark")
+  --     -- end
+  --   end,
+  -- },
 
   -- {
   --   "Mofiqul/vscode.nvim",
@@ -98,7 +98,7 @@ return {
   --       --   light = "latte",
   --       --   dark = "macchiato",
   --       -- },
-  --       -- flavour = "macchiato",
+  --       flavour = "macchiato",
   --       -- transparent_background = true,
   --     })
   --   end,

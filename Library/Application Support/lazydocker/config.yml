@@ -1,13 +1,13 @@
 # common
-gui:
-  theme:
-    selectedLineBgColor:
-      - "#6272a4"
-# edge dark
 # gui:
 #   theme:
 #     selectedLineBgColor:
-#       - "#424553"
+#       - "#6272a4"
+# edge dark
+gui:
+  theme:
+    selectedLineBgColor:
+      - "#424553"
 # edge dark neon
 # gui:
 #   theme:
@@ -42,7 +42,7 @@ gui:
 # gui:
 #   theme:
 #     activeBorderColor:
-#       - "#c6a0f6"
+#       - "#eed49f"
 #       - bold
 #     inactiveBorderColor:
 #       - "#a5adcb"
@@ -53,7 +53,7 @@ gui:
 #     cherryPickedCommitBgColor:
 #       - "#494d64"
 #     cherryPickedCommitFgColor:
-#       - "#c6a0f6"
+#       - "#eed49f"
 #     unstagedChangesColor:
 #       - "#ed8796"
 #     defaultFgColor:

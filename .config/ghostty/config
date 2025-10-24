@@ -49,5 +49,5 @@ cursor-invert-fg-bg     = true
 font-size               = 15
 adjust-cursor-thickness = 2
 macos-titlebar-style    = "transparent"
-theme                   = "onedarkpro-onedark"
+theme                   = "edge-dark"
 window-colorspace       = "display-p3"
