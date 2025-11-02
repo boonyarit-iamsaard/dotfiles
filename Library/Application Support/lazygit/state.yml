@@ -11,7 +11,7 @@ recentrepos:
     - /Users/boonyarit.i/workspace/opn/opn-product-argocd
 startuppopupversion: 5
 didshowhunkstaginghint: true
-lastversion: 0.55.1
+lastversion: 0.56.0
 customcommandshistory:
     - w
     - git merge master --ff-only
