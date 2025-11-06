@@ -21,7 +21,7 @@ git:
 gui:
   theme:
     activeBorderColor:
-      - "#cba6f7"
+      - "#f9e2af"
       - bold
     inactiveBorderColor:
       - "#a6adc8"
@@ -32,7 +32,7 @@ gui:
     cherryPickedCommitBgColor:
       - "#45475a"
     cherryPickedCommitFgColor:
-      - "#cba6f7"
+      - "#f9e2af"
     unstagedChangesColor:
       - "#f38ba8"
     defaultFgColor:
