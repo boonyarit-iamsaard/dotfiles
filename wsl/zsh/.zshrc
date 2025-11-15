@@ -161,3 +161,10 @@ load-nvmrc() {
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
+
+# bun completions
+[ -s "/home/boonyarit-iamsaard/.bun/_bun" ] && source "/home/boonyarit-iamsaard/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
