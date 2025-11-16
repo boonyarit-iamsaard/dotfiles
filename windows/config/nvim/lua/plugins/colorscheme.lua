@@ -49,35 +49,35 @@ return {
   --   },
   -- },
 
-  {
-    "navarasu/onedark.nvim",
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      require("onedark").setup({
-        style = "dark",
-      })
-      require("onedark").load()
-    end,
-  },
-
   -- {
-  --   "catppuccin/nvim",
-  --   name = "catppuccin",
-  --   lazy = false,
-  --   priority = 1000,
+  --   "navarasu/onedark.nvim",
+  --   priority = 1000, -- make sure to load this before all the other start plugins
   --   config = function()
-  --     ---@diagnostic disable-next-line: missing-fields
-  --     require("catppuccin").setup({
-  --       -- background = {
-  --       --   light = "latte",
-  --       --   dark = "macchiato",
-  --       -- },
-  --       flavour = "macchiato",
-  --       -- flavour = "auto",
-  --       -- transparent_background = true,
+  --     require("onedark").setup({
+  --       style = "dark",
   --     })
+  --     require("onedark").load()
   --   end,
   -- },
+
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      ---@diagnostic disable-next-line: missing-fields
+      require("catppuccin").setup({
+        -- background = {
+        --   light = "latte",
+        --   dark = "macchiato",
+        -- },
+        flavour = "macchiato",
+        -- flavour = "auto",
+        -- transparent_background = true,
+      })
+    end,
+  },
 
   -- {
   --   "Shatur/neovim-ayu",
@@ -95,10 +95,10 @@ return {
   --   priority = 1000, -- Ensure it loads first
   -- },
 
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "catppuccin",
-  --   },
-  -- },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
 }
