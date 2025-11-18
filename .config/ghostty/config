@@ -58,7 +58,7 @@
 # background-blur-radius  = 20
 cursor-invert-fg-bg     = true
 font-family             = "JetBrainsMono Nerd Font Mono"
-font-size               = 15
+font-size               = 16
 adjust-cursor-thickness = 2
 macos-titlebar-style    = "transparent"
 theme                   = "catppuccin-macchiato"
