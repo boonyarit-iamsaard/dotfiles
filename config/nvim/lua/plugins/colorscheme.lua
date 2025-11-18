@@ -60,24 +60,24 @@ return {
   --   end,
   -- },
 
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
-        flavour = "macchiato",
-        -- flavour = "auto",
-        -- transparent_background = true,
-      })
-    end,
-  },
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require("catppuccin").setup({
+  --       -- background = {
+  --       --   light = "latte",
+  --       --   dark = "macchiato",
+  --       -- },
+  --       flavour = "macchiato",
+  --       -- flavour = "auto",
+  --       -- transparent_background = true,
+  --     })
+  --   end,
+  -- },
 
   -- {
   --   "Shatur/neovim-ayu",
@@ -96,9 +96,14 @@ return {
   -- },
 
   {
+    "Mofiqul/vscode.nvim",
+    priority = 1000,
+  },
+
+  {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "vscode",
     },
   },
 }
