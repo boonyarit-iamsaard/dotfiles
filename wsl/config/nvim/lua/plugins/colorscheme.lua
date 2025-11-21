@@ -72,7 +72,7 @@ return {
         --   light = "latte",
         --   dark = "macchiato",
         -- },
-        flavour = "mocha",
+        flavour = "macchiato",
         -- flavour = "auto",
         -- transparent_background = true,
       })

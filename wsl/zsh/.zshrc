@@ -119,7 +119,7 @@ if [ -f ~/.env.local ]; then
   source ~/.env.local
 fi
 
-# composer 
+# composer
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 # go
@@ -168,3 +168,7 @@ load-nvmrc
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# java
+export JAVA_HOME="/home/linuxbrew/.linuxbrew/opt/openjdk@21/libexec"
+export PATH="$JAVA_HOME/bin:$PATH"
