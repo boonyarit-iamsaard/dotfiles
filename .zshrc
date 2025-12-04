@@ -107,13 +107,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias cs="cursor"
 alias nv="nvim"
-alias ps="phpstorm"
-alias ws="windsurf"
-alias vs="code"
-alias vsi="code-insiders"
-
 alias lzd='lazydocker'
 alias lzg="lazygit"
 
@@ -141,8 +135,8 @@ export PATH="/Applications/Windsurf.app/Contents/Resources/app/bin:$PATH"
 . "$HOME/.local/bin/env"
 
 # java setup
-export JAVA_HOME=$HOME/OpenJDK/jdk-17.0.1.jdk/Contents/Home
-export PATH=$JAVA_HOME/bin:$PATH
+export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+export PATH="$JAVA_HOME/bin:$PATH"
 
 # starship prompt setup
 # export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
@@ -164,7 +158,6 @@ autoload -U add-zsh-hook
 load-nvmrc() {
   local nvmrc_path
   nvmrc_path="$(nvm_find_nvmrc)"
-
   if [ -n "$nvmrc_path" ]; then
     local nvmrc_node_version
     nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
@@ -179,12 +172,10 @@ load-nvmrc() {
     nvm use default
   fi
 }
-
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/boonyarit.i/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
+autoload -Uz compinit && compinit
 # End of Docker CLI completions
