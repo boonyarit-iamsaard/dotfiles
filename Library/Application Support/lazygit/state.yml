@@ -1,13 +1,12 @@
 lastupdatecheck: 1726490949
 recentrepos:
     - /Users/boonyarit.i/dotfiles
+    - /Users/boonyarit.i/workspace/personal/dms
     - /Users/boonyarit.i/workspace/opn/cs-ops-portal
     - /Users/boonyarit.i/workspace/opn/report-engine
     - /Users/boonyarit.i/workspace/opn/aia-payment-portal-api
-    - /Users/boonyarit.i/workspace/personal/keep-me
     - /Users/boonyarit.i/workspace/opn/flux-development
     - /Users/boonyarit.i/workspace/opn/flux-staging
-    - /Users/boonyarit.i/workspace/personal/next-starter-kit
     - /Users/boonyarit.i/workspace/opn/external-reconciliation
     - /Users/boonyarit.i/workspace/opn/opn-product-argocd
 startuppopupversion: 5
