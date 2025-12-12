@@ -4,6 +4,8 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+COMPLETION_WAITING_DOTS="true"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -113,35 +115,11 @@ bindkey jj vi-cmd-mode
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(starship init zsh)"
+eval "$(fnm env --use-on-cd --shell zsh)"
 
 # load local environment variables i.e., GEMINI_API_KEY if the file exists
 if [ -f ~/.env.local ]; then
   source ~/.env.local
 fi
 
-# composer
-export PATH="$HOME/.config/composer/vendor/bin:$PATH"
-
-# go
-export PATH=$PATH:/usr/local/go/bin
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-
-# dotnet
-export DOTNET_ROOT=$HOME/.dotnet
-export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
-
-# fnm
-eval "$(fnm env --use-on-cd)"
-
-
-# bun completions
-[ -s "/home/boonyarit-iamsaard/.bun/_bun" ] && source "/home/boonyarit-iamsaard/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# java
-export JAVA_HOME="/home/linuxbrew/.linuxbrew/opt/openjdk@21/libexec"
-export PATH="$JAVA_HOME/bin:$PATH"
+export GPG_TTY=$(tty)
