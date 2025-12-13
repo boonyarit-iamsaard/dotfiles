@@ -122,4 +122,9 @@ if [ -f ~/.env.local ]; then
   source ~/.env.local
 fi
 
+# GPG
 export GPG_TTY=$(tty)
+
+# Java
+export JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
