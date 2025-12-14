@@ -104,6 +104,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias docker-cleanup="~/docker-cleanup.sh"
 alias update-system="~/update-system.sh"
 
 alias nv="nvim"
