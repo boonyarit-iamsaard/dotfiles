@@ -65,10 +65,10 @@ check_command() {
 
 # Wraps a command to timestamp its standard output and error
 execute_and_log() {
-    # setopt pipefail ensures the function returns the exit code of the command, 
+    # setopt pipefail ensures the function returns the exit code of the command,
     # not the exit code of the logging loop.
     setopt local_options pipefail
-    
+
     # Execute command, redirect stderr to stdout, and pipe to formatting loop
     "$@" 2>&1 | while IFS= read -r line; do
         # Handle empty lines (or lines with only spaces) by printing a visual separator
@@ -84,7 +84,7 @@ execute_and_log() {
              printf "${CYAN}[%s] ${EMOJI_OUTPUT}  ${NC}%s\n" "$(get_timestamp)" "$line"
         fi
     done
-    
+
     # Return the exit code of the actual command (first item in zsh pipestatus array)
     return $pipestatus[1]
 }
