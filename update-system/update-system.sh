@@ -59,7 +59,7 @@ log_error() {
 # Wraps a command to timestamp its standard output and error
 execute_and_log() {
     setopt local_options pipefail
-    
+
     # Execute command, redirect stderr to stdout, and pipe to formatting loop
     "$@" 2>&1 | while IFS= read -r line; do
         # Handle empty lines
@@ -75,7 +75,7 @@ execute_and_log() {
              printf "${CYAN}[%s] ${EMOJI_OUTPUT}  ${NC}%s\n" "$(get_timestamp)" "$line"
         fi
     done
-    
+
     return $pipestatus[1]
 }
 
@@ -87,7 +87,7 @@ echo -e "${YELLOW}[$(get_timestamp)] ${EMOJI_ROCKET}  Starting System Update Pro
 # Defensive: Check if 'apt' exists first
 if command -v apt &> /dev/null; then
     log_info "Detected 'apt' package manager. Checking sudo permissions..."
-    
+
     # Refresh sudo credentials upfront so the password prompt isn't hidden by the logger
     if ! sudo -v; then
         log_error "Sudo authentication failed. Skipping APT update."
@@ -103,7 +103,7 @@ if command -v apt &> /dev/null; then
 
         log_info "Cleaning APT cache..."
         execute_and_log sudo apt-get clean
-        
+
         log_success "APT update sequence completed."
     fi
 else
@@ -114,7 +114,7 @@ fi
 # Defensive: Check if 'brew' exists first
 if command -v brew &> /dev/null; then
     log_info "Detected 'brew' package manager. Updating..."
-    
+
     if execute_and_log brew upgrade; then
         log_success "Homebrew packages upgraded."
     else
@@ -135,7 +135,7 @@ fi
 # Defensive: Check if 'npm' exists first
 if command -v npm &> /dev/null; then
     log_info "Detected 'npm'. Updating global packages..."
-    
+
     if execute_and_log npm update -g; then
         log_success "npm global packages updated."
     else
@@ -144,7 +144,7 @@ if command -v npm &> /dev/null; then
 
     log_info "Cleaning npm cache logs..."
     NPM_LOG_DIR="$HOME/.npm/_logs"
-    
+
     if [ -d "$NPM_LOG_DIR" ]; then
         # We don't pipe rm to execute_and_log as it has no output usually
         # and we need wildcard expansion to work in the shell
