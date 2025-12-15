@@ -114,22 +114,10 @@ alias lzg="lazygit"
 # bind keys for vi mode
 bindkey jj vi-cmd-mode
 
-# herd setup
-export PATH="/Users/boonyarit.i/Library/Application Support/Herd/bin:$PATH"
-export HERD_PHP_82_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/82/"
-export HERD_PHP_83_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/83/"
-export HERD_PHP_84_INI_SCAN_DIR="/Users/boonyarit.i/Library/Application Support/Herd/config/php/84/"
-
-# .NET tools setup
-export PATH=$HOME/.dotnet/tools:$PATH
-
 # go setup
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 export PATH=$PATH:$(go env GOPATH)
-
-# windsurf setup
-export PATH="/Applications/Windsurf.app/Contents/Resources/app/bin:$PATH"
 
 # custom environment variables
 . "$HOME/.local/bin/env"
@@ -179,3 +167,9 @@ load-nvmrc
 fpath=(/Users/boonyarit.i/.docker/completions $fpath)
 autoload -Uz compinit && compinit
 # End of Docker CLI completions
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/boonyarit.i/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/boonyarit.i/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/boonyarit.i/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/boonyarit.i/google-cloud-sdk/completion.zsh.inc'; fi

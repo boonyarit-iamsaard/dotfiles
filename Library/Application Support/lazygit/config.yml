@@ -3,10 +3,10 @@ git:
     showWholeGraph: true
   overrideGpg: true
 # common
-# gui:
-#   theme:
-#     selectedLineBgColor:
-#       - "#6272a4"
+gui:
+  theme:
+    selectedLineBgColor:
+      - "#6272a4"
 # edge dark
 # gui:
 #   theme:
@@ -43,30 +43,30 @@ git:
 #   authorColors:
 #     "*": "#b4befe"
 # catppuccin macchiato
-gui:
-  theme:
-    activeBorderColor:
-      - "#eed49f"
-      - bold
-    inactiveBorderColor:
-      - "#a5adcb"
-    optionsTextColor:
-      - "#8aadf4"
-    selectedLineBgColor:
-      - "#363a4f"
-    cherryPickedCommitBgColor:
-      - "#494d64"
-    cherryPickedCommitFgColor:
-      - "#eed49f"
-    unstagedChangesColor:
-      - "#ed8796"
-    defaultFgColor:
-      - "#cad3f5"
-    searchingActiveBorderColor:
-      - "#eed49f"
-
-  authorColors:
-    "*": "#b7bdf8"
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#eed49f"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a5adcb"
+#     optionsTextColor:
+#       - "#8aadf4"
+#     selectedLineBgColor:
+#       - "#363a4f"
+#     cherryPickedCommitBgColor:
+#       - "#494d64"
+#     cherryPickedCommitFgColor:
+#       - "#eed49f"
+#     unstagedChangesColor:
+#       - "#ed8796"
+#     defaultFgColor:
+#       - "#cad3f5"
+#     searchingActiveBorderColor:
+#       - "#eed49f"
+#
+#   authorColors:
+#     "*": "#b7bdf8"
 # one dark pro
 # gui:
 #   theme:

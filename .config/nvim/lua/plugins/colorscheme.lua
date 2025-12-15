@@ -82,10 +82,10 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "Mofiqul/vscode.nvim",
-  --   priority = 1000,
-  -- },
+  {
+    "Mofiqul/vscode.nvim",
+    priority = 1000,
+  },
 
   {
     "catppuccin/nvim",
@@ -108,7 +108,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "vscode",
     },
   },
 }
