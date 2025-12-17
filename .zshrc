@@ -110,6 +110,7 @@ source $ZSH/oh-my-zsh.sh
 alias nv="nvim"
 alias lzd='lazydocker'
 alias lzg="lazygit"
+alias docker-cleanup="~/docker-cleanup.sh"
 
 # bind keys for vi mode
 bindkey jj vi-cmd-mode
