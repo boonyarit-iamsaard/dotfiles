@@ -157,4 +157,32 @@ else
     log_warn "'npm' command not found. Skipping npm update."
 fi
 
+# 4. Update Composer and global packages
+# Defensive: Check if 'composer' exists first
+if command -v composer &> /dev/null; then
+    log_info "Detected 'composer'. Updating Composer itself..."
+
+    if execute_and_log composer self-update; then
+        log_success "Composer updated."
+    else
+        log_error "Composer self-update encountered issues."
+    fi
+
+    log_info "Updating global Composer packages (Laravel installer, etc.)..."
+    if execute_and_log composer global update; then
+        log_success "Global Composer packages updated."
+    else
+        log_error "Global Composer package update encountered issues."
+    fi
+
+    log_info "Clearing Composer cache..."
+    if execute_and_log composer clear-cache; then
+        log_success "Composer cache cleared."
+    else
+        log_error "Composer cache clear encountered issues."
+    fi
+else
+    log_warn "'composer' command not found. Skipping Composer update."
+fi
+
 echo -e "\n${GREEN}[$(get_timestamp)] ${EMOJI_PARTY}  System update process finished.${NC}"
