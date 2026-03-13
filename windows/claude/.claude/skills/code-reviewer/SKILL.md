@@ -25,7 +25,8 @@ Read in this order:
 3. `docs/features/{F-NNNN}-{slug}/specs/technical-spec.md` - the contract the code must satisfy
 4. `docs/features/{F-NNNN}-{slug}/specs/test-plan.md` - test coverage expectations
 5. `docs/features/{F-NNNN}-{slug}/adr/` - architectural decisions that are non-negotiable
-6. Implemented code in `src/` - all files listed in the Dev phase Decision Log entry
+6. `docs/features/{F-NNNN}-{slug}/specs/implementation-notes.md` - if present, read for spec deviations and edge cases documented by the developer
+7. Implemented code in `src/` - all files listed in the Dev phase Decision Log entry
 
 If QA phase is not `? Accepted`, stop and inform the user. Do not proceed.
 

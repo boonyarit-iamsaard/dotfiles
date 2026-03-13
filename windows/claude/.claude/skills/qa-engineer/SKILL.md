@@ -25,6 +25,7 @@ Read in this order:
 2. `docs/features/{F-NNNN}-{slug}/specs/requirements.md` - acceptance criteria are the primary input
 3. `docs/features/{F-NNNN}-{slug}/specs/technical-spec.md` - component boundaries, API contracts, data models
 4. `docs/features/{F-NNNN}-{slug}/adr/` - any ADRs; decisions here may introduce additional test requirements
+5. `docs/features/{F-NNNN}-{slug}/specs/implementation-notes.md` - if present, read for actual file locations, spec deviations, extra edge cases, and QA notes left by the developer
 
 If Dev phase is not `? Accepted`, stop and inform the user. Do not proceed.
 
