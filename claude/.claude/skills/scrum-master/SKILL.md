@@ -60,6 +60,7 @@ phase being completed.
 - [ ] All API endpoints in technical-spec.md Section 4 are implemented
 - [ ] No unresolved TODOs in implemented code
 - [ ] No non-goals from requirements.md appear in the implementation
+- [ ] If user implemented: `implementation-notes.md` exists and verification result is `?`
 - [ ] README.md Phase Tracker shows Dev as `? Accepted`
 
 **QA  Review:**

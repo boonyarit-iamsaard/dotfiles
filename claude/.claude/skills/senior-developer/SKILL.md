@@ -1,23 +1,27 @@
 ---
 name: senior-developer
-description: "Implement a feature that has an accepted technical-spec.md. Use this skill when the user says 'implement this', 'write the code', 'dev phase', 'build it', or hands off a feature for implementation. Reads technical-spec.md, requirements.md, and any ADRs, then writes production-level code to src/ following the project's established conventions. Prioritizes readability, maintainability, and explicit error handling over clever solutions. Always invoke this skill after the tech-lead skill has accepted a feature and before the qa-engineer skill runs."
+description: "Implement or verify a feature that has an accepted technical-spec.md. Use this skill when the user says 'implement this', 'write the code', 'dev phase', 'build it' (Mode 1 - agent implements), OR when the user says 'I wrote the code', 'I implemented this', 'post-implementation', 'document my work' (Mode 2 - verify and document human implementation). Reads technical-spec.md, requirements.md, and any ADRs. Mode 1 writes production-level code to src/. Mode 2 verifies the existing code against the spec and produces implementation-notes.md. Always invoke this skill after the tech-lead skill has accepted a feature and before the qa-engineer skill runs."
 ---
 
 # Senior Developer Skill
 
-Implement the feature exactly as specified in technical-spec.md. This skill does not make
-design decisions - those belong to the tech lead and ADR phases. If a gap or ambiguity
-is found in the spec, surface it rather than improvise.
+This skill has two modes. Identify which applies before proceeding.
 
-The standard is production-level code: readable, maintainable, explicitly error-handled,
-and consistent with patterns already established in the codebase. Clever solutions that
-sacrifice clarity are not acceptable.
+**Mode 1 - Agent Implements:** The agent writes production-level code from the spec.
+Triggered when the user hands off without mentioning prior implementation.
+
+**Mode 2 - Verify and Document:** The user has already written the code. The agent
+verifies the implementation against the spec, flags gaps, and produces
+`implementation-notes.md`. Triggered when the user mentions they have already coded it.
+
+In both modes: this skill does not make design decisions - those belong to the tech
+lead and ADR phases. Gaps and ambiguities are surfaced, not improvised.
 
 ---
 
-## Workflow
+## Mode 1 - Agent Implements
 
-### Step 1 - Read the Feature Package
+### M1 Step 1 - Read the Feature Package
 
 Read in this order:
 
@@ -33,7 +37,7 @@ are non-negotiable constraints for this phase.
 
 ---
 
-### Step 2 - Scan the Existing Codebase
+### M1 Step 2 - Scan the Existing Codebase
 
 Before writing any code, scan the relevant areas of `src/` to identify:
 
@@ -46,7 +50,7 @@ Follow what exists. Do not introduce a new pattern when an established one alrea
 
 ---
 
-### Step 3 - Identify Spec Gaps
+### M1 Step 3 - Identify Spec Gaps
 
 Before writing code, flag any of the following found in the spec:
 
@@ -61,7 +65,7 @@ in a code comment and proceed.
 
 ---
 
-### Step 4 - Implement
+### M1 Step 4 - Implement
 
 Follow the Implementation Notes sequence from technical-spec.md exactly.
 Create files in the order specified to respect dependencies between them.
@@ -113,7 +117,20 @@ For Node.js/TypeScript:
 
 ---
 
-### Step 5 - Update README.md
+### M1 Step 5 - Self-Check Before Presenting
+
+- [ ] Every user story acceptance criterion from requirements.md is addressed by the implementation
+- [ ] Every component listed in technical-spec.md Section 3 has been implemented
+- [ ] Every API endpoint in technical-spec.md Section 4 has been implemented with correct request/response shapes
+- [ ] All non-goals from requirements.md are absent from the implementation
+- [ ] No unresolved TODOs left in code - open questions are in README.md instead
+- [ ] No dead code, unused imports, or commented-out blocks
+- [ ] Error handling is explicit at every boundary stated in the spec
+- [ ] Codebase conventions from M1 Step 2 scan are followed consistently
+
+---
+
+### M1 Step 6 - Update README.md
 
 Append a row to the Decision Log:
 
@@ -127,29 +144,195 @@ Update the Phase Tracker:
 
 ---
 
-### Step 6 - Self-Check Before Presenting
-
-- [ ] Every user story acceptance criterion from requirements.md is addressed by the implementation
-- [ ] Every component listed in technical-spec.md Section 3 has been implemented
-- [ ] Every API endpoint in technical-spec.md Section 4 has been implemented with correct request/response shapes
-- [ ] All non-goals from requirements.md are absent from the implementation
-- [ ] No unresolved TODOs left in code - open questions are in README.md instead
-- [ ] No dead code, unused imports, or commented-out blocks
-- [ ] Error handling is explicit at every boundary stated in the spec
-- [ ] Codebase conventions from Step 2 scan are followed consistently
-
----
-
-### Step 7 - Save and Present
+### M1 Step 7 - Save and Present
 
 List every file written with its path relative to project root.
 Update and present README.md alongside the implemented files.
 
 ---
 
+## Mode 2 - Verify and Document
+
+### M2 Step 1 - Read the Feature Package
+
+Read in this order:
+
+1. `docs/features/{F-NNNN}-{slug}/README.md` - confirm Tech Lead phase is `? Accepted`
+2. `docs/features/{F-NNNN}-{slug}/specs/technical-spec.md` - the contract to verify against
+3. `docs/features/{F-NNNN}-{slug}/specs/requirements.md` - acceptance criteria
+4. `docs/features/{F-NNNN}-{slug}/adr/` - any ADRs; deviations from these are automatic failures
+5. Implemented code in `src/` - all files relevant to this feature
+
+If Tech Lead phase is not `? Accepted`, stop and inform the user. Do not proceed.
+
 ---
 
-## On Spec Gaps
+### M2 Step 2 - Verify Implementation Against Spec
+
+Check the implementation against every section of technical-spec.md:
+
+**Components (Section 3):**
+
+- [ ] Every component defined in the spec exists in `src/`
+- [ ] Each component is at the specified location
+- [ ] Each component's responsibility matches what the spec describes
+
+**API Contracts (Section 4):**
+
+- [ ] Every endpoint is implemented
+- [ ] Request shapes match the spec exactly - field names, types, required/optional
+- [ ] Response shapes match the spec exactly
+- [ ] All documented error responses are handled
+
+**Data Models (Section 5):**
+
+- [ ] All fields are present with correct types
+- [ ] Nullability matches the spec
+- [ ] Indexes and constraints are applied
+
+**ADR Compliance:**
+
+- [ ] No code contradicts any ADR decision - any deviation is an automatic failure
+
+**Non-Goals:**
+
+- [ ] Nothing from requirements.md non-goals appears in the implementation
+
+---
+
+### M2 Step 3 - Classify Findings
+
+Every gap found in Step 2 must be classified:
+
+| Severity       | Definition                                                                                                                    |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| ?? Blocking    | Spec deviation, missing component, ADR violation, or missing error handling at a boundary. Must be fixed before QA handover.  |
+| ?? Recommended | Minor inconsistency, missing inline comment on non-obvious logic, or naming drift from codebase conventions. Should be fixed. |
+
+---
+
+### M2 Step 4 - Determine Outcome
+
+**If blocking findings exist:**
+
+- Do not produce `implementation-notes.md`
+- Report all blocking findings clearly with file and location references
+- Update README.md Phase Tracker: `Dev`  `?? Blocked`
+- Append to Decision Log: `| YYYY-MM-DD | Dev phase blocked | {N} blocking findings from senior-developer Mode 2 |`
+- User fixes the code and re-runs Mode 2
+
+**If no blocking findings:**
+
+- Proceed to Step 5
+
+---
+
+### M2 Step 5 - Write implementation-notes.md
+
+Write to `docs/features/{F-NNNN}-{slug}/specs/implementation-notes.md`.
+
+```markdown
+# Implementation Notes: {Short Feature Title}
+
+**Feature ID:** F-NNNN
+**Status:** Accepted
+**Author:** You (verified by senior-developer)
+**Date:** YYYY-MM-DD
+
+---
+
+## 1. Verification Result
+
+? Implementation verified against technical-spec.md - no blocking findings.
+
+---
+
+## 2. Actual File Locations
+
+List every file written, with path relative to project root.
+Note any locations that differ from what the spec specified and why.
+
+| File | Path      | Deviation from Spec |
+| ---- | --------- | ------------------- |
+| ...  | `src/...` | None / {reason}     |
+
+---
+
+## 3. Spec Deviations
+
+Document any deliberate differences between what the spec described and what
+was implemented. Each deviation must include a reason.
+
+| Spec Section | What Spec Said | What Was Implemented | Reason |
+| ------------ | -------------- | -------------------- | ------ |
+| ...          | ...            | ...                  | ...    |
+
+If none: _"No deviations from technical-spec.md."_
+
+---
+
+## 4. Edge Cases Handled
+
+Document any edge cases handled in the implementation that were not explicitly
+covered in the spec or test plan. These are inputs for the QA engineer.
+
+- ...
+
+If none: _"No additional edge cases beyond those in the spec."_
+
+---
+
+## 5. Recommended Findings
+
+| #    | File      | Location | Finding |
+| ---- | --------- | -------- | ------- |
+| R-01 | `src/...` | Line N   | ...     |
+
+If none: _"No recommended findings."_
+
+---
+
+## 6. Notes for QA
+
+Anything the QA engineer should know that is not covered in the spec or test plan.
+
+- ...
+
+If none: _"No additional notes for QA."_
+```
+
+---
+
+### M2 Step 6 - Update README.md
+
+Append a row to the Decision Log:
+
+```
+| YYYY-MM-DD | Dev phase accepted | Implemented by user, verified by senior-developer Mode 2 |
+```
+
+Update the Phase Tracker:
+
+- `Dev`  `? Accepted`
+
+Add `implementation-notes.md` to the Artifact Index:
+
+```
+| implementation-notes.md | ? Accepted | specs/implementation-notes.md |
+```
+
+---
+
+### M2 Step 7 - Save and Present
+
+Output paths:
+
+- `docs/features/{F-NNNN}-{slug}/specs/implementation-notes.md` (new)
+- `docs/features/{F-NNNN}-{slug}/README.md` (updated)
+
+---
+
+## On Spec Gaps (Both Modes)
 
 This skill does not improvise on design decisions. The boundary is:
 
@@ -160,6 +343,8 @@ This skill does not improvise on design decisions. The boundary is:
 | Implementation sequence unclear              | Follow dependency order (models  repos  services  controllers/components) |
 | Spec contradicts an ADR                      | ADR wins - flag the contradiction, implement per ADR                      |
 | Requirement not covered by spec              | Flag to user - do not gold-plate                                          |
+
+---
 
 ## Writing Principles
 
@@ -172,3 +357,6 @@ This skill does not improvise on design decisions. The boundary is:
   does.
 - **Error messages are for humans.** Write error messages that a developer or operator
   can act on - not stack traces, not generic "something went wrong".
+- **Mode 2 is not a rubber stamp.** Verifying your own work is still a real verification.
+  A blocked result in Mode 2 is the same as a blocked result from the code reviewer -
+  fix it before moving on.
