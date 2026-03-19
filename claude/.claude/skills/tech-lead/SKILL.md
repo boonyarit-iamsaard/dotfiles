@@ -328,13 +328,13 @@ agent does not need to cross-reference requirements.md for boundary decisions.
 
 If none: _"No open questions at time of writing."_
 
-````
+`````
 
 ---
 
 ## System Architecture Template
 
-```markdown
+````markdown
 # System Architecture
 
 **Project:** {Project Name}
@@ -382,7 +382,7 @@ graph TB
     System --> ExternalAPI
     System --> DB
     System --> Auth
-````
+```
 
 ---
 
@@ -481,7 +481,7 @@ These are not rejected — they are deferred or owned elsewhere.
 
 If none: _"No open questions at time of writing."_
 
-```
+`````
 
 ---
 
@@ -502,4 +502,3 @@ If none: _"No open questions at time of writing."_
   config, IaC, and environment details belong in infrastructure-design.md.
   If in doubt whether something belongs here or there — if it's a convention or
   decision, it goes here; if it's a config or script, it goes to devops-engineer.
-```
