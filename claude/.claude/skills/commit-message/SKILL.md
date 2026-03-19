@@ -11,12 +11,12 @@ Run `git diff --staged` to inspect all staged changes, then generate a single co
 <type>(<scope>): <subject>
 ```
 
-- scope is optional — omit when changes span multiple areas or have no clear scope
+- scope is optional - omit when changes span multiple areas or have no clear scope
 - subject must be written in imperative mood (e.g. `add`, `fix`, `remove`, not `added`, `fixes`, `removing`)
 - full message including type and scope must not exceed 72 characters
 - no period at the end
-- no body, no footer — single line only
-- everything must be lowercase — no uppercase letters anywhere, including acronyms, brand names, and proper nouns (e.g. `api`, `url`, `github`, `react`, `typescript`)
+- no body, no footer - single line only
+- everything must be lowercase - no uppercase letters anywhere, including acronyms, brand names, and proper nouns (e.g. `api`, `url`, `github`, `react`, `typescript`)
 
 ## commit types
 
@@ -37,7 +37,7 @@ apply these rules top-to-bottom and stop at the first match:
 
 ## output
 
-output only the final commit message — no explanation, no markdown fences, no extra text.
+output only the final commit message - no explanation, no markdown fences, no extra text.
 
 ## examples
 
