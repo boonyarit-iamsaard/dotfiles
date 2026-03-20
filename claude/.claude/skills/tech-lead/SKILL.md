@@ -325,7 +325,7 @@ agent does not need to cross-reference requirements.md for boundary decisions.
 
 | #   | Question | Owner | Priority                      | Blocks |
 | --- | -------- | ----- | ----------------------------- | ------ |
-| 1   | ...      | ...   | ?? High, ?? Medium, or ?? Low | ...    |
+| 1   | ...      | ...   | 🔴 High, 🟡 Medium, or 🟢 Low | ...    |
 
 If none: _"No open questions at time of writing."_
 
@@ -478,7 +478,7 @@ These are not rejected - they are deferred or owned elsewhere.
 
 | #   | Question | Owner | Priority                      | Blocks |
 | --- | -------- | ----- | ----------------------------- | ------ |
-| 1   | ...      | ...   | ?? High, ?? Medium, or ?? Low | ...    |
+| 1   | ...      | ...   | 🔴 High, 🟡 Medium, or 🟢 Low | ...    |
 
 If none: _"No open questions at time of writing."_
 
