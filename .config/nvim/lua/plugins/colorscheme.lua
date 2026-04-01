@@ -43,12 +43,12 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "Mofiqul/dracula.nvim",
-  --   opts = {
-  --     transparent_bg = false,
-  --   },
-  -- },
+  {
+    "Mofiqul/dracula.nvim",
+    opts = {
+      transparent_bg = false,
+    },
+  },
 
   -- {
   --   "navarasu/onedark.nvim",
@@ -108,7 +108,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin-mocha",
+      colorscheme = "dracula",
     },
   },
 }
