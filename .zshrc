@@ -123,6 +123,9 @@ export PATH=$PATH:$(go env GOPATH)
 # custom environment variables
 . "$HOME/.local/bin/env"
 
+# dotnet
+export PATH="/usr/local/share/dotnet:$PATH"
+
 # java setup
 export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
 export PATH="$JAVA_HOME/bin:$PATH"
