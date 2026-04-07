@@ -9,64 +9,64 @@
 #     selectedLineBgColor:
 #       - "#424553"
 # dracula
-gui:
-  theme:
-    activeBorderColor:
-      - "#FF79C6"
-      - bold
-    inactiveBorderColor:
-      - "#BD93F9"
-    searchingActiveBorderColor:
-      - "#8BE9FD"
-      - bold
-    optionsTextColor:
-      - "#6272A4"
-    selectedLineBgColor:
-      - "#6272A4"
-    inactiveViewSelectedLineBgColor:
-      - bold
-    cherryPickedCommitFgColor:
-      - "#6272A4"
-    cherryPickedCommitBgColor:
-      - "#8BE9FD"
-    markedBaseCommitFgColor:
-      - "#8BE9FD"
-    markedBaseCommitBgColor:
-      - "#F1FA8C"
-    unstagedChangesColor:
-      - "#FF5555"
-    defaultFgColor:
-      - "#F8F8F2"
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#FF79C6"
+#       - bold
+#     inactiveBorderColor:
+#       - "#BD93F9"
+#     searchingActiveBorderColor:
+#       - "#8BE9FD"
+#       - bold
+#     optionsTextColor:
+#       - "#6272A4"
+#     selectedLineBgColor:
+#       - "#6272A4"
+#     inactiveViewSelectedLineBgColor:
+#       - bold
+#     cherryPickedCommitFgColor:
+#       - "#6272A4"
+#     cherryPickedCommitBgColor:
+#       - "#8BE9FD"
+#     markedBaseCommitFgColor:
+#       - "#8BE9FD"
+#     markedBaseCommitBgColor:
+#       - "#F1FA8C"
+#     unstagedChangesColor:
+#       - "#FF5555"
+#     defaultFgColor:
+#       - "#F8F8F2"
 # edge dark neon
 # gui:
 #   theme:
 #     selectedLineBgColor:
 #       - "#3f445b"
 # catppuccin mocha
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#f9e2af"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a6adc8"
-#     optionsTextColor:
-#       - "#89b4fa"
-#     selectedLineBgColor:
-#       - "#313244"
-#     cherryPickedCommitBgColor:
-#       - "#45475a"
-#     cherryPickedCommitFgColor:
-#       - "#f9e2af"
-#     unstagedChangesColor:
-#       - "#f38ba8"
-#     defaultFgColor:
-#       - "#cdd6f4"
-#     searchingActiveBorderColor:
-#       - "#f9e2af"
-#
-#   authorColors:
-#     "*": "#b4befe"
+gui:
+  theme:
+    activeBorderColor:
+      - "#f9e2af"
+      - bold
+    inactiveBorderColor:
+      - "#a6adc8"
+    optionsTextColor:
+      - "#89b4fa"
+    selectedLineBgColor:
+      - "#313244"
+    cherryPickedCommitBgColor:
+      - "#45475a"
+    cherryPickedCommitFgColor:
+      - "#f9e2af"
+    unstagedChangesColor:
+      - "#f38ba8"
+    defaultFgColor:
+      - "#cdd6f4"
+    searchingActiveBorderColor:
+      - "#f9e2af"
+
+  authorColors:
+    "*": "#b4befe"
 # catppuccin macchiato
 # gui:
 #   theme:
