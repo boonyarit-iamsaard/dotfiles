@@ -110,6 +110,9 @@ else
     log_warn "'apt' command not found. Skipping APT update."
 fi
 
+# Pinned Homebrew formulas are intentionally excluded from routine upgrades.
+# Go is pinned and upgraded explicitly when needed.
+
 # 2. Update Homebrew
 # Defensive: Check if 'brew' exists first
 if command -v brew &> /dev/null; then
