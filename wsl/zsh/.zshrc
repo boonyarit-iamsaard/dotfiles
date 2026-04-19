@@ -140,6 +140,10 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export DOTNET_ROOT=$HOME/.dotnet
 export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
 
+# Go
+export GOPATH="$HOME/go"
+export PATH="$PATH:$GOPATH/bin"
+
 export PATH="$HOME/.local/bin:$PATH"
 
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
