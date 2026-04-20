@@ -117,6 +117,8 @@ bindkey jj vi-cmd-mode
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(starship init zsh)"
 
+typeset -U path PATH
+
 # load local environment variables i.e., GEMINI_API_KEY if the file exists
 if [ -f ~/.env.local ]; then
   source ~/.env.local
@@ -127,26 +129,29 @@ export GPG_TTY=$(tty)
 
 # Java
 export JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
-export PATH=$JAVA_HOME/bin:$PATH
 
 # bun completions
 [ -s "/home/boonyarit-iamsaard/.bun/_bun" ] && source "/home/boonyarit-iamsaard/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
 
 # .NET
-export DOTNET_ROOT=$HOME/.dotnet
-export PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
+export DOTNET_ROOT="$HOME/.dotnet"
 
 # Go
 export GOPATH="$HOME/go"
-export PATH="$PATH:$GOPATH/bin"
 
-export PATH="$HOME/.local/bin:$PATH"
-
-export PATH="$HOME/.config/composer/vendor/bin:$PATH"
+path=(
+  "$HOME/.config/composer/vendor/bin"
+  "$HOME/.local/bin"
+  "$BUN_INSTALL/bin"
+  "$JAVA_HOME/bin"
+  "$DOTNET_ROOT"
+  "$DOTNET_ROOT/tools"
+  "$GOPATH/bin"
+  $path
+)
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
