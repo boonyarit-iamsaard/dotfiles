@@ -3,10 +3,35 @@ git:
     showWholeGraph: true
   overrideGpg: true
 # common
-gui:
-  theme:
-    selectedLineBgColor:
-      - "#6e6a86"
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#6e6a86"
+# dark 2026
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#E5BA7D"
+#       - bold
+#     inactiveBorderColor:
+#       - "#8C8C8C"
+#     optionsTextColor:
+#       - "#59A4F9"
+#     selectedLineBgColor:
+#       - "#242526"
+#     cherryPickedCommitBgColor:
+#       - "#383A49"
+#     cherryPickedCommitFgColor:
+#       - "#E5BA7D"
+#     unstagedChangesColor:
+#       - "#F48771"
+#     defaultFgColor:
+#       - "#BFBFBF"
+#     searchingActiveBorderColor:
+#       - "#E5BA7D"
+
+#   authorColors:
+#     "*": "#85B6FF"
 # edge dark
 # gui:
 #   theme:
@@ -18,30 +43,30 @@ gui:
 #     selectedLineBgColor:
 #       - "#3f445b"
 # catppuccin macchiato
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#eed49f"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a5adcb"
-#     optionsTextColor:
-#       - "#8aadf4"
-#     selectedLineBgColor:
-#       - "#363a4f"
-#     cherryPickedCommitBgColor:
-#       - "#494d64"
-#     cherryPickedCommitFgColor:
-#       - "#eed49f"
-#     unstagedChangesColor:
-#       - "#ed8796"
-#     defaultFgColor:
-#       - "#cad3f5"
-#     searchingActiveBorderColor:
-#       - "#eed49f"
-#
-#   authorColors:
-#     "*": "#b7bdf8"
+gui:
+  theme:
+    activeBorderColor:
+      - "#eed49f"
+      - bold
+    inactiveBorderColor:
+      - "#a5adcb"
+    optionsTextColor:
+      - "#8aadf4"
+    selectedLineBgColor:
+      - "#363a4f"
+    cherryPickedCommitBgColor:
+      - "#494d64"
+    cherryPickedCommitFgColor:
+      - "#eed49f"
+    unstagedChangesColor:
+      - "#ed8796"
+    defaultFgColor:
+      - "#cad3f5"
+    searchingActiveBorderColor:
+      - "#eed49f"
+
+  authorColors:
+    "*": "#b7bdf8"
 # catppuccin mocha
 # gui:
 #   theme:
