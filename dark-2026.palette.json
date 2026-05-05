@@ -1,0 +1,84 @@
+{
+  "name": "Dark 2026",
+  "source": "./dark-2026.jsonc",
+
+  "base": {
+    "bg": "#121314",
+    "surface": "#191A1B",
+    "surfaceAlt": "#202122",
+    "surfaceElevated": "#242526",
+    "border": "#2A2B2C",
+    "borderStrong": "#333536",
+    "fg": "#BBBEBF",
+    "fgMuted": "#8C8C8C",
+    "fgSubtle": "#555555",
+    "fgStrong": "#FFFFFF"
+  },
+
+  "accent": {
+    "blue": "#3994BC",
+    "blueBright": "#59A4F9",
+    "cyan": "#48A0C7",
+    "cyanBright": "#5BA8CC",
+    "green": "#73C991",
+    "greenBright": "#86CF86",
+    "yellow": "#E5BA7D",
+    "yellowBright": "#E0B97F",
+    "orange": "#E2C08D",
+    "orangeBright": "#CD861A",
+    "red": "#F48771",
+    "redBright": "#FF7B72",
+    "magenta": "#AD80D7",
+    "magentaBright": "#D2A8FF"
+  },
+
+  "editor": {
+    "cursor": "#BBBEBF",
+    "selection": "#276782DD",
+    "selectionInactive": "#27678260",
+    "findMatch": "#27678290",
+    "findMatchHighlight": "#27678280",
+    "wordHighlight": "#27678250",
+    "lineHighlight": "#242526",
+    "bracketMatch": "#3994BC55",
+    "indentGuide": "#292929",
+    "indentGuideActive": "#525252"
+  },
+
+  "feedback": {
+    "info": "#59A4F9",
+    "success": "#73C991",
+    "warning": "#E5BA7D",
+    "error": "#F48771"
+  },
+
+  "ansi": {
+    "black": "#000000",
+    "red": "#CD3131",
+    "green": "#0DBC79",
+    "yellow": "#E5E510",
+    "blue": "#2472C8",
+    "magenta": "#BC3FBC",
+    "cyan": "#11A8CD",
+    "white": "#E5E5E5",
+    "brightBlack": "#666666",
+    "brightRed": "#F14C4C",
+    "brightGreen": "#23D18B",
+    "brightYellow": "#F5F543",
+    "brightBlue": "#3B8EEA",
+    "brightMagenta": "#D670D6",
+    "brightCyan": "#29B8DB",
+    "brightWhite": "#FFFFFF"
+  },
+
+  "alpha": {
+    "transparent": "#00000000",
+    "white05": "#FFFFFF0D",
+    "white06": "#FFFFFF0F",
+    "white07": "#FFFFFF10",
+    "white08": "#FFFFFF13",
+    "white09": "#FFFFFF17",
+    "white10": "#FFFFFF18",
+    "white13": "#FFFFFF22"
+  }
+}
