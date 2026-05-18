@@ -208,9 +208,9 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      -- colorscheme = "catppuccin-macchiato",
+      colorscheme = "catppuccin-macchiato",
       -- The active Neovim theme is the vscode.nvim base with Dark 2026 overrides above.
-      colorscheme = "vscode",
+      -- colorscheme = "vscode",
     },
   },
 }
