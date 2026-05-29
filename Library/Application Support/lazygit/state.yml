@@ -6,7 +6,7 @@ recentrepos:
     - /Users/boonyarit.i/workspace/opn/cs-ops-portal
 startuppopupversion: 5
 didshowhunkstaginghint: true
-lastversion: 0.61.1
+lastversion: 0.62.1
 customcommandshistory:
     - w
     - git merge master --ff-only
