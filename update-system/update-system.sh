@@ -117,6 +117,7 @@ fi
 # Defensive: Check if 'brew' exists first
 if command -v brew &> /dev/null; then
     log_info "Detected 'brew' package manager. Updating..."
+    log_info "Pinned Homebrew formulas such as Go are skipped by routine upgrades."
 
     if execute_and_log brew upgrade; then
         log_success "Homebrew packages upgraded."
