@@ -1,9 +1,7 @@
 lastupdatecheck: 1726490949
 recentrepos:
     - /Users/boonyarit.i/dotfiles
-    - /Users/boonyarit.i/workspace/personal/online-shop
-    - /Users/boonyarit.i/workspace/opn/report-engine
-    - /Users/boonyarit.i/workspace/opn/cs-ops-portal
+    - /Users/boonyarit.i/workspace/personal/skills
 startuppopupversion: 5
 didshowhunkstaginghint: true
 lastversion: 0.62.1
@@ -12,5 +10,5 @@ customcommandshistory:
     - git merge master --ff-only
     - git merge master --only-ff
     - git fetch --prune
-hidecommandlog: true
+hidecommandlog: false
 githubPullRequests: {}
