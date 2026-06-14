@@ -93,33 +93,27 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
 
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-alias docker-cleanup="~/docker-cleanup.sh"
-alias update-system="~/update-system.sh"
-
-alias nv="nvim"
-alias lzd='lazydocker'
-alias lzg="lazygit"
-
-bindkey jj vi-cmd-mode
-
+# ---------------------------------------------------------------------------
+# Environment and PATH
+# ---------------------------------------------------------------------------
+# Initialise Homebrew. This must run before any tool installed through
+# Homebrew, such as Starship below.
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
+export PATH="$HOME/.local/bin:$PATH"   # User-local binaries.
+export PATH="$HOME/go/bin:$PATH"       # Binaries installed by go install.
+
+# ---------------------------------------------------------------------------
+# Tooling and prompt
+# ---------------------------------------------------------------------------
+# Initialise the Starship prompt.
 eval "$(starship init zsh)"
 
+# Load nvm and automatically switch the Node version on directory change,
+# reading the version from any .nvmrc file present.
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                    # This loads nvm.
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash completion.
 
 autoload -U add-zsh-hook
 
@@ -144,3 +138,20 @@ load-nvmrc() {
 
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
+
+# ---------------------------------------------------------------------------
+# Aliases
+# ---------------------------------------------------------------------------
+# Run `alias` to view the full active list. Define overrides for the aliases
+# provided by Oh My Zsh here.
+alias docker-cleanup="~/docker-cleanup.sh"
+alias update-system="~/update-system.sh"
+
+alias nv="nvim"
+alias lzd='lazydocker'
+alias lzg="lazygit"
+
+# ---------------------------------------------------------------------------
+# Key bindings
+# ---------------------------------------------------------------------------
+bindkey jj vi-cmd-mode
