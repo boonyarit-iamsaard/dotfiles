@@ -111,47 +111,11 @@ alias nv="nvim"
 alias lzd='lazydocker'
 alias lzg="lazygit"
 
-# bind keys for vi mode
 bindkey jj vi-cmd-mode
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+
 eval "$(starship init zsh)"
-
-typeset -U path PATH
-
-# load local environment variables i.e., GEMINI_API_KEY if the file exists
-if [ -f ~/.env.local ]; then
-  source ~/.env.local
-fi
-
-# GPG
-export GPG_TTY=$(tty)
-
-# Java
-export JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
-
-# bun completions
-[ -s "/home/boonyarit-iamsaard/.bun/_bun" ] && source "/home/boonyarit-iamsaard/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-
-# .NET
-export DOTNET_ROOT="$HOME/.dotnet"
-
-# Go
-export GOPATH="$HOME/go"
-
-path=(
-  "$HOME/.config/composer/vendor/bin"
-  "$HOME/.local/bin"
-  "$BUN_INSTALL/bin"
-  "$JAVA_HOME/bin"
-  "$DOTNET_ROOT"
-  "$DOTNET_ROOT/tools"
-  "$GOPATH/bin"
-  $path
-)
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -172,8 +136,9 @@ load-nvmrc() {
     elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
       nvm use
     fi
-  elif [ "$(nvm version)" != "$(nvm version default)" ]; then
-    nvm use --silent default
+  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
   fi
 }
 
