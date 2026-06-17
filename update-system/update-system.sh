@@ -56,6 +56,10 @@ log_error() {
     printf "${RED}[%s] ${EMOJI_ERROR}  ${NC}%s\n" "$(get_timestamp)" "$1"
 }
 
+is_wsl() {
+    [[ -r /proc/sys/kernel/osrelease ]] && grep -qi microsoft /proc/sys/kernel/osrelease
+}
+
 # Wraps a command to timestamp its standard output and error
 execute_and_log() {
     setopt local_options pipefail
@@ -92,19 +96,48 @@ if command -v apt &> /dev/null; then
     if ! sudo -v; then
         log_error "Sudo authentication failed. Skipping APT update."
     else
+        apt_failed=0
+
         log_info "Updating APT repositories..."
-        execute_and_log sudo apt update
+        execute_and_log sudo apt update || apt_failed=1
 
-        log_info "Upgrading APT packages..."
-        execute_and_log sudo apt upgrade -y
+        if (( apt_failed == 0 )); then
+            log_info "Upgrading APT packages..."
+            execute_and_log sudo apt upgrade -y || apt_failed=1
+        fi
 
-        log_info "Autoremoving unused packages..."
-        execute_and_log sudo apt autoremove -y
+        if (( apt_failed == 0 )); then
+            log_info "Autoremoving unused packages and old configs..."
+            execute_and_log sudo apt autoremove --purge -y || apt_failed=1
+        fi
 
-        log_info "Cleaning APT cache..."
-        execute_and_log sudo apt-get clean
+        if (( apt_failed == 0 )); then
+            log_info "Cleaning APT cache..."
+            execute_and_log sudo apt-get clean || apt_failed=1
+        fi
 
-        log_success "APT update sequence completed."
+        if (( apt_failed == 0 )); then
+            log_success "APT update sequence completed."
+        else
+            log_error "APT update sequence failed."
+        fi
+
+        if command -v journalctl &> /dev/null; then
+            log_info "Vacuuming systemd journal logs older than 14 days..."
+            if execute_and_log sudo journalctl --vacuum-time=14d; then
+                log_success "systemd journal cleanup completed."
+            else
+                log_warn "systemd journal cleanup encountered issues."
+            fi
+        fi
+
+        if [[ -f /var/run/reboot-required ]]; then
+            if is_wsl; then
+                log_warn "WSL restart required for some updates to fully apply. From Windows, run: wsl --shutdown"
+            else
+                log_warn "System reboot required for some updates to fully apply."
+            fi
+        fi
     fi
 else
     log_warn "'apt' command not found. Skipping APT update."

@@ -69,13 +69,18 @@ return {
   {
     "Mofiqul/vscode.nvim",
     priority = 1000,
+    -- config = function()
+    --   require("vscode").setup({
+    --     transparent = true,
+    --   })
+    -- end,
   },
 
   {
     "LazyVim/LazyVim",
     opts = {
-      -- colorscheme = "catppuccin-mocha",
-      colorscheme = "vscode",
+      colorscheme = "catppuccin-mocha",
+      -- colorscheme = "vscode",
     },
   },
 }
