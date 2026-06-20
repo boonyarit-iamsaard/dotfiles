@@ -194,4 +194,30 @@ else
     log_warn "'npm' command not found. Skipping npm update."
 fi
 
+# 4. Update SDKMAN
+# Defensive: Check the SDKMAN init script exists, then load the `sdk` function
+# (this script does not source .zshrc, so `sdk` is not otherwise available).
+# Candidate versions (JDK, Maven) are intentionally left pinned and upgraded
+# manually, consistent with the Go and Homebrew pinning policy above.
+SDKMAN_INIT="${SDKMAN_DIR:-$HOME/.sdkman}/bin/sdkman-init.sh"
+if [[ -s "$SDKMAN_INIT" ]]; then
+    log_info "Detected SDKMAN. Updating the tool and flushing caches..."
+    source "$SDKMAN_INIT"
+
+    if execute_and_log sdk selfupdate; then
+        log_success "SDKMAN tool updated."
+    else
+        log_warn "SDKMAN self-update encountered issues."
+    fi
+
+    log_info "Flushing SDKMAN temp, archive, and metadata caches..."
+    if execute_and_log sdk flush; then
+        log_success "SDKMAN caches flushed."
+    else
+        log_warn "SDKMAN flush encountered issues."
+    fi
+else
+    log_warn "SDKMAN not found. Skipping SDKMAN update."
+fi
+
 echo -e "\n${GREEN}[$(get_timestamp)] ${EMOJI_PARTY}  System update process finished.${NC}"

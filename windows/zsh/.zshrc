@@ -155,3 +155,11 @@ alias lzg="lazygit"
 # Key bindings
 # ---------------------------------------------------------------------------
 bindkey jj vi-cmd-mode
+
+# ---------------------------------------------------------------------------
+# SDKMAN
+# ---------------------------------------------------------------------------
+# Initialise SDKMAN. This block must remain at the end of the file for SDKMAN
+# to function correctly.
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
