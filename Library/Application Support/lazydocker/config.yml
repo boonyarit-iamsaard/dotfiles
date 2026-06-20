@@ -1,8 +1,33 @@
 # common
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#6272a4"
+# github dark dimmed
 gui:
   theme:
+    activeBorderColor:
+      - "#daaa3f"
+      - bold
+    inactiveBorderColor:
+      - "#636e7b"
+    optionsTextColor:
+      - "#539bf5"
     selectedLineBgColor:
-      - "#6272a4"
+      - "#2d333b"
+    cherryPickedCommitBgColor:
+      - "#444c56"
+    cherryPickedCommitFgColor:
+      - "#daaa3f"
+    unstagedChangesColor:
+      - "#f47067"
+    defaultFgColor:
+      - "#adbac7"
+    searchingActiveBorderColor:
+      - "#daaa3f"
+
+  authorColors:
+    "*": "#6cb6ff"
 # catppuccin mocha
 # gui:
 #   theme:
