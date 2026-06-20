@@ -1,24 +1,35 @@
 ---
 name: commit-message
-description: Generate a conventional commit message from staged changes. Use when the user asks to write, generate, or suggest a commit message.
+description: Commit message from staged changes. Use when the user asks for a conventional commit message.
 ---
 
-Run `git diff --staged` to inspect all staged changes, then generate a single conventional commit message.
+Generate one conventional commit message from the staged diff.
 
-## format
+## Steps
+
+1. Run `git diff --staged` and inspect the complete staged diff. This step is
+   complete only when every staged file's behavioral role is accounted for.
+2. Pick the commit type by applying the type rules top-to-bottom and stopping at
+   the first matching rule.
+3. Choose a scope only when one concise lowercase noun clearly covers the staged
+   changes.
+4. Output exactly one line that satisfies every format rule.
+
+## Format
 
 ```
 <type>(<scope>): <subject>
 ```
 
-- scope is optional - omit when changes span multiple areas or have no clear scope
+- scope is optional; omit it when changes span multiple areas or have no clear
+  scope
 - subject must be written in imperative mood (e.g. `add`, `fix`, `remove`, not `added`, `fixes`, `removing`)
 - full message including type and scope must not exceed 72 characters
 - no period at the end
 - no body, no footer - single line only
 - everything must be lowercase - no uppercase letters anywhere, including acronyms, brand names, and proper nouns (e.g. `api`, `url`, `github`, `react`, `typescript`)
 
-## commit types
+## Commit Types
 
 apply these rules top-to-bottom and stop at the first match:
 
@@ -32,14 +43,14 @@ apply these rules top-to-bottom and stop at the first match:
 | `test`     | does this involve only adding, modifying, or correcting automated tests?                 |
 | `build`    | does this relate to project building, packaging, or dependencies?                        |
 | `ci`       | does this relate only to continuous integration configuration or scripts?                |
-| `chore`    | is this a maintenance task that doesn't modify source or test files?                     |
 | `docs`     | does this only affect documentation files?                                               |
+| `chore`    | is this a maintenance task that doesn't modify source, test, or documentation files?     |
 
-## output
+## Output
 
 output only the final commit message - no explanation, no markdown fences, no extra text.
 
-## examples
+## Examples
 
 ```
 feat(auth): add jwt-based login endpoint
