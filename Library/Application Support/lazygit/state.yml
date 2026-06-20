@@ -4,7 +4,7 @@ recentrepos:
     - /Users/boonyarit.i/workspace/personal/skills
 startuppopupversion: 5
 didshowhunkstaginghint: true
-lastversion: 0.62.1
+lastversion: 0.62.2
 customcommandshistory:
     - w
     - git merge master --ff-only
