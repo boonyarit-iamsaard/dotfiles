@@ -157,6 +157,21 @@ alias lzg="lazygit"
 bindkey jj vi-cmd-mode
 
 # ---------------------------------------------------------------------------
+# WSL
+# ---------------------------------------------------------------------------
+# Open files and URLs in the default Windows browser. wslview (from the wslu
+# package) is the opener that Linux tooling reaches through $BROWSER.
+export BROWSER=wslview
+
+# ---------------------------------------------------------------------------
+# Bun
+# ---------------------------------------------------------------------------
+# Initialise Bun and load its shell completions.
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun" # Bun completions.
+
+# ---------------------------------------------------------------------------
 # SDKMAN
 # ---------------------------------------------------------------------------
 # Initialise SDKMAN. This block must remain at the end of the file for SDKMAN
