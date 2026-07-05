@@ -125,3 +125,40 @@ List the installed versions (ignoring the `current` symlink) with:
 ```bash
 ls -d ~/.sdkman/candidates/java/*/ | grep -v '/current/$'
 ```
+
+## Claude Code skills (stow)
+
+The `claude` package must be stowed with `--no-folding` so that
+`~/.claude/skills` stays a real directory with each skill symlinked
+individually:
+
+```bash
+cd ~/dotfiles && stow -R --no-folding claude
+```
+
+Without `--no-folding`, stow collapses `~/.claude/skills` into a single
+symlink. Tools that install skills in place (e.g. `npx impeccable`, which
+writes to `~/.claude/skills/impeccable`) then replace that one symlink with a
+real directory and take *every* skill offline at once. `--no-folding` limits
+the blast radius to the single skill being written.
+
+`impeccable` is **not** version-controlled (see `.gitignore`). It is installed
+and updated in place by its own tool, which rewrites its files on every update:
+
+```bash
+npx impeccable update   # manages ~/.claude/skills/impeccable and ~/.agents/skills/impeccable in place
+```
+
+It is freely re-installable, so it lives as plain files alongside the stowed
+skills rather than as tracked symlinks. The custom skills in this repo stay
+tracked and symlinked; an impeccable update can only ever touch its own folder.
+
+### When to re-stow
+
+`npx impeccable update` does **not** require a re-stow — it only rewrites its
+own folder. Re-stow with `stow -R --no-folding claude` only when:
+
+- You add (or rename) a custom skill under `claude/.claude/skills/` and need it
+  symlinked into `~/.claude/skills`.
+- An installer ever clobbers `~/.claude/skills` itself (the `--no-folding`
+  real-directory layout means a single re-stow restores every link).
