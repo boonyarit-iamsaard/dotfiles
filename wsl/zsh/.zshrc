@@ -101,6 +101,7 @@ source $ZSH/oh-my-zsh.sh
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
 export PATH="$HOME/.local/bin:$PATH"   # User-local binaries.
+export PATH="$HOME/.config/composer/vendor/bin:$HOME/.composer/vendor/bin:$PATH" # Global Composer binaries.
 export PATH="$HOME/go/bin:$PATH"       # Binaries installed by go install.
 
 # ---------------------------------------------------------------------------
@@ -170,6 +171,38 @@ export BROWSER=wslview
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 [ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun" # Bun completions.
+
+# ---------------------------------------------------------------------------
+# claudex
+# ---------------------------------------------------------------------------
+# Claude Code harness driving GPT-5.6 Sol via CLIProxyAPI (localhost:8317),
+# billed against the ChatGPT/Codex subscription. Plain `claude` keeps using
+# the Anthropic login; extra arguments pass through (e.g. `claudex -p "..."`).
+#
+# Setting up on a new machine:
+#   1. brew install cliproxyapi
+#   2. openssl rand -hex 24 > ~/.config/claudex/api-key && chmod 600 ~/.config/claudex/api-key
+#      (create the directory first: mkdir -p ~/.config/claudex)
+#   3. Edit the cliproxyapi config ($(brew --prefix)/etc/cliproxyapi.conf):
+#      set host: "127.0.0.1", put the generated key under api-keys, and add
+#      a payload override forcing "reasoning.effort": "high" for gpt-* on
+#      the codex protocol (a commented example ships in the config).
+#   4. brew services start cliproxyapi
+#   5. cliproxyapi --codex-login   (OpenAI OAuth in the browser)
+#   6. Verify: curl -s http://127.0.0.1:8317/v1/models \
+#        -H "Authorization: Bearer $(cat ~/.config/claudex/api-key)"
+#      should list gpt-5.6-sol.
+#
+# The key file is intentionally outside this dotfiles repo; the alias below
+# warns instead of failing when it is missing.
+alias claudex='ANTHROPIC_BASE_URL=http://127.0.0.1:8317 \
+ANTHROPIC_AUTH_TOKEN=$(cat ~/.config/claudex/api-key 2>/dev/null || echo MISSING-see-claudex-setup-notes-in-zshrc) \
+ANTHROPIC_DEFAULT_HAIKU_MODEL=gpt-5.6-sol \
+CLAUDE_CODE_SUBAGENT_MODEL=gpt-5.6-sol \
+CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
+CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
+ENABLE_TOOL_SEARCH=false \
+claude --model gpt-5.6-sol'
 
 # ---------------------------------------------------------------------------
 # SDKMAN
