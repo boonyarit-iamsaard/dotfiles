@@ -4,6 +4,11 @@
 # each as "used% (remaining% left)". Rate limits only appear for Pro/Max plans.
 input=$(cat)
 
+# Publish the payload for the Claude Usage Monitor to read.
+# Temp file + rename so a reader never catches a half-written document.
+{ printf '%s' "$input" > "$HOME/.claude/usage-input.json.tmp" &&
+  mv -f "$HOME/.claude/usage-input.json.tmp" "$HOME/.claude/usage-input.json"; } 2>/dev/null || true
+
 RESET='\033[0m'
 MUTED='\033[90m'   # bright black (gray) — readable secondary text
 GRAY='\033[90m'    # bright black — subtle separators

@@ -5,8 +5,8 @@
 # ==========================================
 #
 # Description:
-#   Updates system packages via APT (Ubuntu/Debian), Homebrew, and NPM.
-#   Defensively checks for package manager existence before running.
+#   Updates system and development tooling through APT, Homebrew, npm,
+#   Composer, and SDKMAN. It checks for each package manager before running.
 #   Uses Unicode escape codes for robust emoji support.
 #
 # Usage:
@@ -194,7 +194,41 @@ else
     log_warn "'npm' command not found. Skipping npm update."
 fi
 
-# 4. Update SDKMAN
+# 4. Update Composer and global packages
+# Composer itself is updated only when the installation supports self-update.
+if command -v composer &> /dev/null; then
+    log_info "Detected 'composer'. Checking for self-update support..."
+
+    if composer self-update --help &> /dev/null; then
+        if execute_and_log composer self-update --stable --no-interaction; then
+            log_success "Composer updated."
+        else
+            log_error "Composer self-update encountered issues."
+        fi
+    else
+        log_info "Composer self-update is unavailable. The system package manager may manage this installation."
+    fi
+
+    COMPOSER_GLOBAL_HOME="${COMPOSER_HOME:-$HOME/.config/composer}"
+    if [[ -z "$COMPOSER_HOME" && ! -f "$COMPOSER_GLOBAL_HOME/composer.json" && -f "$HOME/.composer/composer.json" ]]; then
+        COMPOSER_GLOBAL_HOME="$HOME/.composer"
+    fi
+
+    if [[ -f "$COMPOSER_GLOBAL_HOME/composer.json" ]]; then
+        log_info "Updating global Composer packages..."
+        if execute_and_log env COMPOSER_HOME="$COMPOSER_GLOBAL_HOME" composer global update --no-interaction; then
+            log_success "Global Composer packages updated."
+        else
+            log_error "Global Composer package update encountered issues."
+        fi
+    else
+        log_info "No global Composer packages are configured. Skipping their update."
+    fi
+else
+    log_warn "'composer' command not found. Skipping Composer update."
+fi
+
+# 5. Update SDKMAN
 # Defensive: Check the SDKMAN init script exists, then load the `sdk` function
 # (this script does not source .zshrc, so `sdk` is not otherwise available).
 # Candidate versions (JDK, Maven) are intentionally left pinned and upgraded
