@@ -126,14 +126,37 @@ List the installed versions (ignoring the `current` symlink) with:
 ls -d ~/.sdkman/candidates/java/*/ | grep -v '/current/$'
 ```
 
-## Claude Code skills (stow)
+## Agent skills
 
-The `claude` package must be stowed with `--no-folding` so that
-`~/.claude/skills` stays a real directory with each skill symlinked
-individually:
+Matt Pocock's engineering and productivity skills are maintained in a
+read-only checkout at `~/workspace/personal/skills`. The dotfiles packages
+contain flattened, relative symlinks to that checkout so Claude Code, Codex,
+and other Agent Skills clients see the same skill versions.
+
+Update the checkout and reconcile both consumers with:
 
 ```bash
-cd ~/dotfiles && stow -R --no-folding claude
+~/dotfiles/scripts/update-skills
+```
+
+Use `--dry-run` to preview changes, `--check` in diagnostics, and `--migrate`
+only for the initial conversion from copied skills. The updater requires
+Python 3 and uses only its standard library. It refuses to pull when the skills
+checkout has local changes. Routine reconciliation refuses to replace any real
+directory or unmanaged symlink. The one-time `--migrate` mode is deliberately
+broader: it matches each Claude `SKILL.md` to its grouped Agents counterpart,
+snapshots both complete consumer trees, and then archives the verified copies.
+
+The engineering and productivity source catalogs remain separate and are
+linked into each consumer as `ENGINEERING.md` and `PRODUCTIVITY.md`.
+
+### Stow layout
+
+Both skill packages are stowed with `--no-folding` so their user-level
+directories remain real and each managed file is linked individually:
+
+```bash
+cd ~/dotfiles && stow -R --no-folding agents claude
 ```
 
 Without `--no-folding`, stow collapses `~/.claude/skills` into a single
@@ -150,13 +173,16 @@ npx impeccable update   # manages ~/.claude/skills/impeccable and ~/.agents/skil
 ```
 
 It is freely re-installable, so it lives as plain files alongside the stowed
-skills rather than as tracked symlinks. The custom skills in this repo stay
-tracked and symlinked; an impeccable update can only ever touch its own folder.
+skills rather than as tracked symlinks. Custom dotfiles skills stay tracked;
+routine reconciliation leaves both custom and installer-owned directories
+untouched. Migration preserves nonmatching directories and backs up every path
+it archives.
 
 ### When to re-stow
 
 `npx impeccable update` does **not** require a re-stow — it only rewrites its
-own folder. Re-stow with `stow -R --no-folding claude` only when:
+own folder. The skills updater re-stows both consumers automatically. Re-stow
+Claude manually only when:
 
 - You add (or rename) a custom skill under `claude/.claude/skills/` and need it
   symlinked into `~/.claude/skills`.

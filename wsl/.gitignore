@@ -1,3 +1,6 @@
+# Local reconciliation state for scripts/update-skills.
+.skill-sync/
+
 # impeccable is installed/updated in place by `npx impeccable update`; not version-controlled.
 claude/.claude/skills/impeccable/
 agents/.agents/skills/impeccable/
