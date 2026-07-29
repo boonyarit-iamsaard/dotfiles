@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+if ! command -v python3 >/dev/null 2>&1; then
+  printf '%s\n' \
+    'error: Python 3 is required to update skills.' \
+    'Install it with Homebrew (macOS) or your Linux package manager.' >&2
+  exit 1
+fi
+
+exec python3 "$SCRIPT_DIR/update_skills.py" "$@"

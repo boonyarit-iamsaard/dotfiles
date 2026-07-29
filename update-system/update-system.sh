@@ -254,4 +254,17 @@ else
     log_warn "SDKMAN not found. Skipping SDKMAN update."
 fi
 
+# 6. Update shared agent skills
+SKILLS_UPDATER="${DOTFILES_ROOT:-$HOME/dotfiles}/scripts/update-skills"
+if [[ -x "$SKILLS_UPDATER" ]]; then
+    log_info "Updating shared agent skills..."
+    if execute_and_log "$SKILLS_UPDATER"; then
+        log_success "Shared agent skills updated."
+    else
+        log_warn "Shared agent skills update encountered issues."
+    fi
+else
+    log_warn "Skills updater not found at $SKILLS_UPDATER. Skipping."
+fi
+
 echo -e "\n${GREEN}[$(get_timestamp)] ${EMOJI_PARTY}  System update process finished.${NC}"
