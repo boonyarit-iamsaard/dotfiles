@@ -1,0 +1,20 @@
+# Preserve GNU Stow's built-in version-control and backup exclusions.
+RCS
+.+,v
+CVS
+\.\#.+
+\.cvsignore
+\.svn
+_darcs
+\.hg
+\.git
+\.gitignore
+\.gitmodules
+.+~
+\#.*\#
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+# Installed and updated directly by Impeccable.
+^/\.agents/skills/impeccable
