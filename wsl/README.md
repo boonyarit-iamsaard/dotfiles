@@ -152,20 +152,22 @@ linked into each consumer as `ENGINEERING.md` and `PRODUCTIVITY.md`.
 
 ### Stow layout
 
-Both skill packages are stowed with `--no-folding` so their user-level
-directories remain real and each managed file is linked individually:
+The shared user-level skill directories remain real, while each managed skill
+folder is linked as a whole directory so Codex can discover it:
 
 ```bash
-cd ~/dotfiles && stow -R --no-folding agents claude
+~/dotfiles/scripts/update-skills
 ```
 
-Without `--no-folding`, stow collapses `~/.claude/skills` into a single
-symlink. Tools that install skills in place (e.g. `npx impeccable`, which
-writes to `~/.claude/skills/impeccable`) then replace that one symlink with a
-real directory and take *every* skill offline at once. `--no-folding` limits
-the blast radius to the single skill being written.
+The updater creates `~/.agents/skills` and `~/.claude/skills` before the final
+Stow operation, preventing Stow from collapsing either shared directory into a
+single symlink. It removes the old file-by-file layout and lets Stow fold only
+the individual skill directories. Tools that install skills in place (e.g.
+`npx impeccable`, which writes to `~/.claude/skills/impeccable`) can therefore
+replace only their own leaf directory without taking every skill offline.
 
-`impeccable` is **not** version-controlled (see `.gitignore`). It is installed
+`impeccable` is **not** version-controlled (see `.gitignore`) and is excluded
+from both Stow packages by their `.stow-local-ignore` files. It is installed
 and updated in place by its own tool, which rewrites its files on every update:
 
 ```bash

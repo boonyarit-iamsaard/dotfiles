@@ -462,30 +462,67 @@ def pull_latest(config: Config) -> None:
     )
 
 
-def run_stow(config: Config, operation: str) -> None:
+def run_stow(config: Config, operation: str, *, no_folding: bool) -> None:
     action = "unstow" if operation == "-D" else "stow"
+    layout = " (--no-folding)" if no_folding else ""
     for consumer in CONSUMERS:
-        print(f"{action}: {consumer} (--no-folding)")
-        subprocess.run(
-            [
-                "stow",
-                f"--dir={config.dotfiles_root}",
-                f"--target={Path.home()}",
-                operation,
-                "--no-folding",
-                consumer,
-            ],
-            check=True,
-        )
+        print(f"{action}: {consumer}{layout}")
+        command = [
+            "stow",
+            f"--dir={config.dotfiles_root}",
+            f"--target={Path.home()}",
+            operation,
+        ]
+        if no_folding:
+            command.append("--no-folding")
+        command.append(consumer)
+        subprocess.run(command, check=True)
+
+
+def live_consumer_root(consumer: str) -> Path:
+    if consumer == "agents":
+        return Path.home() / ".agents" / "skills"
+    if consumer == "claude":
+        return Path.home() / ".claude" / "skills"
+    raise ValueError(f"unknown consumer: {consumer}")
+
+
+def prepare_live_skill_roots(config: Config) -> None:
+    """Keep shared roots real and let Stow fold each managed skill directory."""
+    for consumer in CONSUMERS:
+        live_root = live_consumer_root(consumer)
+        if live_root.is_symlink():
+            raise SyncError(
+                f"skill root must be a real directory before restow: {live_root}"
+            )
+        live_root.mkdir(parents=True, exist_ok=True)
+
+        package_root = config.consumer_root(consumer)
+        if not package_root.is_dir():
+            continue
+        for source in package_root.iterdir():
+            target = live_root / source.name
+            if (
+                source.is_dir()
+                and not source.is_symlink()
+                and target.is_dir()
+                and not target.is_symlink()
+                and next(target.iterdir(), None) is None
+            ):
+                target.rmdir()
 
 
 def unstow(config: Config) -> None:
     """Remove live links while every pre-reconciliation source still exists."""
-    run_stow(config, "-D")
+    run_stow(config, "-D", no_folding=True)
 
 
 def restow(config: Config) -> None:
-    run_stow(config, "-R")
+    # Remove the legacy file-by-file layout even when this run did not need to
+    # unstow before reconciliation.
+    unstow(config)
+    prepare_live_skill_roots(config)
+    run_stow(config, "-R", no_folding=False)
 
 
 @dataclass

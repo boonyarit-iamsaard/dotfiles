@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -12,6 +13,8 @@ from pathlib import Path
 
 
 SCRIPT = Path(__file__).with_name("update_skills.py")
+AGENTS_STOW_IGNORE = SCRIPT.parent.parent / "agents" / ".stow-local-ignore"
+CLAUDE_STOW_IGNORE = SCRIPT.parent.parent / "claude" / ".stow-local-ignore"
 
 
 class UpdateSkillsTest(unittest.TestCase):
@@ -23,8 +26,10 @@ class UpdateSkillsTest(unittest.TestCase):
         self.dotfiles = fixture / "dotfiles"
         self.state = fixture / "state"
         self.backups = fixture / "backups"
+        self.home = fixture / "home"
         self.agents = self.dotfiles / "agents" / ".agents" / "skills"
         self.claude = self.dotfiles / "claude" / ".claude" / "skills"
+        self.home.mkdir()
         (self.source / "skills" / "engineering").mkdir(parents=True)
         (self.source / "skills" / "productivity").mkdir(parents=True)
         (self.source / "skills" / "engineering" / "README.md").write_text(
@@ -81,6 +86,7 @@ class UpdateSkillsTest(unittest.TestCase):
                 "SKILLS_REPO": str(self.source),
                 "SKILL_SYNC_STATE_ROOT": str(self.state),
                 "SKILL_SYNC_BACKUP_ROOT": str(self.backups),
+                "HOME": str(self.home),
             }
         )
         return environment
@@ -300,8 +306,111 @@ class UpdateSkillsTest(unittest.TestCase):
         self.assertIn("-D --no-folding agents", events[1])
         self.assertIn("-D --no-folding claude", events[2])
         self.assertIn("pull --ff-only", events[3])
-        self.assertIn("-R --no-folding agents", events[4])
-        self.assertIn("-R --no-folding claude", events[5])
+        self.assertIn("-D --no-folding agents", events[4])
+        self.assertIn("-D --no-folding claude", events[5])
+        self.assertIn("-R agents", events[6])
+        self.assertNotIn("--no-folding", events[6])
+        self.assertIn("-R claude", events[7])
+        self.assertNotIn("--no-folding", events[7])
+
+    @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
+    def test_restow_keeps_skill_roots_real_and_links_whole_skill_directories(
+        self,
+    ) -> None:
+        for root in (self.agents, self.claude):
+            self.make_copy(root, "commit-message")
+        for consumer in ("agents", "claude"):
+            subprocess.run(
+                [
+                    "stow",
+                    f"--dir={self.dotfiles}",
+                    f"--target={self.home}",
+                    "-R",
+                    "--no-folding",
+                    consumer,
+                ],
+                check=True,
+            )
+        self.assertFalse(
+            (self.home / ".agents" / "skills" / "commit-message").is_symlink()
+        )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--no-pull",
+            ],
+            text=True,
+            capture_output=True,
+            env=self.fixture_environment(),
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        for consumer in (".agents", ".claude"):
+            skills_root = self.home / consumer / "skills"
+            self.assertTrue(skills_root.is_dir())
+            self.assertFalse(skills_root.is_symlink())
+            self.assertTrue(
+                (skills_root / "commit-message").is_symlink(),
+                f"expected whole-skill symlink: {skills_root / 'commit-message'}",
+            )
+
+    @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
+    def test_restow_preserves_installer_owned_impeccable(self) -> None:
+        for consumer, ignore_source in (
+            ("agents", AGENTS_STOW_IGNORE),
+            ("claude", CLAUDE_STOW_IGNORE),
+        ):
+            package = self.dotfiles / consumer
+            (package / ".stow-local-ignore").write_text(
+                ignore_source.read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            skill_root = (
+                self.agents if consumer == "agents" else self.claude
+            )
+            self.make_copy(skill_root, "impeccable", "shadow copy\n")
+
+            live_skill = (
+                self.home
+                / (".agents" if consumer == "agents" else ".claude")
+                / "skills"
+                / "impeccable"
+            )
+            live_skill.mkdir(parents=True)
+            (live_skill / "SKILL.md").write_text(
+                "installer owned\n",
+                encoding="utf-8",
+            )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--no-pull",
+            ],
+            text=True,
+            capture_output=True,
+            env=self.fixture_environment(),
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        for consumer in (".agents", ".claude"):
+            skill_md = self.home / consumer / "skills" / "impeccable" / "SKILL.md"
+            self.assertFalse(skill_md.is_symlink())
+            self.assertEqual(
+                skill_md.read_text(encoding="utf-8"),
+                "installer owned\n",
+            )
 
 
 if __name__ == "__main__":
