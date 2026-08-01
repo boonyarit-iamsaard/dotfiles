@@ -328,32 +328,44 @@ class Reconciler:
                 return False
         return True
 
+    def _package_entries(self, consumer: str) -> list[Path]:
+        root = self.config.package_root(consumer)
+        return sorted(root.iterdir()) if root.is_dir() else []
+
+    def _plan_package_entry(
+        self,
+        actions: list[Action],
+        consumer: str,
+        entry: Path,
+        managed_names: set[str],
+    ) -> None:
+        name = entry.name
+        if name in LOCAL_SKILLS or name not in managed_names:
+            return
+        if entry.is_symlink() or not entry.is_dir():
+            raise SyncError(f"unverified Matt copy collision: {entry}")
+        if not self._is_verified_historical_copy(entry, name):
+            raise SyncError(f"unverified Matt copy collision: {entry}")
+        actions.append(
+            Action(
+                ActionKind.MOVE,
+                consumer,
+                name,
+                entry,
+                destination=self.backup_dir / "removed" / consumer / name,
+            )
+        )
+        self.migrating_keys.add((consumer, name))
+
     def _plan_package_migration(self, actions: list[Action]) -> None:
         if not self.migrate:
             return
         managed_names = set(self.skills) | set(LEGACY_MATT_SKILLS)
         for consumer in CONSUMERS:
-            root = self.config.package_root(consumer)
-            if not root.is_dir():
-                continue
-            for entry in sorted(root.iterdir()):
-                name = entry.name
-                if name in LOCAL_SKILLS or name not in managed_names:
-                    continue
-                if entry.is_symlink() or not entry.is_dir():
-                    raise SyncError(f"unverified Matt copy collision: {entry}")
-                if not self._is_verified_historical_copy(entry, name):
-                    raise SyncError(f"unverified Matt copy collision: {entry}")
-                actions.append(
-                    Action(
-                        ActionKind.MOVE,
-                        consumer,
-                        name,
-                        entry,
-                        destination=self.backup_dir / "removed" / consumer / name,
-                    )
+            for entry in self._package_entries(consumer):
+                self._plan_package_entry(
+                    actions, consumer, entry, managed_names
                 )
-                self.migrating_keys.add((consumer, name))
 
     def plan(self) -> Plan:
         actions: list[Action] = []

@@ -276,10 +276,10 @@ class UpdateSkillsTest(unittest.TestCase):
 
         self.assertIn("unverified Matt copy collision", result.stderr)
         self.assertEqual(
-            "personal customization\n",
             (self.agents_package / "alpha" / "SKILL.md").read_text(
                 encoding="utf-8"
             ),
+            "personal customization\n",
         )
         self.assertFalse(self.backups.exists())
 
@@ -318,11 +318,11 @@ class UpdateSkillsTest(unittest.TestCase):
 
         events = event_log.read_text(encoding="utf-8").splitlines()
         self.assertEqual(
+            events,
             [
                 f"-C {self.source.resolve()} status --porcelain",
                 f"-C {self.source.resolve()} pull --ff-only",
             ],
-            events,
         )
         self.assertFalse(any("push" in event for event in events))
 
