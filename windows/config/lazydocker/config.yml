@@ -1,8 +1,21 @@
-# common
+# dark 2026
+# note: lazydocker only supports these four theme keys
 gui:
   theme:
+    activeBorderColor:
+      - "#3994bc"
+      - bold
+    inactiveBorderColor:
+      - "#8c8c8c"
+    optionsTextColor:
+      - "#48a0c7"
     selectedLineBgColor:
-      - "#6e6a86"
+      - "#276782"
+# common
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#6e6a86"
 # catppuccin macchiato
 # gui:
 #   theme:
