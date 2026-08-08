@@ -1,0 +1,126 @@
+#!/bin/sh
+# Patch the locally installed Windows Consolas with the Nerd Fonts glyph set.
+#
+# Consolas is proprietary and cannot be redistributed, so this repo ships the
+# recipe instead of the fonts. Every machine that runs this already has a
+# licensed copy under C:\Windows\Fonts.
+set -eu
+
+FONT_DIR=${WINDOWS_FONT_DIR:-/mnt/c/Windows/Fonts}
+OUT_DIR=${HOME}/consolas-nerd-font
+PATCHER_IMAGE=nerdfonts/patcher
+VARIANTS='mono proportional'
+
+usage() {
+  cat <<'EOF'
+Usage: patch-consolas-nerd-font [options]
+
+Patches Consolas (Regular/Italic/Bold/BoldItalic) with the complete Nerd Fonts
+glyph set via the official nerdfonts/patcher container.
+
+Options:
+  -o, --out DIR    Write patched fonts to DIR (default: ~/consolas-nerd-font)
+      --mono       Only build "Consolas Nerd Font Mono" (terminal use)
+      --propo      Only build "Consolas Nerd Font" (double-width icons)
+  -h, --help       Show this help
+
+Environment:
+  WINDOWS_FONT_DIR  Source font directory (default: /mnt/c/Windows/Fonts)
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case $1 in
+    -o | --out)
+      [ $# -ge 2 ] || { printf 'error: %s requires a directory argument\n' "$1" >&2; exit 1; }
+      OUT_DIR=$2
+      shift 2
+      ;;
+    --mono)
+      VARIANTS='mono'
+      shift
+      ;;
+    --propo)
+      VARIANTS='proportional'
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      printf 'error: unknown option: %s\n' "$1" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+done
+
+if ! command -v docker >/dev/null 2>&1; then
+  printf '%s\n' \
+    'error: Docker is required to run the Nerd Fonts patcher.' \
+    'Install Docker Desktop with WSL integration, or Docker Engine inside WSL.' >&2
+  exit 1
+fi
+
+if ! docker info >/dev/null 2>&1; then
+  printf 'error: the Docker daemon is not reachable; start Docker and retry.\n' >&2
+  exit 1
+fi
+
+if [ ! -d "$FONT_DIR" ]; then
+  printf '%s\n' \
+    "error: font directory not found: $FONT_DIR" \
+    'This script expects WSL with the Windows drive mounted.' \
+    'Override the location with WINDOWS_FONT_DIR=/path/to/fonts.' >&2
+  exit 1
+fi
+
+STAGE=$(mktemp -d)
+# shellcheck disable=SC2064 # expand STAGE now, while it is still set.
+trap "rm -rf '$STAGE'" EXIT INT TERM
+
+missing=''
+for face in consola consolab consolai consolaz; do
+  if [ -f "$FONT_DIR/$face.ttf" ]; then
+    cp "$FONT_DIR/$face.ttf" "$STAGE/"
+  else
+    missing="$missing $face.ttf"
+  fi
+done
+
+if [ -n "$missing" ]; then
+  printf 'error: missing Consolas faces in %s:%s\n' "$FONT_DIR" "$missing" >&2
+  exit 1
+fi
+
+chmod u+w "$STAGE"/*.ttf
+mkdir -p "$OUT_DIR"
+
+for variant in $VARIANTS; do
+  case $variant in
+    mono) mono_flag='--mono' ;;
+    *) mono_flag='' ;;
+  esac
+
+  printf 'Patching Consolas (%s variant); this takes a few minutes...\n' "$variant"
+
+  # --careful keeps the original glyphs where Consolas already covers a codepoint.
+  # Run as the invoking user so the output is not left root-owned.
+  docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    -v "$STAGE:/in" \
+    -v "$OUT_DIR:/out" \
+    "$PATCHER_IMAGE" --complete --careful $mono_flag >/dev/null 2>&1
+done
+
+printf '\nPatched fonts written to %s:\n' "$OUT_DIR"
+ls -1 "$OUT_DIR"
+
+printf '%s\n' \
+  '' \
+  'To install on Windows: select the .ttf files, right-click, then Install.' \
+  'Open the folder with:' \
+  "  explorer.exe \"\$(wslpath -w '$OUT_DIR')\"" \
+  '' \
+  'Configure terminals to use "Consolas Nerd Font Mono".'
