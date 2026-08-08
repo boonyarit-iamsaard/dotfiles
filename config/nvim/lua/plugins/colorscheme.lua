@@ -76,22 +76,21 @@ return {
     -- end,
   },
 
-  -- Dark 2026 is not a plugin: it lives in this config at colors/dark-2026.lua
-  -- and lua/dark-2026/, ported from dark-2026.jsonc. Configure it here only if
-  -- you want to change a default.
-  --
-  -- {
-  --   "dark-2026",
-  --   dir = vim.fn.stdpath("config"),
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require("dark-2026").setup({
-  --       -- transparent = true,
-  --       -- italic_comments = false,
-  --     })
-  --   end,
-  -- },
+  {
+    -- Published from this config; dark-2026.jsonc at the dotfiles root stays as
+    -- the local porting reference. Upstream: github.com/boonyarit-iamsaard/dark-2026.nvim
+    "boonyarit-iamsaard/dark-2026.nvim",
+    lazy = false,
+    priority = 1000,
+    -- `setup()` has to run before the colorscheme is applied, so options go in
+    -- `config` rather than an `opts` table LazyVim would merge in later.
+    config = function()
+      require("dark-2026").setup({
+        -- transparent = true,
+        -- italic_comments = false,
+      })
+    end,
+  },
 
   {
     "LazyVim/LazyVim",
