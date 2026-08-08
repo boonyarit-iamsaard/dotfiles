@@ -1,6 +1,14 @@
 # Local reconciliation state for scripts/update-skills.
 .skill-sync/
 
+# Fonts are never committed. Consolas is proprietary and its Nerd Font patch
+# (scripts/patch-consolas-nerd-font) is a derivative work; this repo is public.
+*.ttf
+*.otf
+*.ttc
+*.woff
+*.woff2
+
 # impeccable is installed/updated in place by `npx impeccable update`; not version-controlled.
 claude/.claude/skills/impeccable/
 agents/.agents/skills/impeccable/
