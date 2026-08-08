@@ -205,6 +205,15 @@ ENABLE_TOOL_SEARCH=false \
 claude --model gpt-5.6-sol'
 
 # ---------------------------------------------------------------------------
+# .NET
+# ---------------------------------------------------------------------------
+# Allow OpenSSL clients to trust the ASP.NET Core HTTPS development
+# certificate. Both certificate directories are listed because the Homebrew
+# OpenSSL takes precedence on PATH while the system OpenSSL remains in use by
+# other tooling.
+export SSL_CERT_DIR="$HOME/.aspnet/dev-certs/trust:/home/linuxbrew/.linuxbrew/etc/openssl@3/certs:/usr/lib/ssl/certs"
+
+# ---------------------------------------------------------------------------
 # SDKMAN
 # ---------------------------------------------------------------------------
 # Initialise SDKMAN. This block must remain at the end of the file for SDKMAN
