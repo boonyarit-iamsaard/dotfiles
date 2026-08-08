@@ -2,11 +2,36 @@ git:
   log:
     showWholeGraph: true
   overrideGpg: true
-# common
+# dark 2026
 gui:
   theme:
+    activeBorderColor:
+      - "#3994bc"
+      - bold
+    inactiveBorderColor:
+      - "#8c8c8c"
+    optionsTextColor:
+      - "#48a0c7"
     selectedLineBgColor:
-      - "#6e6a86"
+      - "#276782"
+    cherryPickedCommitBgColor:
+      - "#37373d"
+    cherryPickedCommitFgColor:
+      - "#e5ba7d"
+    unstagedChangesColor:
+      - "#f48771"
+    defaultFgColor:
+      - "#cccccc"
+    searchingActiveBorderColor:
+      - "#e5ba7d"
+
+  authorColors:
+    "*": "#57a3f8"
+# common
+# gui:
+#   theme:
+#     selectedLineBgColor:
+#       - "#6e6a86"
 # catppuccin macchiato
 # gui:
 #   theme:

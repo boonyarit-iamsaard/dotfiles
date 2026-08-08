@@ -76,11 +76,29 @@ return {
     -- end,
   },
 
+  -- Dark 2026 is not a plugin: it lives in this config at colors/dark-2026.lua
+  -- and lua/dark-2026/, ported from dark-2026.jsonc. Configure it here only if
+  -- you want to change a default.
+  --
+  -- {
+  --   "dark-2026",
+  --   dir = vim.fn.stdpath("config"),
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require("dark-2026").setup({
+  --       -- transparent = true,
+  --       -- italic_comments = false,
+  --     })
+  --   end,
+  -- },
+
   {
     "LazyVim/LazyVim",
     opts = {
       -- colorscheme = "catppuccin-macchiato",
-      colorscheme = "vscode",
+      -- colorscheme = "vscode",
+      colorscheme = "dark-2026",
     },
   },
 }
