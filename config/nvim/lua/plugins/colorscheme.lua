@@ -86,8 +86,11 @@ return {
     -- `config` rather than an `opts` table LazyVim would merge in later.
     config = function()
       require("dark-2026").setup({
-        -- transparent = true,
-        -- italic_comments = false,
+        transparent = true,
+        on_highlights = function(hl)
+          hl.SnacksNormal.bg = "NONE"
+          hl.SnacksNormalNC.bg = "NONE"
+        end,
       })
     end,
   },
