@@ -42,6 +42,8 @@ if vim.fn.has("wsl") == 1 then
   }
 end
 
+vim.g.lazyvim_prettier_needs_config = true
+
 local opt = vim.opt
 
 opt.relativenumber = false
