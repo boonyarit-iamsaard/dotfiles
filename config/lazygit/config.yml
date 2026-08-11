@@ -3,30 +3,30 @@ git:
     showWholeGraph: true
   overrideGpg: true
 # dark 2026
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#3994bc"
-#       - bold
-#     inactiveBorderColor:
-#       - "#8c8c8c"
-#     optionsTextColor:
-#       - "#48a0c7"
-#     selectedLineBgColor:
-#       - "#276782"
-#     cherryPickedCommitBgColor:
-#       - "#37373d"
-#     cherryPickedCommitFgColor:
-#       - "#e5ba7d"
-#     unstagedChangesColor:
-#       - "#f48771"
-#     defaultFgColor:
-#       - "#cccccc"
-#     searchingActiveBorderColor:
-#       - "#e5ba7d"
-#
-#   authorColors:
-#     "*": "#57a3f8"
+gui:
+  theme:
+    activeBorderColor:
+      - "#3994bc"
+      - bold
+    inactiveBorderColor:
+      - "#8c8c8c"
+    optionsTextColor:
+      - "#48a0c7"
+    selectedLineBgColor:
+      - "#276782"
+    cherryPickedCommitBgColor:
+      - "#37373d"
+    cherryPickedCommitFgColor:
+      - "#e5ba7d"
+    unstagedChangesColor:
+      - "#f48771"
+    defaultFgColor:
+      - "#cccccc"
+    searchingActiveBorderColor:
+      - "#e5ba7d"
+
+  authorColors:
+    "*": "#57a3f8"
 # common
 # gui:
 #   theme:
@@ -58,27 +58,27 @@ git:
 #   authorColors:
 #     "*": "#b7bdf8"
 # catppuccin mocha
-gui:
-  theme:
-    activeBorderColor:
-      - "#f9e2af"
-      - bold
-    inactiveBorderColor:
-      - "#a6adc8"
-    optionsTextColor:
-      - "#89b4fa"
-    selectedLineBgColor:
-      - "#313244"
-    cherryPickedCommitBgColor:
-      - "#45475a"
-    cherryPickedCommitFgColor:
-      - "#f9e2af"
-    unstagedChangesColor:
-      - "#f38ba8"
-    defaultFgColor:
-      - "#cdd6f4"
-    searchingActiveBorderColor:
-      - "#f9e2af"
-
-  authorColors:
-    "*": "#b4befe"
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#f9e2af"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
+#     cherryPickedCommitBgColor:
+#       - "#45475a"
+#     cherryPickedCommitFgColor:
+#       - "#f9e2af"
+#     unstagedChangesColor:
+#       - "#f38ba8"
+#     defaultFgColor:
+#       - "#cdd6f4"
+#     searchingActiveBorderColor:
+#       - "#f9e2af"
+#
+#   authorColors:
+#     "*": "#b4befe"
