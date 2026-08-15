@@ -1,6 +1,15 @@
 -- local helpers = require("helpers")
 
 return {
+  {
+    "boonyarit-iamsaard/dark-2026.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("dark-2026").setup({})
+    end,
+  },
+
   -- {
   --   "folke/tokyonight.nvim",
   --   opts = {
@@ -108,7 +117,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin-mocha",
+      colorscheme = "dark-2026",
       -- colorscheme = "vscode",
     },
   },

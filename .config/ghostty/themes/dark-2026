@@ -1,0 +1,74 @@
+# Dark 2026 for Ghostty
+#
+# Ghostty themes are plain config fragments. Drop this file in the themes
+# directory and name it from your config:
+#   cp dark-2026 ~/.config/ghostty/themes/dark-2026
+#   echo 'theme = dark-2026' >> ~/.config/ghostty/config
+#
+# `ghostty +list-themes` will then list it alongside the bundled themes.
+#
+# The VS Code key each color comes from is named above it. Ghostty parses a
+# whole line after `=` as the value, so these comments cannot sit beside the
+# value the way they do in the other extras — `ghostty +validate-config` rejects
+# the file if they do.
+
+# --- surfaces -----------------------------------------------------------------
+# editor.background, rather than terminal.background (#191a1b): a terminal
+# window is the whole surface here, not a panel docked below an editor.
+background = #121314
+# terminal.foreground
+foreground = #cccccc
+
+# editor.selectionBackground, opaque base. Upstream is #276782dd; Ghostty
+# selection colors are opaque, so the alpha is dropped rather than blended.
+selection-background = #276782
+# terminal.foreground
+selection-foreground = #cccccc
+
+# terminalCursor.background
+cursor-color = #bfbfbf
+# terminalCursor.foreground
+cursor-text = #191a1b
+
+# panel.border
+split-divider-color = #2a2b2c
+# editor.background
+unfocused-split-fill = #121314
+
+# --- the 16 ANSI colors -------------------------------------------------------
+# dark-2026.jsonc leaves every terminal.ansi* key commented out, so VS Code
+# falls back to its built-in defaults. Those defaults are what the integrated
+# terminal actually renders, so they are what this file reproduces — see
+# `M.ansi` in lua/dark-2026/palette.lua.
+
+# black
+palette = 0=#000000
+palette = 8=#666666
+
+# red
+palette = 1=#cd3131
+palette = 9=#f14c4c
+
+# green
+palette = 2=#0dbc79
+palette = 10=#23d18b
+
+# yellow
+palette = 3=#e5e510
+palette = 11=#f5f543
+
+# blue
+palette = 4=#2472c8
+palette = 12=#3b8eea
+
+# magenta
+palette = 5=#bc3fbc
+palette = 13=#d670d6
+
+# cyan
+palette = 6=#11a8cd
+palette = 14=#29b8db
+
+# white
+palette = 7=#e5e5e5
+palette = 15=#e5e5e5

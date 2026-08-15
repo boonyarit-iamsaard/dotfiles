@@ -2,58 +2,35 @@ git:
   log:
     showWholeGraph: true
   overrideGpg: true
-# common
-# gui:
-#   theme:
-#     selectedLineBgColor:
-#       - "#6272a4"
-# catppuccin macchiato
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#eed49f"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a5adcb"
-#     optionsTextColor:
-#       - "#8aadf4"
-#     selectedLineBgColor:
-#       - "#363a4f"
-#     cherryPickedCommitBgColor:
-#       - "#494d64"
-#     cherryPickedCommitFgColor:
-#       - "#eed49f"
-#     unstagedChangesColor:
-#       - "#ed8796"
-#     defaultFgColor:
-#       - "#cad3f5"
-#     searchingActiveBorderColor:
-#       - "#eed49f"
-#
-#   authorColors:
-#     "*": "#b7bdf8"
-# catppuccin mocha
+
+# Dark 2026
 gui:
   theme:
     activeBorderColor:
-      - "#f9e2af"
+      - "#3994bc"
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#8c8c8c"
     optionsTextColor:
-      - "#89b4fa"
+      - "#48a0c7"
     selectedLineBgColor:
-      - "#313244"
+      - "#276782"
+    inactiveViewSelectedLineBgColor:
+      - "#2c2d2e"
     cherryPickedCommitBgColor:
-      - "#45475a"
+      - "#37373d"
     cherryPickedCommitFgColor:
-      - "#f9e2af"
+      - "#e5ba7d"
+    markedBaseCommitBgColor:
+      - "#37373d"
+    markedBaseCommitFgColor:
+      - "#57a3f8"
     unstagedChangesColor:
-      - "#f38ba8"
+      - "#f48771"
     defaultFgColor:
-      - "#cdd6f4"
+      - "#cccccc"
     searchingActiveBorderColor:
-      - "#f9e2af"
+      - "#e5ba7d"
 
   authorColors:
-    "*": "#b4befe"
+    "*": "#57a3f8"
