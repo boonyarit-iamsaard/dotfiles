@@ -56,10 +56,11 @@
 
 # background-opacity      = 0.9
 # background-blur-radius  = 20
-cursor-invert-fg-bg     = true
+cursor-color            = cell-foreground
+cursor-text             = cell-background
 font-family             = "JetBrainsMono Nerd Font Mono"
 font-size               = 14
 adjust-cursor-thickness = 2
 macos-titlebar-style    = "transparent"
-theme                   = "dark-2026"
+theme                   = "github-dark-dimmed"
 window-colorspace       = "display-p3"

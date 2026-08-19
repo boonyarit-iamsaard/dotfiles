@@ -3,34 +3,74 @@ git:
     showWholeGraph: true
   overrideGpg: true
 
-# Dark 2026
+# GitHub Dark Dimmed (@primer/primitives dark_dimmed)
 gui:
   theme:
+    # accent.fg
     activeBorderColor:
-      - "#3994bc"
+      - "#539bf5"
       - bold
+    # border.default
     inactiveBorderColor:
-      - "#8c8c8c"
+      - "#444c56"
+    # scale.blue.2
     optionsTextColor:
-      - "#48a0c7"
+      - "#6cb6ff"
+    # scale.blue.8
     selectedLineBgColor:
-      - "#276782"
+      - "#143d79"
+    # border.muted
     inactiveViewSelectedLineBgColor:
-      - "#2c2d2e"
+      - "#373e47"
     cherryPickedCommitBgColor:
-      - "#37373d"
+      - "#373e47"
+    # scale.yellow.2
     cherryPickedCommitFgColor:
-      - "#e5ba7d"
+      - "#daaa3f"
     markedBaseCommitBgColor:
-      - "#37373d"
+      - "#373e47"
     markedBaseCommitFgColor:
-      - "#57a3f8"
+      - "#6cb6ff"
+    # danger.fg
     unstagedChangesColor:
-      - "#f48771"
+      - "#e5534b"
+    # fg.default
     defaultFgColor:
-      - "#cccccc"
+      - "#adbac7"
     searchingActiveBorderColor:
-      - "#e5ba7d"
+      - "#daaa3f"
 
   authorColors:
-    "*": "#57a3f8"
+    "*": "#6cb6ff"
+
+# Dark 2026
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#3994bc"
+#       - bold
+#     inactiveBorderColor:
+#       - "#8c8c8c"
+#     optionsTextColor:
+#       - "#48a0c7"
+#     selectedLineBgColor:
+#       - "#276782"
+#     inactiveViewSelectedLineBgColor:
+#       - "#2c2d2e"
+#     cherryPickedCommitBgColor:
+#       - "#37373d"
+#     cherryPickedCommitFgColor:
+#       - "#e5ba7d"
+#     markedBaseCommitBgColor:
+#       - "#37373d"
+#     markedBaseCommitFgColor:
+#       - "#57a3f8"
+#     unstagedChangesColor:
+#       - "#f48771"
+#     defaultFgColor:
+#       - "#cccccc"
+#     searchingActiveBorderColor:
+#       - "#e5ba7d"
+#
+#   authorColors:
+#     "*": "#57a3f8"
