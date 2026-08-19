@@ -1,7 +1,8 @@
 lastupdatecheck: 1726490949
 recentrepos:
-    - /Users/boonyarit.i/workspace/personal/dark-2026.nvim
     - /Users/boonyarit.i/dotfiles
+    - /Users/boonyarit.i/workspace/personal/glidepath
+    - /Users/boonyarit.i/workspace/personal/dark-2026.nvim
     - /Users/boonyarit.i/workspace/personal/skills
 startuppopupversion: 5
 didshowhunkstaginghint: true

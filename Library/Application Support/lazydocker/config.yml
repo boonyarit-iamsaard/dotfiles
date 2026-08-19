@@ -1,29 +1,29 @@
 # GitHub Dark Dimmed (@primer/primitives dark_dimmed)
-gui:
-  theme:
-    # accent.fg
-    activeBorderColor:
-      - "#539bf5"
-      - bold
-    # border.default
-    inactiveBorderColor:
-      - "#444c56"
-    # scale.blue.2
-    optionsTextColor:
-      - "#6cb6ff"
-    # scale.blue.8
-    selectedLineBgColor:
-      - "#143d79"
-
-# Dark 2026
 # gui:
 #   theme:
+#     # accent.fg
 #     activeBorderColor:
-#       - "#3994bc"
+#       - "#539bf5"
 #       - bold
+#     # border.default
 #     inactiveBorderColor:
-#       - "#8c8c8c"
+#       - "#444c56"
+#     # scale.blue.2
 #     optionsTextColor:
-#       - "#48a0c7"
+#       - "#6cb6ff"
+#     # scale.blue.8
 #     selectedLineBgColor:
-#       - "#276782"
+#       - "#143d79"
+
+# Dark 2026
+gui:
+  theme:
+    activeBorderColor:
+      - "#3994bc"
+      - bold
+    inactiveBorderColor:
+      - "#8c8c8c"
+    optionsTextColor:
+      - "#48a0c7"
+    selectedLineBgColor:
+      - "#276782"
