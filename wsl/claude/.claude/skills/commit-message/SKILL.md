@@ -1,6 +1,6 @@
 ---
 name: commit-message
-description: Commit message from staged changes, matched to the repository's own commit conventions. Use when the user asks for a conventional commit message.
+description: Commit message from staged changes, matched to the repository's own commit conventions. Use before every commit - when the user asks for a message, and whenever you are about to commit your own work.
 ---
 
 Generate one conventional commit message from the staged diff, written so it
@@ -44,10 +44,14 @@ Skip any subject that isn't conventional-commit shaped (a scaffold's
 - scope is optional; omit it when changes span multiple areas or have no clear
   scope, and otherwise follow the scope habit
 - subject must be written in imperative mood (e.g. `add`, `fix`, `remove`, not `added`, `fixes`, `removing`)
-- full message including type and scope must not exceed 72 characters
+- subject line including type and scope must not exceed 72 characters
 - no period at the end
-- no body, no footer - single line only
+- the subject line is the whole output; trailers a harness appends after it
+  (`Co-Authored-By`, `Signed-off-by`) belong to that harness, so leave them alone
 - everything must be lowercase - no uppercase letters anywhere, including acronyms, brand names, and proper nouns (e.g. `api`, `url`, `github`, `react`, `typescript`)
+
+A `commitlint` config in the repository encodes these same rules for the
+commit-msg hook. Where one exists it is authoritative: read it and follow it.
 
 ## Commit Types
 
