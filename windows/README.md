@@ -1,192 +1,229 @@
-# Dotfiles
+# Windows developer dotfiles
 
-Personal shell and tooling configuration managed with GNU Stow.
+Native Windows developer tooling and configuration managed with PowerShell and
+Scoop. This branch is independent from the macOS (`main`) and WSL (`wsl`)
+branches.
 
-## Go toolchain
+## Scope
 
-Go is installed with Homebrew and pinned so routine `brew upgrade` runs do not change the local Go version unexpectedly.
+- Scoop is the package manager for automated setup and updates.
+- `bootstrap.ps1` performs fresh-machine setup.
+- `scripts/update-system.ps1` updates only developer packages declared in
+  `manifests/packages.json`.
+- `scripts/link-dotfiles.ps1` creates Stow-like symbolic links from Windows
+  configuration locations into this repository.
+- `scripts/update-skills.ps1` maintains shared Codex CLI and Claude Code skills
+  from a separate, read-only checkout.
 
-Install Go:
+Windows Update, drivers, firmware, Store updates, services, registry tuning,
+and automatic reboots are deliberately outside the update script's scope.
 
-```bash
-brew install go
-brew pin go
-go version
+## Prerequisites
+
+Before running the repository scripts, the machine needs:
+
+- Native Windows 10 or Windows 11.
+- PowerShell 7.0 or newer (`pwsh`). Windows PowerShell 5.1 is not supported.
+- Internet access to GitHub and Scoop package sources during setup.
+- A standard, non-administrator PowerShell 7 terminal for Scoop and bootstrap.
+- Windows Developer Mode enabled so the standard user can create symbolic
+  links. Enabling it once requires administrator approval.
+- An execution policy that permits local scripts. This setup uses
+  `RemoteSigned` for the current user.
+
+Open Developer Mode directly with:
+
+```powershell
+Start-Process 'ms-settings:developers'
 ```
 
-Shell setup in `~/.zshrc`:
+On Windows 11 25H2 and newer, the toggle is under **Settings > System >
+Advanced > For developers**. Search Settings for `Developer Mode` if the path
+differs on an older Windows release.
 
-```zsh
-# Go
-export GOPATH="$HOME/go"
-export PATH="$PATH:$GOPATH/bin"
+Do not enable Device Portal or Device discovery; neither is required for these
+dotfiles.
+
+## Fresh-machine setup
+
+### 1. Prepare PowerShell 7, Scoop, and Git
+
+PowerShell 7 is a stage-zero prerequisite and is intentionally not installed by
+bootstrap. From a non-administrator PowerShell 7 terminal, install Scoop and
+Git when they are not already available:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+scoop install git
 ```
 
-Reload shell and verify:
+Confirm both commands are available:
 
-```bash
-source ~/.zshrc
-mkdir -p "$GOPATH/bin"
-which go
-go env GOROOT GOPATH
+```powershell
+scoop --version
+git --version
+pwsh --version
 ```
 
-Install common Go developer tools:
+### 2. Clone the Windows branch
 
-```bash
-go install golang.org/x/tools/gopls@latest
-go install github.com/go-delve/delve/cmd/dlv@latest
-go install honnef.co/go/tools/cmd/staticcheck@latest
+```powershell
+git clone --branch windows https://github.com/boonyarit-iamsaard/dotfiles.git "$HOME\dotfiles"
+Set-Location "$HOME\dotfiles"
+git branch --show-current
 ```
 
-Upgrade Go intentionally:
+The branch command must print `windows`. The repository is public, so cloning
+does not require GitHub authentication. Authentication is required only when
+pushing; Git Credential Manager can prompt for it on the first push.
 
-```bash
-brew unpin go
-brew upgrade go
-brew pin go
-go version
+Configure commit identity if a new Git installation does not have it yet:
+
+```powershell
+git config --global user.name "Boonyarit Iamsa-ard"
+git config --global user.email "boonyarit.iamsaard@gmail.com"
 ```
 
-After upgrading Go, refresh Go tools:
+### 3. Bootstrap
 
-```bash
-go install golang.org/x/tools/gopls@latest
-go install github.com/go-delve/delve/cmd/dlv@latest
-go install honnef.co/go/tools/cmd/staticcheck@latest
+From the repository root:
+
+```powershell
+.\bootstrap.ps1
 ```
 
-Verify the upgrade against the current project:
+Bootstrap verifies the platform, PowerShell version, execution policy, and
+Developer Mode before it installs declared packages, creates configuration
+links, clones or updates the skills checkout, links agent skills, and runs the
+final verifier. It is safe to rerun after a partial setup.
 
-```bash
-go test ./...
-go vet ./...
-staticcheck ./...
+## Verification
+
+Bootstrap runs the verifier automatically. Run it independently at any time:
+
+```powershell
+.\scripts\verify-system.ps1
 ```
 
-## Java toolchain
+It checks:
 
-Java is managed with SDKMAN. Eclipse Temurin (LTS) and Maven are installed
-through SDKMAN and pinned by version so they are not upgraded unexpectedly;
-upgrades are performed intentionally, mirroring the Go policy above. The SDKMAN
-tool itself is kept current by `update-system.sh`, which also flushes SDKMAN caches.
+- Windows and PowerShell prerequisites.
+- The effective execution policy and Developer Mode.
+- Git availability and the checked-out `windows` branch.
+- Scoop availability and Scoop ownership of every declared package.
+- Command availability for declared packages.
+- The existence and exact destination of every managed symbolic link.
+- The skills checkout and every managed Codex and Claude skill link.
 
-Install SDKMAN (requires `zip`; `unzip` is already available via Homebrew):
+For the initial lazygit setup, these manual checks provide additional detail:
 
-```bash
-brew install zip
-curl -s "https://get.sdkman.io" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
+```powershell
+Get-ExecutionPolicy
+scoop prefix lazygit
+lazygit --version
+lazygit --print-config-dir
+Get-Item "$env:LOCALAPPDATA\lazygit\config.yml" | Format-List FullName, LinkType, Target
 ```
 
-Install the JDK and Maven:
+Expected results:
 
-```bash
-sdk install java 21.0.11-tem   # Eclipse Temurin 21 LTS
-sdk install maven 3.9.16
-sdk current
+- The execution policy is `RemoteSigned`, `Unrestricted`, or `Bypass`.
+- Scoop prints lazygit's installation directory.
+- Lazygit prints a version and `%LOCALAPPDATA%\lazygit` as its config directory.
+- `LinkType` is `SymbolicLink` and `Target` points into
+  `dotfiles\config\lazygit\config.yml`.
+
+Confirm idempotency by running bootstrap a second time. Existing packages and
+correct links should be reported without being replaced.
+
+## Daily use
+
+Update the declared developer environment:
+
+```powershell
+.\scripts\update-system.ps1
 ```
 
-Shell setup in `~/.zshrc` (this block must remain at the end of the file):
+Link or unlink one configuration package:
 
-```zsh
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+```powershell
+.\scripts\link-dotfiles.ps1 lazygit
+.\scripts\link-dotfiles.ps1 lazygit -Delete
 ```
 
-Verify:
+The link script is idempotent and refuses to overwrite or delete unmanaged
+files.
 
-```bash
-java -version
-javac -version
-mvn -version
-echo "$JAVA_HOME"
+### Agent skills
+
+Shared skills come from the separate fork at
+`https://github.com/boonyarit-iamsaard/skills`, cloned by default to
+`$HOME\skills`. The checkout remains a normal Git repository; skill folders are
+linked individually into the user-wide discovery roots:
+
+- Codex CLI: `$HOME\.agents\skills`
+- Claude Code: `$HOME\.claude\skills`
+
+Update the clean checkout with a fast-forward-only pull and reconcile both
+consumers:
+
+```powershell
+.\scripts\update-skills.ps1
 ```
 
-Upgrade intentionally (for example, to a newer Temurin LTS):
+Preview changes or use the command in health checks without pulling:
 
-```bash
-sdk list java
-sdk install java 25.0.3-tem
-sdk default java 25.0.3-tem
-java -version
+```powershell
+.\scripts\update-skills.ps1 -DryRun
+.\scripts\update-skills.ps1 -Check
+.\scripts\update-skills.ps1 -NoPull
 ```
 
-When configuring IntelliJ or VS Code, point the project SDK at the concrete
-version directory rather than the `current` symlink, which moves when the
-default version changes. Print the concrete path for an installed version with:
+The first conversion from copied skill directories must be previewed and then
+run explicitly:
 
-```bash
-sdk home java 21.0.11-tem            # prints the concrete installation path
+```powershell
+.\scripts\update-skills.ps1 -DryRun -Migrate -NoPull
+.\scripts\update-skills.ps1 -Migrate -NoPull
 ```
 
-List the installed versions (ignoring the `current` symlink) with:
+Migration accepts only unchanged files whose Git blobs occur in the fork's
+history. It snapshots and archives verified copies under
+`%LOCALAPPDATA%\dotfiles\skill-sync\backups`, refuses modified or unmanaged
+collisions, and rolls completed moves back if link creation fails. The managed
+link inventory is stored outside the repository at
+`%LOCALAPPDATA%\dotfiles\skill-sync\managed-links.json`.
 
-```bash
-ls -d ~/.sdkman/candidates/java/*/ | grep -v '/current/$'
-```
+Only the promoted `engineering` and `productivity` buckets are installed from
+the fork. The personal `commit-message` and `typescript-house-style` skills
+live under `skills\shared` in this dotfiles repository and are declared
+explicitly in `manifests\skills.json`.
 
-## Agent skills
+## Manifests
 
-Matt Pocock's engineering and productivity skills are maintained in a
-read-only checkout at `~/workspace/personal/skills`. The dotfiles packages
-contain flattened, relative symlinks to that checkout so Claude Code, Codex,
-and other Agent Skills clients see the same skill versions.
+- `manifests/packages.json` declares Scoop buckets and developer packages.
+- `manifests/links.json` maps tracked files to native Windows destinations.
+- `manifests/skills.json` declares the skills checkout, promoted categories,
+  consumers, and locally owned skills.
 
-Update the checkout and reconcile both consumers with:
+Add future tools through these manifests so bootstrap, update, and verification
+continue to share one source of truth.
 
-```bash
-~/dotfiles/scripts/update-skills
-```
+## Troubleshooting
 
-Use `--dry-run` to preview changes, `--check` in diagnostics, and `--migrate`
-only for the initial conversion from copied skills. The updater requires
-Python 3 and uses only its standard library. It refuses to pull when the skills
-checkout has local changes. Routine reconciliation refuses to replace any real
-directory or unmanaged symlink. The one-time `--migrate` mode is deliberately
-broader: it matches each Claude `SKILL.md` to its grouped Agents counterpart,
-snapshots both complete consumer trees, and then archives the verified copies.
-
-The engineering and productivity source catalogs remain separate and are
-linked into each consumer as `ENGINEERING.md` and `PRODUCTIVITY.md`.
-
-### Stow layout
-
-The shared user-level skill directories remain real, while each managed skill
-folder is linked as a whole directory so Codex can discover it:
-
-```bash
-~/dotfiles/scripts/update-skills
-```
-
-The updater creates `~/.agents/skills` and `~/.claude/skills` before the final
-Stow operation, preventing Stow from collapsing either shared directory into a
-single symlink. It removes the old file-by-file layout and lets Stow fold only
-the individual skill directories. Tools that install skills in place (e.g.
-`npx impeccable`, which writes to `~/.claude/skills/impeccable`) can therefore
-replace only their own leaf directory without taking every skill offline.
-
-`impeccable` is **not** version-controlled (see `.gitignore`) and is excluded
-from both Stow packages by their `.stow-local-ignore` files. It is installed
-and updated in place by its own tool, which rewrites its files on every update:
-
-```bash
-npx impeccable update   # manages ~/.claude/skills/impeccable and ~/.agents/skills/impeccable in place
-```
-
-It is freely re-installable, so it lives as plain files alongside the stowed
-skills rather than as tracked symlinks. Custom dotfiles skills stay tracked;
-routine reconciliation leaves both custom and installer-owned directories
-untouched. Migration preserves nonmatching directories and backs up every path
-it archives.
-
-### When to re-stow
-
-`npx impeccable update` does **not** require a re-stow — it only rewrites its
-own folder. The skills updater re-stows both consumers automatically. Re-stow
-Claude manually only when:
-
-- You add (or rename) a custom skill under `claude/.claude/skills/` and need it
-  symlinked into `~/.claude/skills`.
-- An installer ever clobbers `~/.claude/skills` itself (the `--no-folding`
-  real-directory layout means a single re-stow restores every link).
+- **Scripts are disabled:** run
+  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then open a new
+  PowerShell terminal.
+- **Scoop is not recognized:** open a new non-administrator PowerShell terminal
+  after installation and rerun `scoop --version`.
+- **Symlink privilege error:** confirm Developer Mode is enabled. Do not run the
+  whole bootstrap as Administrator to work around it.
+- **Target already exists:** the linker intentionally refuses to overwrite it.
+  Inspect and back up the existing file yourself, then rerun the linker.
+- **Skills checkout has local changes:** commit or discard those changes in
+  `$HOME\skills`; the updater deliberately refuses to pull a dirty checkout.
+- **Skill target already exists:** inspect it first. Use `-Migrate` only for an
+  unchanged copied skill; modified or unrelated paths are never replaced.
+- **Wrong branch:** switch explicitly with `git switch windows` before running
+  setup or verification.
