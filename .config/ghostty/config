@@ -62,5 +62,5 @@ font-family             = "JetBrainsMono Nerd Font Mono"
 font-size               = 14
 adjust-cursor-thickness = 2
 macos-titlebar-style    = "transparent"
-theme                   = "dark-2026"
+theme                   = "catppuccin-mocha"
 window-colorspace       = "display-p3"
