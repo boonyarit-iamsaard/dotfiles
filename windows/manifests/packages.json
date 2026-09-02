@@ -5,7 +5,8 @@
     ],
     "packages": [
       "lazygit",
-      "nvm"
+      "nvm",
+      "oh-my-posh"
     ]
   }
 }
