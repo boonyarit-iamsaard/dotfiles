@@ -137,6 +137,33 @@ Expected results:
 Confirm idempotency by running bootstrap a second time. Existing packages and
 correct links should be reported without being replaced.
 
+## Shell configuration
+
+The PowerShell 7 profile and its Oh My Posh theme are tracked in `powershell`
+and linked into `%USERPROFILE%\Documents\PowerShell`:
+
+```powershell
+.\scripts\link-dotfiles.ps1 powershell
+```
+
+Oh My Posh renders the prompt and is declared in `manifests/packages.json`.
+One dependency is not a Scoop package and is installed separately:
+
+- `Terminal-Icons` comes from the PowerShell Gallery:
+  `Install-Module Terminal-Icons -Scope CurrentUser`. The profile imports it
+  only when it is present.
+
+The profile also provides:
+
+- Vi line editing with `jj` as the escape chord, plus history-based
+  prediction in list view. The cursor marks the mode: a blinking bar while
+  inserting, a blinking block in command mode. This needs a terminal that
+  understands `DECSCUSR`, such as Windows Terminal.
+- `lzg` for lazygit.
+
+A nerd font is required for the prompt glyphs. The `nerd-fonts` bucket
+provides them.
+
 ## Daily use
 
 Update the declared developer environment:

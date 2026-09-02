@@ -4,5 +4,15 @@
       "source": "config/lazygit/config.yml",
       "target": "%LOCALAPPDATA%\\lazygit\\config.yml"
     }
+  ],
+  "powershell": [
+    {
+      "source": "powershell/Microsoft.PowerShell_profile.ps1",
+      "target": "%USERPROFILE%\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
+    },
+    {
+      "source": "powershell/oh-my-posh",
+      "target": "%USERPROFILE%\\Documents\\PowerShell\\oh-my-posh"
+    }
   ]
 }
