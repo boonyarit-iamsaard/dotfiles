@@ -1,0 +1,8 @@
+{
+  "lazygit": [
+    {
+      "source": "config/lazygit/config.yml",
+      "target": "%LOCALAPPDATA%\\lazygit\\config.yml"
+    }
+  ]
+}

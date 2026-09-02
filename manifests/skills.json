@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "repository": {
+    "url": "https://github.com/boonyarit-iamsaard/skills.git",
+    "checkout": "{home}\\skills",
+    "categories": [
+      "engineering",
+      "productivity"
+    ]
+  },
+  "consumers": {
+    "codex": {
+      "target": "{home}\\.agents\\skills"
+    },
+    "claude": {
+      "target": "{home}\\.claude\\skills"
+    }
+  },
+  "localSkills": [
+    {
+      "name": "commit-message",
+      "source": "skills\\shared\\commit-message",
+      "consumers": [
+        "codex",
+        "claude"
+      ]
+    },
+    {
+      "name": "typescript-house-style",
+      "source": "skills\\shared\\typescript-house-style",
+      "consumers": [
+        "codex",
+        "claude"
+      ]
+    }
+  ]
+}

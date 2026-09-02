@@ -1,0 +1,11 @@
+{
+  "scoop": {
+    "buckets": [
+      "extras"
+    ],
+    "packages": [
+      "lazygit",
+      "nvm"
+    ]
+  }
+}
