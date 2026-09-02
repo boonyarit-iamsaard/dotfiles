@@ -72,3 +72,23 @@ if ($Host.Name -eq 'ConsoleHost' -and -not [Console]::IsOutputRedirected) {
 # Aliases
 # ---------------------------------------------------------------------------
 Set-Alias -Name lzg -Value lazygit
+
+# ---------------------------------------------------------------------------
+# Dotfiles scripts
+# ---------------------------------------------------------------------------
+# Alias the scripts that are run by hand, under the same names the README
+# uses. This file is symlinked into the repository, so the link target locates
+# the checkout without a hard-coded path.
+$profileItem = Get-Item -LiteralPath $PROFILE -Force -ErrorAction SilentlyContinue
+$profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
+
+if ($profileTarget) {
+    $dotfilesRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
+
+    foreach ($script in 'link-dotfiles', 'update-skills', 'update-system', 'verify-system') {
+        $scriptPath = Join-Path $dotfilesRoot "scripts\$script.ps1"
+        if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
+            Set-Alias -Name $script -Value $scriptPath -Scope Global
+        }
+    }
+}

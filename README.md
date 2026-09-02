@@ -160,6 +160,10 @@ The profile also provides:
   inserting, a blinking block in command mode. This needs a terminal that
   understands `DECSCUSR`, such as Windows Terminal.
 - `lzg` for lazygit.
+- `link-dotfiles`, `update-skills`, `update-system` and `verify-system` as
+  aliases for the matching scripts in `scripts`, so they run from any
+  directory. The profile finds the checkout through its own symlink target
+  rather than a hard-coded path.
 
 A nerd font is required for the prompt glyphs. The `nerd-fonts` bucket
 provides them.
