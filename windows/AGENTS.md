@@ -1,7 +1,7 @@
 # Windows dotfiles agent guide
 
-This branch configures a native Windows developer environment. Do not add
-macOS, Linux, or WSL setup to this branch.
+This branch configures a native Windows developer environment. Do not add macOS,
+Linux, or WSL setup to this branch.
 
 ## Canonical workflow
 
@@ -35,8 +35,8 @@ macOS, Linux, or WSL setup to this branch.
 - Keep all scripts safe to run repeatedly.
 - Never overwrite or remove an unmanaged user file. Stop with a clear error.
 - Prefer native PowerShell for bootstrap, package, environment, registry, and
-  symlink operations. Python may be used after bootstrap only when it provides
-  a clear advantage.
+  symlink operations. Python may be used after bootstrap only when it provides a
+  clear advantage.
 - Add packages and links through their manifests instead of one-off setup code.
 - Keep skill destination roots as real directories and link individual skills.
 - Never replace a copied or same-name skill unless migration proves its files
@@ -48,11 +48,13 @@ After changing bootstrap, manifests, linking, or update behavior:
 
 1. Parse every `.ps1` file with PowerShell's language parser.
 2. Parse every JSON manifest with `ConvertFrom-Json`.
-3. Run `git diff --check`.
-4. Run `scripts/verify-system.ps1` in a normal user PowerShell session.
-5. For link changes, run `scripts/link-dotfiles.ps1 <package>` twice and confirm
+3. After changing JSON, JSONC, or Markdown, run `pnpm install --frozen-lockfile`
+   and `pnpm format:check`.
+4. Run `git diff --check`.
+5. Run `scripts/verify-system.ps1` in a normal user PowerShell session.
+6. For link changes, run `scripts/link-dotfiles.ps1 <package>` twice and confirm
    the second run reports that the package is already linked.
-6. For skill changes, run `scripts/test-update-skills.ps1`, then run
+7. For skill changes, run `scripts/test-update-skills.ps1`, then run
    `scripts/update-skills.ps1 -Check -NoPull` after the live links are set up.
 
 Do not delete and recreate a working user link merely to test setup. Do not run

@@ -170,9 +170,7 @@
           "type": "text",
           "style": "plain",
           "foreground": "p:green",
-          "foreground_templates": [
-            "{{ if gt .Code 0 }}p:red{{ end }}"
-          ],
+          "foreground_templates": ["{{ if gt .Code 0 }}p:red{{ end }}"],
           "template": "󰄛 ❯ "
         }
       ]
@@ -181,9 +179,7 @@
   "transient_prompt": {
     "background": "transparent",
     "foreground": "p:green",
-    "foreground_templates": [
-      "{{ if gt .Code 0 }}p:red{{ end }}"
-    ],
+    "foreground_templates": ["{{ if gt .Code 0 }}p:red{{ end }}"],
     "template": "󰄛 ❯ "
   },
   "secondary_prompt": {

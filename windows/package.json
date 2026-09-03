@@ -1,0 +1,11 @@
+{
+  "name": "windows-dotfiles",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write \"**/*.{json,jsonc,md}\"",
+    "format:check": "prettier --check \"**/*.{json,jsonc,md}\""
+  },
+  "devDependencies": {
+    "prettier": "3.9.6"
+  }
+}

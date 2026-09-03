@@ -15,8 +15,8 @@ branches.
 - `scripts/update-skills.ps1` maintains shared Codex CLI and Claude Code skills
   from a separate, read-only checkout.
 
-Windows Update, drivers, firmware, Store updates, services, registry tuning,
-and automatic reboots are deliberately outside the update script's scope.
+Windows Update, drivers, firmware, Store updates, services, registry tuning, and
+automatic reboots are deliberately outside the update script's scope.
 
 ## Prerequisites
 
@@ -26,10 +26,10 @@ Before running the repository scripts, the machine needs:
 - PowerShell 7.0 or newer (`pwsh`). Windows PowerShell 5.1 is not supported.
 - Internet access to GitHub and Scoop package sources during setup.
 - A standard, non-administrator PowerShell 7 terminal for Scoop and bootstrap.
-- Windows Developer Mode enabled so the standard user can create symbolic
-  links. Enabling it once requires administrator approval.
-- An execution policy that permits local scripts. This setup uses
-  `RemoteSigned` for the current user.
+- Windows Developer Mode enabled so the standard user can create symbolic links.
+  Enabling it once requires administrator approval.
+- An execution policy that permits local scripts. This setup uses `RemoteSigned`
+  for the current user.
 
 Open Developer Mode directly with:
 
@@ -49,8 +49,8 @@ dotfiles.
 ### 1. Prepare PowerShell 7, Scoop, and Git
 
 PowerShell 7 is a stage-zero prerequisite and is intentionally not installed by
-bootstrap. From a non-administrator PowerShell 7 terminal, install Scoop and
-Git when they are not already available:
+bootstrap. From a non-administrator PowerShell 7 terminal, install Scoop and Git
+when they are not already available:
 
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
@@ -97,6 +97,10 @@ Bootstrap verifies the platform, PowerShell version, execution policy, and
 Developer Mode before it installs declared packages, creates configuration
 links, clones or updates the skills checkout, links agent skills, and runs the
 final verifier. It is safe to rerun after a partial setup.
+
+Scoop installs pnpm as a standalone executable. The PowerShell profile puts
+Scoop's shim directory before NVM's active Node directory so an older Corepack
+shim cannot shadow the declared pnpm package.
 
 ## Verification
 
@@ -157,20 +161,32 @@ alongside it. One dependency is not a Scoop package and is installed separately:
 
 The profile also provides:
 
-- Vi line editing with `jj` as the escape chord, plus history-based
-  prediction in list view. The cursor marks the mode: a blinking bar while
-  inserting, a blinking block in command mode. This needs a terminal that
-  understands `DECSCUSR`, such as Windows Terminal.
+- Vi line editing with `jj` as the escape chord, plus history-based prediction
+  in list view. The cursor marks the mode: a blinking bar while inserting, a
+  blinking block in command mode. This needs a terminal that understands
+  `DECSCUSR`, such as Windows Terminal.
 - `lzg` for lazygit.
 - `link-dotfiles`, `update-skills`, `update-system` and `verify-system` as
-  aliases for the matching scripts in `scripts`, so they run from any
-  directory. The profile finds the checkout through its own symlink target
-  rather than a hard-coded path.
+  aliases for the matching scripts in `scripts`, so they run from any directory.
+  The profile finds the checkout through its own symlink target rather than a
+  hard-coded path.
 
-A nerd font is required for the prompt glyphs. The `nerd-fonts` bucket
-provides them.
+A nerd font is required for the prompt glyphs. The `nerd-fonts` bucket provides
+them.
 
 ## Daily use
+
+Format tracked JSON, JSONC, and Markdown files with the repository-pinned
+Prettier version:
+
+```powershell
+pnpm install --frozen-lockfile
+pnpm format
+pnpm format:check
+```
+
+The Neovim and pnpm lockfiles are generated files and are excluded from this
+formatting pass.
 
 Update the declared developer environment:
 
@@ -229,9 +245,9 @@ link inventory is stored outside the repository at
 `%LOCALAPPDATA%\dotfiles\skill-sync\managed-links.json`.
 
 Only the promoted `engineering` and `productivity` buckets are installed from
-the fork. The personal `commit-message` and `typescript-house-style` skills
-live under `skills\shared` in this dotfiles repository and are declared
-explicitly in `manifests\skills.json`.
+the fork. The personal `commit-message` and `typescript-house-style` skills live
+under `skills\shared` in this dotfiles repository and are declared explicitly in
+`manifests\skills.json`.
 
 ## Manifests
 
