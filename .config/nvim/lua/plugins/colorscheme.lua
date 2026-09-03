@@ -1,14 +1,14 @@
 -- local helpers = require("helpers")
 
 return {
-  {
-    "boonyarit-iamsaard/dark-2026.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("dark-2026").setup({})
-    end,
-  },
+  -- {
+  --   "boonyarit-iamsaard/dark-2026.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require("dark-2026").setup({})
+  --   end,
+  -- },
 
   -- {
   --   "folke/tokyonight.nvim",
@@ -91,10 +91,10 @@ return {
   --   end,
   -- },
 
-  {
-    "Mofiqul/vscode.nvim",
-    priority = 1000,
-  },
+  -- {
+  --   "Mofiqul/vscode.nvim",
+  --   priority = 1000,
+  -- },
 
   {
     "catppuccin/nvim",
