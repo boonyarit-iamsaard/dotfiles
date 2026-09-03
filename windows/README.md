@@ -139,15 +139,17 @@ correct links should be reported without being replaced.
 
 ## Shell configuration
 
-The PowerShell 7 profile and its Oh My Posh theme are tracked in `powershell`
+The PowerShell 7 profile and its Oh My Posh themes are tracked in `powershell`
 and linked into `%USERPROFILE%\Documents\PowerShell`:
 
 ```powershell
 .\scripts\link-dotfiles.ps1 powershell
 ```
 
-Oh My Posh renders the prompt and is declared in `manifests/packages.json`.
-One dependency is not a Scoop package and is installed separately:
+Oh My Posh renders a native equivalent of Starship's Nerd Font Symbols preset
+from `powershell\oh-my-posh\nerd-font-symbols.omp.json` and is declared in
+`manifests/packages.json`. The previous Catppuccin Mocha theme remains available
+alongside it. One dependency is not a Scoop package and is installed separately:
 
 - `Terminal-Icons` comes from the PowerShell Gallery:
   `Install-Module Terminal-Icons -Scope CurrentUser`. The profile imports it
