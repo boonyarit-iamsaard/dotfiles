@@ -6,6 +6,26 @@
 # Documents\PowerShell either way.
 
 # ---------------------------------------------------------------------------
+# Environment
+# ---------------------------------------------------------------------------
+# NVM places the active Node directory before Scoop's shims. Prefer Scoop so
+# standalone tools such as pnpm are not shadowed by Node's Corepack shims.
+$scoopRoot = if ($env:SCOOP) {
+    $env:SCOOP
+}
+else {
+    Join-Path ([Environment]::GetFolderPath('UserProfile')) 'scoop'
+}
+$scoopShims = Join-Path $scoopRoot 'shims'
+
+if (Test-Path -LiteralPath $scoopShims -PathType Container) {
+    $pathEntries = @($env:Path -split ';' | Where-Object {
+            $_ -and $_.TrimEnd('\') -ne $scoopShims.TrimEnd('\')
+        })
+    $env:Path = (@($scoopShims) + $pathEntries) -join ';'
+}
+
+# ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
 # Oh My Posh renders the prompt with Starship's Nerd Font Symbols preset style.

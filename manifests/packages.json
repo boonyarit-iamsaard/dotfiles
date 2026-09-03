@@ -1,12 +1,6 @@
 {
   "scoop": {
-    "buckets": [
-      "extras"
-    ],
-    "packages": [
-      "lazygit",
-      "nvm",
-      "oh-my-posh"
-    ]
+    "buckets": ["extras"],
+    "packages": ["lazygit", "nvm", "oh-my-posh", "pnpm"]
   }
 }

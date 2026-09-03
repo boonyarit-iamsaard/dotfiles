@@ -5,3 +5,6 @@
 *.ttc
 *.woff
 *.woff2
+
+# Repository-local formatting dependencies.
+/node_modules/

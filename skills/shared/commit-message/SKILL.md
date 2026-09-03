@@ -1,6 +1,9 @@
 ---
 name: commit-message
-description: Commit message from staged changes, matched to the repository's own commit conventions. Use before every commit - when the user asks for a message, and whenever you are about to commit your own work.
+description:
+  Commit message from staged changes, matched to the repository's own commit
+  conventions. Use before every commit - when the user asks for a message, and
+  whenever you are about to commit your own work.
 ---
 
 Generate one conventional commit message from the staged diff, written so it
@@ -11,7 +14,8 @@ looks like it belongs in this repository's history.
 1. Run `git diff --staged` and inspect the complete staged diff. This step is
    complete only when every staged file's behavioral role is accounted for.
 2. Run `git log --no-merges --pretty=format:'%s' -50` and derive the
-   repository's pattern (see [Matching the repository](#matching-the-repository)).
+   repository's pattern (see
+   [Matching the repository](#matching-the-repository)).
 3. Pick the type and scope per [Commit Types](#commit-types) and the scope
    habit, preferring what the repository already uses for this kind of change.
 4. Output exactly one line satisfying every format rule - no explanation, no
@@ -25,15 +29,16 @@ so treat them as authoritative for wording and mirror them:
 - **verbs** - reuse the imperative verbs already in use rather than a synonym
   (`configure`, not `set up`; `initialize`, not `bootstrap`). Reach for a new
   verb only when no existing one fits the change.
-- **naming** - name tools and features the way history names them (`postgres and
-  mailpit`, `github actions`), including how much is spelled out.
+- **naming** - name tools and features the way history names them
+  (`postgres and mailpit`, `github actions`), including how much is spelled out.
 - **granularity** - match the observed subject length and level of detail. Terse
   histories get terse subjects; descriptive histories get descriptive ones.
 - **scope** - mirror the scope habit: if subjects carry a `(scope)`, use one and
   reuse an existing scope name verbatim; if they don't, omit it.
 
 Skip any subject that isn't conventional-commit shaped (a scaffold's
-`Initial commit`). With no history yet, set the pattern using the defaults below.
+`Initial commit`). With no history yet, set the pattern using the defaults
+below.
 
 ## Format
 
@@ -43,12 +48,16 @@ Skip any subject that isn't conventional-commit shaped (a scaffold's
 
 - scope is optional; omit it when changes span multiple areas or have no clear
   scope, and otherwise follow the scope habit
-- subject must be written in imperative mood (e.g. `add`, `fix`, `remove`, not `added`, `fixes`, `removing`)
+- subject must be written in imperative mood (e.g. `add`, `fix`, `remove`, not
+  `added`, `fixes`, `removing`)
 - subject line including type and scope must not exceed 72 characters
 - no period at the end
 - the subject line is the whole output; trailers a harness appends after it
-  (`Co-Authored-By`, `Signed-off-by`) belong to that harness, so leave them alone
-- everything must be lowercase - no uppercase letters anywhere, including acronyms, brand names, and proper nouns (e.g. `api`, `url`, `github`, `react`, `typescript`)
+  (`Co-Authored-By`, `Signed-off-by`) belong to that harness, so leave them
+  alone
+- everything must be lowercase - no uppercase letters anywhere, including
+  acronyms, brand names, and proper nouns (e.g. `api`, `url`, `github`, `react`,
+  `typescript`)
 
 A `commitlint` config in the repository encodes these same rules for the
 commit-msg hook. Where one exists it is authoritative: read it and follow it.
@@ -95,6 +104,6 @@ ci: configure github actions workflow and act
 chore: configure prettier and editorconfig
 ```
 
-Pattern: no scopes, `configure` as the setup verb, tool names spelled out.
-A staged Tailwind setup therefore yields `chore: configure tailwind css`,
-not `chore(build): set up Tailwind`.
+Pattern: no scopes, `configure` as the setup verb, tool names spelled out. A
+staged Tailwind setup therefore yields `chore: configure tailwind css`, not
+`chore(build): set up Tailwind`.

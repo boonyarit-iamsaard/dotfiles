@@ -95,9 +95,7 @@
           "type": "text",
           "style": "plain",
           "foreground": "green",
-          "foreground_templates": [
-            "{{ if gt .Code 0 }}red{{ end }}"
-          ],
+          "foreground_templates": ["{{ if gt .Code 0 }}red{{ end }}"],
           "template": "❯ "
         }
       ]
@@ -106,9 +104,7 @@
   "transient_prompt": {
     "background": "transparent",
     "foreground": "green",
-    "foreground_templates": [
-      "{{ if gt .Code 0 }}red{{ end }}"
-    ],
+    "foreground_templates": ["{{ if gt .Code 0 }}red{{ end }}"],
     "template": "❯ "
   },
   "secondary_prompt": {
