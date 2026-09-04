@@ -18,11 +18,33 @@ else {
 }
 $scoopShims = Join-Path $scoopRoot 'shims'
 
-if (Test-Path -LiteralPath $scoopShims -PathType Container) {
+$preferredPathEntries = @(
+    if (Test-Path -LiteralPath $scoopShims -PathType Container) {
+        $scoopShims
+    }
+)
+
+$androidSdkRoot = Join-Path $env:LOCALAPPDATA 'Android\Sdk'
+if (Test-Path -LiteralPath $androidSdkRoot -PathType Container) {
+    $env:ANDROID_HOME = $androidSdkRoot
+    # ANDROID_SDK_ROOT is deprecated, but some existing tools still read it.
+    $env:ANDROID_SDK_ROOT = $androidSdkRoot
+
+    $preferredPathEntries += @(
+        'platform-tools'
+        'emulator'
+        'cmdline-tools\latest\bin'
+    ) | ForEach-Object { Join-Path $androidSdkRoot $_ } | Where-Object {
+        Test-Path -LiteralPath $_ -PathType Container
+    }
+}
+
+if ($preferredPathEntries) {
+    $normalizedPreferredEntries = @($preferredPathEntries | ForEach-Object { $_.TrimEnd('\') })
     $pathEntries = @($env:Path -split ';' | Where-Object {
-            $_ -and $_.TrimEnd('\') -ne $scoopShims.TrimEnd('\')
+            $_ -and $_.TrimEnd('\') -notin $normalizedPreferredEntries
         })
-    $env:Path = (@($scoopShims) + $pathEntries) -join ';'
+    $env:Path = (@($preferredPathEntries) + $pathEntries) -join ';'
 }
 
 # ---------------------------------------------------------------------------
@@ -53,38 +75,16 @@ Import-Module PSReadLine
 # ---------------------------------------------------------------------------
 # Line editing
 # ---------------------------------------------------------------------------
-# Vi editing with `jj` as the escape chord, matching `bindkey jj vi-cmd-mode`
-# from the zsh configuration. Some embedded console hosts report interactivity
-# without supporting PSReadLine rendering, hence the guard and the try block.
+# Some embedded console hosts report interactivity without supporting
+# PSReadLine rendering, hence the guard and the try block.
 if ($Host.Name -eq 'ConsoleHost' -and -not [Console]::IsOutputRedirected) {
     try {
-        Set-PSReadLineOption -EditMode Vi -ErrorAction Stop
-        # Cursor shape marks the mode: a blinking bar while inserting and a
-        # blinking block in command mode. PSReadLine's own `Cursor` indicator
-        # only switches between an underline and a block.
-        Set-PSReadLineOption -ViModeIndicator Script -ErrorAction Stop
-        Set-PSReadLineOption -ViModeChangeHandler {
-            if ($args[0] -eq 'Command') {
-                Write-Host -NoNewline "`e[1 q"
-            }
-            else {
-                Write-Host -NoNewline "`e[5 q"
-            }
-        } -ErrorAction Stop
         Set-PSReadLineOption -PredictionSource History -ErrorAction Stop
         Set-PSReadLineOption -PredictionViewStyle ListView -ErrorAction Stop
-
-        Set-PSReadLineKeyHandler -Chord 'j,j' -ViMode Insert -BriefDescription 'ViCommandMode' `
-            -LongDescription 'Leave insert mode, like jj in vi-mode zsh.' -ScriptBlock {
-            [Microsoft.PowerShell.PSConsoleReadLine]::ViCommandMode()
-        }
     }
     catch {
         # Leave PSReadLine at its defaults when the host cannot support these.
     }
-
-    # The prompt starts in insert mode, so match the cursor to it.
-    Write-Host -NoNewline "`e[5 q"
 }
 
 # ---------------------------------------------------------------------------
