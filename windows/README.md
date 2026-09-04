@@ -116,7 +116,8 @@ It checks:
 - The effective execution policy and Developer Mode.
 - Git availability and the checked-out `windows` branch.
 - Scoop availability and Scoop ownership of every declared package.
-- Command availability for declared packages.
+- Command availability for declared packages. Packages whose executable names
+  differ from their Scoop names declare those commands in `packageCommands`.
 - The existence and exact destination of every managed symbolic link.
 - The skills checkout and every managed Codex and Claude skill link.
 
@@ -161,10 +162,11 @@ alongside it. One dependency is not a Scoop package and is installed separately:
 
 The profile also provides:
 
-- Vi line editing with `jj` as the escape chord, plus history-based prediction
-  in list view. The cursor marks the mode: a blinking bar while inserting, a
-  blinking block in command mode. This needs a terminal that understands
-  `DECSCUSR`, such as Windows Terminal.
+- `ANDROID_HOME` and the compatibility variable `ANDROID_SDK_ROOT` when the
+  Android SDK exists at `%LOCALAPPDATA%\Android\Sdk`. It adds Platform Tools,
+  Emulator, and the latest Command-line Tools to `PATH`; versioned Build Tools
+  remain managed by Gradle and the Android SDK Manager.
+- History-based command prediction in list view.
 - `lzg` for lazygit.
 - `link-dotfiles`, `update-skills`, `update-system` and `verify-system` as
   aliases for the matching scripts in `scripts`, so they run from any directory.

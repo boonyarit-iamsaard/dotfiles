@@ -61,8 +61,16 @@ foreach ($package in $packageManifest.scoop.packages) {
         }
     }
 
-    if (-not (Get-Command $package -ErrorAction SilentlyContinue)) {
-        $failures.Add("Command is not available: $package")
+    $packageCommandMap = $packageManifest.scoop.PSObject.Properties['packageCommands']
+    $commandProperty = if ($packageCommandMap) {
+        $packageCommandMap.Value.PSObject.Properties[$package]
+    }
+    $commands = if ($commandProperty) { @($commandProperty.Value) } else { @($package) }
+
+    foreach ($command in $commands) {
+        if (-not (Get-Command $command -ErrorAction SilentlyContinue)) {
+            $failures.Add("Command is not available for ${package}: $command")
+        }
     }
 }
 
