@@ -98,9 +98,9 @@ Developer Mode before it installs declared packages, creates configuration
 links, clones or updates the skills checkout, links agent skills, and runs the
 final verifier. It is safe to rerun after a partial setup.
 
-Scoop installs pnpm as a standalone executable. The PowerShell profile puts
-Scoop's shim directory before NVM's active Node directory so an older Corepack
-shim cannot shadow the declared pnpm package.
+pnpm is provided by the Corepack shim bundled with the active NVM-managed Node
+installation. Projects select their pnpm version through the `packageManager`
+field; pnpm is intentionally not installed as a standalone Scoop package.
 
 ## Verification
 

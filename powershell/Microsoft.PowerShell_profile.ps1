@@ -8,8 +8,9 @@
 # ---------------------------------------------------------------------------
 # Environment
 # ---------------------------------------------------------------------------
-# NVM places the active Node directory before Scoop's shims. Prefer Scoop so
-# standalone tools such as pnpm are not shadowed by Node's Corepack shims.
+# NVM places the active Node directory before Scoop's shims. Prefer Scoop for
+# declared standalone tools; pnpm is intentionally provided by Node's Corepack
+# shim so projects can select their package-manager version.
 $scoopRoot = if ($env:SCOOP) {
     $env:SCOOP
 }
