@@ -23,6 +23,16 @@
       "name": "typescript-house-style",
       "source": "skills\\shared\\typescript-house-style",
       "consumers": ["codex", "claude"]
+    },
+    {
+      "name": "impeccable",
+      "source": "skills\\vendor\\impeccable\\codex",
+      "consumers": ["codex"]
+    },
+    {
+      "name": "impeccable",
+      "source": "skills\\vendor\\impeccable\\claude",
+      "consumers": ["claude"]
     }
   ]
 }

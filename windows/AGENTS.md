@@ -11,6 +11,8 @@ Linux, or WSL setup to this branch.
 - `manifests/links.json` is the source of truth for managed config links.
 - `manifests/skills.json` is the source of truth for shared and local agent
   skills.
+- Impeccable is a vendored, provider-specific skill. Before installing,
+  refreshing, or repairing it, read [docs/impeccable.md](docs/impeccable.md).
 - `scripts/update-system.ps1` updates only developer packages declared in the
   manifest.
 - `scripts/update-skills.ps1` updates skills only when invoked directly; do not

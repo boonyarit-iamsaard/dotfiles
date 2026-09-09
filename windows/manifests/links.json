@@ -14,5 +14,23 @@
       "source": "powershell/oh-my-posh",
       "target": "%USERPROFILE%\\Documents\\PowerShell\\oh-my-posh"
     }
+  ],
+  "impeccable": [
+    {
+      "source": "skills/vendor/impeccable/claude-agents/impeccable-asset-producer.md",
+      "target": "%USERPROFILE%\\.claude\\agents\\impeccable-asset-producer.md"
+    },
+    {
+      "source": "skills/vendor/impeccable/claude-agents/impeccable-documenter.md",
+      "target": "%USERPROFILE%\\.claude\\agents\\impeccable-documenter.md"
+    },
+    {
+      "source": "skills/vendor/impeccable/claude-agents/impeccable-finish-reviewer.md",
+      "target": "%USERPROFILE%\\.claude\\agents\\impeccable-finish-reviewer.md"
+    },
+    {
+      "source": "skills/vendor/impeccable/claude-agents/impeccable-manual-edit-applier.md",
+      "target": "%USERPROFILE%\\.claude\\agents\\impeccable-manual-edit-applier.md"
+    }
   ]
 }

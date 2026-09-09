@@ -248,8 +248,14 @@ link inventory is stored outside the repository at
 
 Only the promoted `engineering` and `productivity` buckets are installed from
 the fork. The personal `commit-message` and `typescript-house-style` skills live
-under `skills\shared` in this dotfiles repository and are declared explicitly in
-`manifests\skills.json`.
+under `skills\shared` in this dotfiles repository. Impeccable's
+provider-specific Codex and Claude builds live under `skills\vendor`. All three
+are declared explicitly in `manifests\skills.json`.
+
+Impeccable also supplies Claude subagents. They are linked individually through
+`manifests\links.json`, leaving `$HOME\.claude\agents` as a real directory. See
+[Impeccable maintenance](docs/impeccable.md) for provenance, updates, hooks, and
+verification.
 
 ## Manifests
 
