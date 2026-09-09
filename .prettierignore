@@ -1,2 +1,5 @@
 config/nvim/lazy-lock.json
 pnpm-lock.yaml
+
+# Third-party generated payload; preserve upstream formatting for reviewable refreshes.
+skills/vendor/
