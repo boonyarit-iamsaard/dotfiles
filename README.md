@@ -10,6 +10,8 @@ branches.
 - `bootstrap.ps1` performs fresh-machine setup.
 - `scripts/update-system.ps1` updates only developer packages declared in
   `manifests/packages.json`.
+- `scripts/set-environment.ps1` persists declared user environment variables and
+  `PATH` entries from `manifests/environment.json`.
 - `scripts/link-dotfiles.ps1` creates Stow-like symbolic links from Windows
   configuration locations into this repository.
 - `scripts/update-skills.ps1` maintains shared Codex CLI and Claude Code skills
@@ -94,9 +96,10 @@ From the repository root:
 ```
 
 Bootstrap verifies the platform, PowerShell version, execution policy, and
-Developer Mode before it installs declared packages, creates configuration
-links, clones or updates the skills checkout, links agent skills, and runs the
-final verifier. It is safe to rerun after a partial setup.
+Developer Mode before it installs declared packages, applies the user
+environment, creates configuration links, clones or updates the skills checkout,
+links agent skills, and runs the final verifier. It is safe to rerun after a
+partial setup.
 
 pnpm is provided by the Corepack shim bundled with the active NVM-managed Node
 installation. Projects select their pnpm version through the `packageManager`
@@ -118,6 +121,8 @@ It checks:
 - Scoop availability and Scoop ownership of every declared package.
 - Command availability for declared packages. Packages whose executable names
   differ from their Scoop names declare those commands in `packageCommands`.
+- Managed user environment variables and prioritized, duplicate-free `PATH`
+  entries.
 - The existence and exact destination of every managed symbolic link.
 - The skills checkout and every managed Codex and Claude skill link.
 
@@ -160,18 +165,26 @@ alongside it. One dependency is not a Scoop package and is installed separately:
   `Install-Module Terminal-Icons -Scope CurrentUser`. The profile imports it
   only when it is present.
 
+The user environment persists `ANDROID_HOME` and adds Platform Tools, Emulator,
+and the latest Command-line Tools to `PATH`. It also keeps Temurin 25 as the
+default JDK. Apply or check it independently with:
+
+```powershell
+.\scripts\set-environment.ps1
+.\scripts\set-environment.ps1 -Check
+```
+
 The profile also provides:
 
-- `ANDROID_HOME` and the compatibility variable `ANDROID_SDK_ROOT` when the
-  Android SDK exists at `%LOCALAPPDATA%\Android\Sdk`. It adds Platform Tools,
-  Emulator, and the latest Command-line Tools to `PATH`; versioned Build Tools
-  remain managed by Gradle and the Android SDK Manager.
+- `jdk17` and `jdk25` to switch Java for the current PowerShell session. Use
+  `jdk17` before React Native Android builds; Temurin 25 remains the default for
+  other development.
 - History-based command prediction in list view.
 - `lzg` for lazygit.
-- `link-dotfiles`, `update-skills`, `update-system` and `verify-system` as
-  aliases for the matching scripts in `scripts`, so they run from any directory.
-  The profile finds the checkout through its own symlink target rather than a
-  hard-coded path.
+- `link-dotfiles`, `set-environment`, `update-skills`, `update-system` and
+  `verify-system` as aliases for the matching scripts in `scripts`, so they run
+  from any directory. The profile finds the checkout through its own symlink
+  target rather than a hard-coded path.
 
 A nerd font is required for the prompt glyphs. The `nerd-fonts` bucket provides
 them.
@@ -260,6 +273,8 @@ verification.
 ## Manifests
 
 - `manifests/packages.json` declares Scoop buckets and developer packages.
+- `manifests/environment.json` declares managed user environment variables and
+  prioritized `PATH` entries.
 - `manifests/links.json` maps tracked files to native Windows destinations.
 - `manifests/skills.json` declares the skills checkout, promoted categories,
   consumers, and locally owned skills.

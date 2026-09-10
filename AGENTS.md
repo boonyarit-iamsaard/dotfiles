@@ -8,6 +8,8 @@ Linux, or WSL setup to this branch.
 - `bootstrap.ps1` is the fresh-machine entrypoint.
 - `manifests/packages.json` is the source of truth for Scoop buckets and
   developer packages.
+- `manifests/environment.json` is the source of truth for managed user
+  environment variables and `PATH` entries.
 - `manifests/links.json` is the source of truth for managed config links.
 - `manifests/skills.json` is the source of truth for shared and local agent
   skills.
@@ -15,6 +17,7 @@ Linux, or WSL setup to this branch.
   refreshing, or repairing it, read [docs/impeccable.md](docs/impeccable.md).
 - `scripts/update-system.ps1` updates only developer packages declared in the
   manifest.
+- `scripts/set-environment.ps1` idempotently applies the environment manifest.
 - `scripts/update-skills.ps1` updates skills only when invoked directly; do not
   call it from `scripts/update-system.ps1`.
 - `scripts/verify-system.ps1` must pass after setup changes.

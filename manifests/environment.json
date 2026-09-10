@@ -1,0 +1,12 @@
+{
+  "directoryVariables": {
+    "ANDROID_HOME": "%LOCALAPPDATA%\\Android\\Sdk",
+    "JAVA_HOME": "%USERPROFILE%\\scoop\\apps\\temurin25-jdk\\current"
+  },
+  "pathEntries": [
+    "%USERPROFILE%\\scoop\\apps\\temurin25-jdk\\current\\bin",
+    "%LOCALAPPDATA%\\Android\\Sdk\\platform-tools",
+    "%LOCALAPPDATA%\\Android\\Sdk\\emulator",
+    "%LOCALAPPDATA%\\Android\\Sdk\\cmdline-tools\\latest\\bin"
+  ]
+}

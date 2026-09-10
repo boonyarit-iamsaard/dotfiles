@@ -1,8 +1,15 @@
 {
   "scoop": {
     "buckets": ["extras", "java"],
-    "packages": ["lazygit", "nvm", "oh-my-posh", "temurin25-jdk"],
+    "packages": [
+      "lazygit",
+      "nvm",
+      "oh-my-posh",
+      "temurin17-jdk",
+      "temurin25-jdk"
+    ],
     "packageCommands": {
+      "temurin17-jdk": [],
       "temurin25-jdk": ["java", "javac"]
     }
   }
