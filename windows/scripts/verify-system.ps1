@@ -7,8 +7,10 @@ $ErrorActionPreference = 'Stop'
 $dotfilesRoot = Split-Path -Parent $PSScriptRoot
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedWindowsLinks.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'modules\SkillInventory.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'modules\ManagedEnvironment.psm1') -Force
 
 $packageManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\packages.json') | ConvertFrom-Json
+$environmentManifestPath = Join-Path $dotfilesRoot 'manifests\environment.json'
 $linkManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\links.json') | ConvertFrom-Json
 $skillManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\skills.json') | ConvertFrom-Json
 $failures = [Collections.Generic.List[string]]::new()
@@ -72,6 +74,10 @@ foreach ($package in $packageManifest.scoop.packages) {
             $failures.Add("Command is not available for ${package}: $command")
         }
     }
+}
+
+foreach ($failure in @(Test-ManagedEnvironment -ManifestPath $environmentManifestPath -Target User)) {
+    $failures.Add($failure)
 }
 
 foreach ($packageName in $linkManifest.PSObject.Properties.Name) {

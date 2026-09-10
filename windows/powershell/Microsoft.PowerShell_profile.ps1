@@ -25,21 +25,6 @@ $preferredPathEntries = @(
     }
 )
 
-$androidSdkRoot = Join-Path $env:LOCALAPPDATA 'Android\Sdk'
-if (Test-Path -LiteralPath $androidSdkRoot -PathType Container) {
-    $env:ANDROID_HOME = $androidSdkRoot
-    # ANDROID_SDK_ROOT is deprecated, but some existing tools still read it.
-    $env:ANDROID_SDK_ROOT = $androidSdkRoot
-
-    $preferredPathEntries += @(
-        'platform-tools'
-        'emulator'
-        'cmdline-tools\latest\bin'
-    ) | ForEach-Object { Join-Path $androidSdkRoot $_ } | Where-Object {
-        Test-Path -LiteralPath $_ -PathType Container
-    }
-}
-
 if ($preferredPathEntries) {
     $normalizedPreferredEntries = @($preferredPathEntries | ForEach-Object { $_.TrimEnd('\') })
     $pathEntries = @($env:Path -split ';' | Where-Object {
@@ -47,6 +32,30 @@ if ($preferredPathEntries) {
         })
     $env:Path = (@($preferredPathEntries) + $pathEntries) -join ';'
 }
+
+function Set-JavaVersion {
+    param([Parameter(Mandatory)] [ValidateSet(17, 25)] [int] $MajorVersion)
+
+    $javaHome = Join-Path $scoopRoot "apps\temurin$MajorVersion-jdk\current"
+    if (-not (Test-Path -LiteralPath $javaHome -PathType Container)) {
+        throw "Temurin $MajorVersion is not installed by Scoop."
+    }
+
+    $javaBin = Join-Path $javaHome 'bin'
+    $managedJavaBins = @('17', '25' | ForEach-Object {
+            (Join-Path $scoopRoot "apps\temurin$_-jdk\current\bin").TrimEnd('\')
+        })
+    $pathEntries = @($env:Path -split ';' | Where-Object {
+            $_ -and $_.TrimEnd('\') -notin $managedJavaBins
+        })
+
+    $env:JAVA_HOME = $javaHome
+    $env:Path = (@($javaBin) + $pathEntries) -join ';'
+    Write-Host "Using Temurin $MajorVersion in this PowerShell session."
+}
+
+function jdk17 { Set-JavaVersion -MajorVersion 17 }
+function jdk25 { Set-JavaVersion -MajorVersion 25 }
 
 # ---------------------------------------------------------------------------
 # Prompt
@@ -105,7 +114,7 @@ $profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
 if ($profileTarget) {
     $dotfilesRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
 
-    foreach ($script in 'link-dotfiles', 'update-skills', 'update-system', 'verify-system') {
+    foreach ($script in 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
         $scriptPath = Join-Path $dotfilesRoot "scripts\$script.ps1"
         if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
             Set-Alias -Name $script -Value $scriptPath -Scope Global
