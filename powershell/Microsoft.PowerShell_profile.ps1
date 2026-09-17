@@ -114,7 +114,7 @@ $profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
 if ($profileTarget) {
     $dotfilesRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
 
-    foreach ($script in 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
+    foreach ($script in 'docker-cleanup', 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
         $scriptPath = Join-Path $dotfilesRoot "scripts\$script.ps1"
         if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
             Set-Alias -Name $script -Value $scriptPath -Scope Global
