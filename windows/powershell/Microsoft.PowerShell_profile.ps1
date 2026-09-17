@@ -60,8 +60,8 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
-# Oh My Posh renders the prompt with Starship's Nerd Font Symbols preset style.
-$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\nerd-font-symbols.omp.json'
+# Oh My Posh renders the prompt with the Catppuccin Mocha theme.
+$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\catppuccin-mocha.omp.json'
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 
 if ($ompCommand) {

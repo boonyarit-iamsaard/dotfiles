@@ -147,6 +147,21 @@ Expected results:
 Confirm idempotency by running bootstrap a second time. Existing packages and
 correct links should be reported without being replaced.
 
+## GitKraken theme
+
+The Catppuccin Mocha theme from
+[`catppuccin/gitkraken`](https://github.com/catppuccin/gitkraken) is tracked at
+`config\gitkraken\catppuccin-mocha.jsonc` and linked into GitKraken's legacy
+custom-theme directory:
+
+```powershell
+.\scripts\link-dotfiles.ps1 gitkraken
+```
+
+GitKraken disabled custom themes in version 11.8.0 while modernizing its UI, so
+current releases cannot select this theme. The managed theme file is retained
+for older supported releases and for when GitKraken restores the feature.
+
 ## Shell configuration
 
 The PowerShell 7 profile and its Oh My Posh themes are tracked in `powershell`
@@ -156,9 +171,9 @@ and linked into `%USERPROFILE%\Documents\PowerShell`:
 .\scripts\link-dotfiles.ps1 powershell
 ```
 
-Oh My Posh renders a native equivalent of Starship's Nerd Font Symbols preset
-from `powershell\oh-my-posh\nerd-font-symbols.omp.json` and is declared in
-`manifests/packages.json`. The previous Catppuccin Mocha theme remains available
+Oh My Posh renders the Catppuccin Mocha theme from
+`powershell\oh-my-posh\catppuccin-mocha.omp.json` and is declared in
+`manifests/packages.json`. The Nerd Font Symbols preset remains available
 alongside it. One dependency is not a Scoop package and is installed separately:
 
 - `Terminal-Icons` comes from the PowerShell Gallery:
@@ -222,6 +237,8 @@ Link or unlink one configuration package:
 ```powershell
 .\scripts\link-dotfiles.ps1 lazygit
 .\scripts\link-dotfiles.ps1 lazygit -Delete
+.\scripts\link-dotfiles.ps1 gitkraken
+.\scripts\link-dotfiles.ps1 gitkraken -Delete
 ```
 
 The link script is idempotent and refuses to overwrite or delete unmanaged

@@ -5,6 +5,12 @@
       "target": "%LOCALAPPDATA%\\lazygit\\config.yml"
     }
   ],
+  "gitkraken": [
+    {
+      "source": "config/gitkraken/catppuccin-mocha.jsonc",
+      "target": "%USERPROFILE%\\.gitkraken\\themes\\catppuccin-mocha.jsonc"
+    }
+  ],
   "powershell": [
     {
       "source": "powershell/Microsoft.PowerShell_profile.ps1",
