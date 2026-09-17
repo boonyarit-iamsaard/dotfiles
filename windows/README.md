@@ -181,10 +181,10 @@ The profile also provides:
   other development.
 - History-based command prediction in list view.
 - `lzg` for lazygit.
-- `link-dotfiles`, `set-environment`, `update-skills`, `update-system` and
-  `verify-system` as aliases for the matching scripts in `scripts`, so they run
-  from any directory. The profile finds the checkout through its own symlink
-  target rather than a hard-coded path.
+- `docker-cleanup`, `link-dotfiles`, `set-environment`, `update-skills`,
+  `update-system` and `verify-system` as aliases for the matching scripts in
+  `scripts`, so they run from any directory. The profile finds the checkout
+  through its own symlink target rather than a hard-coded path.
 
 A nerd font is required for the prompt glyphs. The `nerd-fonts` bucket provides
 them.
@@ -207,6 +207,14 @@ Update the declared developer environment:
 
 ```powershell
 .\scripts\update-system.ps1
+```
+
+Remove all Docker containers, then prune unused volumes, networks, and builder
+cache. Use `-WhatIf` to preview the destructive operations:
+
+```powershell
+docker-cleanup
+docker-cleanup -WhatIf
 ```
 
 Link or unlink one configuration package:

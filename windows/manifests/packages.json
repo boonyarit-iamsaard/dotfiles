@@ -2,6 +2,7 @@
   "scoop": {
     "buckets": ["extras", "java"],
     "packages": [
+      "btop",
       "lazygit",
       "nvm",
       "oh-my-posh",
