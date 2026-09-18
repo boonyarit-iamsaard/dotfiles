@@ -121,8 +121,8 @@ It checks:
 - Scoop availability and Scoop ownership of every declared package.
 - Command availability for declared packages. Packages whose executable names
   differ from their Scoop names declare those commands in `packageCommands`.
-- Managed user environment variables and prioritized, duplicate-free `PATH`
-  entries.
+- Managed user environment variables, existing managed directories, and
+  prioritized, duplicate-free `PATH` entries.
 - The existence and exact destination of every managed symbolic link.
 - The skills checkout and every managed Codex and Claude skill link.
 

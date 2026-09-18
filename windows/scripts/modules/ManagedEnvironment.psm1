@@ -52,7 +52,8 @@ function Test-ManagedEnvironment {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $ManifestPath,
-        [ValidateSet('Process', 'User')] [string] $Target = 'User'
+        [ValidateSet('Process', 'User')] [string] $Target = 'User',
+        [switch] $RequireDirectories
     )
 
     $configuration = Get-ManagedEnvironmentConfiguration -ManifestPath $ManifestPath
@@ -62,6 +63,15 @@ function Test-ManagedEnvironment {
         $actual = [Environment]::GetEnvironmentVariable($entry.Key, $Target)
         if (-not $actual -or $actual.TrimEnd('\') -ine $entry.Value) {
             $failures.Add("Environment variable $($entry.Key) is not set to $($entry.Value).")
+        }
+    }
+
+    if ($RequireDirectories) {
+        $managedDirectories = @($configuration.DirectoryVariables.Values) + @($configuration.PathEntries)
+        foreach ($directory in $managedDirectories) {
+            if (-not (Test-Path -LiteralPath $directory -PathType Container)) {
+                $failures.Add("Managed environment directory does not exist: $directory")
+            }
         }
     }
 

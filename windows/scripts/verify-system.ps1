@@ -76,7 +76,7 @@ foreach ($package in $packageManifest.scoop.packages) {
     }
 }
 
-foreach ($failure in @(Test-ManagedEnvironment -ManifestPath $environmentManifestPath -Target User)) {
+foreach ($failure in @(Test-ManagedEnvironment -ManifestPath $environmentManifestPath -Target User -RequireDirectories)) {
     $failures.Add($failure)
 }
 
