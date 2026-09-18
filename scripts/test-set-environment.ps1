@@ -70,6 +70,10 @@ try {
     Assert-True ($env:Path -match [regex]::Escape('C:\keep')) 'an unmanaged PATH entry was removed'
     Assert-True (@(Test-ManagedEnvironment -ManifestPath $manifestPath -Target Process).Count -eq 0) 'a freshly applied environment reports drift'
 
+    $failures = @(Test-ManagedEnvironment -ManifestPath $manifestPath -Target Process -RequireDirectories)
+    Assert-True ($failures.Count -eq 1) 'a missing managed directory was not detected when directory verification was requested'
+    Assert-True ($failures[0] -match [regex]::Escape((Join-Path $androidHome 'cmdline-tools\latest\bin'))) 'the missing managed directory failure did not name the directory'
+
     $secondPath = Set-ManagedEnvironment -ManifestPath $manifestPath -Target Process
     Assert-True ($secondPath -eq $firstPath) 'a second apply changed PATH'
 
