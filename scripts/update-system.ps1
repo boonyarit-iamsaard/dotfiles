@@ -41,4 +41,8 @@ foreach ($package in $manifest.scoop.packages) {
     }
 }
 
+# Scoop package upgrades (nvm, temurin*-jdk) rewrite the user Path and
+# JAVA_HOME. Reapply the manifest so the managed entries stay authoritative.
+& (Join-Path $PSScriptRoot 'set-environment.ps1')
+
 Write-Host 'Developer environment update complete.'
