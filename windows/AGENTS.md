@@ -16,7 +16,8 @@ Linux, or WSL setup to this branch.
 - Impeccable is a vendored, provider-specific skill. Before installing,
   refreshing, or repairing it, read [docs/impeccable.md](docs/impeccable.md).
 - `scripts/update-system.ps1` updates only developer packages declared in the
-  manifest.
+  manifest, then reapplies the environment manifest so Scoop-driven `PATH` and
+  `JAVA_HOME` changes do not persist.
 - `scripts/set-environment.ps1` idempotently applies the environment manifest.
 - `scripts/update-skills.ps1` updates skills only when invoked directly; do not
   call it from `scripts/update-system.ps1`.

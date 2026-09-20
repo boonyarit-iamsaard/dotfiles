@@ -92,7 +92,10 @@ uncommitted so it can be reviewed together.
 
 `scripts/update-system.ps1` refreshes Scoop metadata, then updates and cleans
 only packages listed in `manifests/packages.json`. It deliberately does not run
-`scoop update *` or `scoop cleanup *`.
+`scoop update *` or `scoop cleanup *`. It finishes by running
+`scripts/set-environment.ps1`, because Scoop upgrades of `nvm` and the Temurin
+JDKs prepend their own `PATH` entries and reset `JAVA_HOME`, which otherwise
+fails `verify-system` until the manifest is reapplied.
 
 ### Links
 

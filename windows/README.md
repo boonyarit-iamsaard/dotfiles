@@ -9,7 +9,8 @@ branches.
 - Scoop is the package manager for automated setup and updates.
 - `bootstrap.ps1` performs fresh-machine setup.
 - `scripts/update-system.ps1` updates only developer packages declared in
-  `manifests/packages.json`.
+  `manifests/packages.json`, then reapplies `manifests/environment.json` because
+  Scoop package upgrades can rewrite the user `PATH` and `JAVA_HOME`.
 - `scripts/set-environment.ps1` persists declared user environment variables and
   `PATH` entries from `manifests/environment.json`.
 - `scripts/link-dotfiles.ps1` creates Stow-like symbolic links from Windows
