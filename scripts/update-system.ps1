@@ -41,6 +41,9 @@ foreach ($package in $manifest.scoop.packages) {
     }
 }
 
+# Reapply the declared Node.js version and Corepack shims after NVM upgrades.
+& (Join-Path $PSScriptRoot 'set-node-toolchain.ps1')
+
 # Scoop package upgrades (nvm, temurin*-jdk) rewrite the user Path and
 # JAVA_HOME. Reapply the manifest so the managed entries stay authoritative.
 & (Join-Path $PSScriptRoot 'set-environment.ps1')

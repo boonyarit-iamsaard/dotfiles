@@ -1,4 +1,14 @@
 {
+  "agents": [
+    {
+      "source": "agents/global-instructions.md",
+      "target": "%USERPROFILE%\\.codex\\AGENTS.md"
+    },
+    {
+      "source": "agents/global-instructions.md",
+      "target": "%USERPROFILE%\\.claude\\CLAUDE.md"
+    }
+  ],
   "lazygit": [
     {
       "source": "config/lazygit/config.yml",

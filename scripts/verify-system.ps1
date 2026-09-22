@@ -11,6 +11,7 @@ Import-Module (Join-Path $PSScriptRoot 'modules\ManagedEnvironment.psm1') -Force
 
 $packageManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\packages.json') | ConvertFrom-Json
 $environmentManifestPath = Join-Path $dotfilesRoot 'manifests\environment.json'
+$nodeToolchainScript = Join-Path $PSScriptRoot 'set-node-toolchain.ps1'
 $linkManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\links.json') | ConvertFrom-Json
 $skillManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\skills.json') | ConvertFrom-Json
 $failures = [Collections.Generic.List[string]]::new()
@@ -74,6 +75,13 @@ foreach ($package in $packageManifest.scoop.packages) {
             $failures.Add("Command is not available for ${package}: $command")
         }
     }
+}
+
+try {
+    & $nodeToolchainScript -Check
+}
+catch {
+    $failures.Add($_.Exception.Message)
 }
 
 foreach ($failure in @(Test-ManagedEnvironment -ManifestPath $environmentManifestPath -Target User -RequireDirectories)) {

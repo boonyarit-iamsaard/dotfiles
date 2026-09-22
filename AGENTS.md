@@ -10,6 +10,8 @@ Linux, or WSL setup to this branch.
   developer packages.
 - `manifests/environment.json` is the source of truth for managed user
   environment variables and `PATH` entries.
+- `manifests/node-toolchain.json` is the source of truth for the active Node.js
+  release line and NVM operating mode; `package.json` pins pnpm for Corepack.
 - `manifests/links.json` is the source of truth for managed config links.
 - `manifests/skills.json` is the source of truth for shared and local agent
   skills.
@@ -19,6 +21,8 @@ Linux, or WSL setup to this branch.
   manifest, then reapplies the environment manifest so Scoop-driven `PATH` and
   `JAVA_HOME` changes do not persist.
 - `scripts/set-environment.ps1` idempotently applies the environment manifest.
+- `scripts/set-node-toolchain.ps1` idempotently applies and verifies Node.js,
+  NVM mode, Corepack, and pnpm.
 - `scripts/update-skills.ps1` updates skills only when invoked directly; do not
   call it from `scripts/update-system.ps1`.
 - `scripts/verify-system.ps1` must pass after setup changes.
