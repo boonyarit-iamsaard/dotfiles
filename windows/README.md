@@ -13,6 +13,9 @@ branches.
   Scoop package upgrades can rewrite the user `PATH` and `JAVA_HOME`.
 - `scripts/set-environment.ps1` persists declared user environment variables and
   `PATH` entries from `manifests/environment.json`.
+- `scripts/set-node-toolchain.ps1` installs and activates the Node.js release in
+  `manifests/node-toolchain.json`, applies the declared NVM mode, and enables
+  Corepack.
 - `scripts/link-dotfiles.ps1` creates Stow-like symbolic links from Windows
   configuration locations into this repository.
 - `scripts/update-skills.ps1` maintains shared Codex CLI and Claude Code skills
@@ -106,6 +109,14 @@ pnpm is provided by the Corepack shim bundled with the active NVM-managed Node
 installation. Projects select their pnpm version through the `packageManager`
 field; pnpm is intentionally not installed as a standalone Scoop package.
 
+NVM currently uses `link` mode as a workaround for the NVM4306 shim-mode false
+positive tracked in nvm-windows issues
+[#1379](https://github.com/nvm-windows/nvm/issues/1379) and
+[#1403](https://github.com/nvm-windows/nvm/issues/1403). Link mode bypasses
+NVM's delegated-script integrity check. Return `nvmMode` to `shim` in
+`manifests/node-toolchain.json` once upstream resolves the false positive and
+the verifier passes in shim mode.
+
 ## Verification
 
 Bootstrap runs the verifier automatically. Run it independently at any time:
@@ -124,6 +135,8 @@ It checks:
   differ from their Scoop names declare those commands in `packageCommands`.
 - Managed user environment variables, existing managed directories, and
   prioritized, duplicate-free `PATH` entries.
+- The declared NVM mode, active Node.js release, Corepack, and repository-pinned
+  pnpm version.
 - The existence and exact destination of every managed symbolic link.
 - The skills checkout and every managed Codex and Claude skill link.
 
@@ -301,6 +314,7 @@ verification.
 - `manifests/packages.json` declares Scoop buckets and developer packages.
 - `manifests/environment.json` declares managed user environment variables and
   prioritized `PATH` entries.
+- `manifests/node-toolchain.json` declares the Node.js release and NVM mode.
 - `manifests/links.json` maps tracked files to native Windows destinations.
 - `manifests/skills.json` declares the skills checkout, promoted categories,
   consumers, and locally owned skills.
