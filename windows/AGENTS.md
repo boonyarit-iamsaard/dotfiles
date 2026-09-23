@@ -64,7 +64,8 @@ After changing bootstrap, manifests, linking, or update behavior:
 5. Run `scripts/verify-system.ps1` in a normal user PowerShell session.
 6. For link changes, run `scripts/link-dotfiles.ps1 <package>` twice and confirm
    the second run reports that the package is already linked.
-7. For skill changes, run `scripts/test-update-skills.ps1`, then run
+7. For status line changes, run `scripts/test-statusline.ps1`.
+8. For skill changes, run `scripts/test-update-skills.ps1`, then run
    `scripts/update-skills.ps1 -Check -NoPull` after the live links are set up.
 
 Do not delete and recreate a working user link merely to test setup. Do not run
