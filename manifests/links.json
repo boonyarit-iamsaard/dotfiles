@@ -9,6 +9,12 @@
       "target": "%USERPROFILE%\\.claude\\CLAUDE.md"
     }
   ],
+  "claude": [
+    {
+      "source": "config/claude/statusline.ps1",
+      "target": "%USERPROFILE%\\.claude\\statusline.ps1"
+    }
+  ],
   "lazygit": [
     {
       "source": "config/lazygit/config.yml",

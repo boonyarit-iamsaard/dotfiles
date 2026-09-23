@@ -176,6 +176,30 @@ GitKraken disabled custom themes in version 11.8.0 while modernizing its UI, so
 current releases cannot select this theme. The managed theme file is retained
 for older supported releases and for when GitKraken restores the feature.
 
+## Claude Code status line
+
+The usage-focused status line is tracked at `config\claude\statusline.ps1` and
+linked into `%USERPROFILE%\.claude`:
+
+```powershell
+.\scripts\link-dotfiles.ps1 claude
+```
+
+It shows the branch, model, effort, context usage, token count and session cost,
+plus the 5-hour and 7-day rate limits on Pro and Max plans. It also publishes
+each payload to `%USERPROFILE%\.claude\usage-input.json` for the Claude Usage
+Monitor. Claude Code keeps plugin and session state in `settings.json`, so that
+file is not linked; enable the status line there once:
+
+```json
+"statusLine": {
+  "type": "command",
+  "command": "pwsh -NoProfile -NonInteractive -File C:/Users/boony/.claude/statusline.ps1"
+}
+```
+
+Test rendering changes with `.\scripts\test-statusline.ps1`.
+
 ## Shell configuration
 
 The PowerShell 7 profile and its Oh My Posh themes are tracked in `powershell`
