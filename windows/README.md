@@ -161,20 +161,19 @@ Expected results:
 Confirm idempotency by running bootstrap a second time. Existing packages and
 correct links should be reported without being replaced.
 
-## GitKraken theme
+## LazyDocker
 
-The Catppuccin Mocha theme from
-[`catppuccin/gitkraken`](https://github.com/catppuccin/gitkraken) is tracked at
-`config\gitkraken\catppuccin-mocha.jsonc` and linked into GitKraken's legacy
-custom-theme directory:
+LazyDocker is installed through Scoop. Its Catppuccin Mocha configuration is
+tracked at `config\lazydocker\config.yml` and linked to its native Windows
+config directory:
 
 ```powershell
-.\scripts\link-dotfiles.ps1 gitkraken
+.\scripts\link-dotfiles.ps1 lazydocker
+lazydocker
 ```
 
-GitKraken disabled custom themes in version 11.8.0 while modernizing its UI, so
-current releases cannot select this theme. The managed theme file is retained
-for older supported releases and for when GitKraken restores the feature.
+The config link is `%APPDATA%\lazydocker\config.yml`. A Docker daemon must be
+reachable to use LazyDocker.
 
 ## Claude Code status line
 
@@ -253,8 +252,7 @@ pnpm format
 pnpm format:check
 ```
 
-The Neovim and pnpm lockfiles are generated files and are excluded from this
-formatting pass.
+The pnpm lockfile is generated and excluded from this formatting pass.
 
 Update the declared developer environment:
 
@@ -275,8 +273,8 @@ Link or unlink one configuration package:
 ```powershell
 .\scripts\link-dotfiles.ps1 lazygit
 .\scripts\link-dotfiles.ps1 lazygit -Delete
-.\scripts\link-dotfiles.ps1 gitkraken
-.\scripts\link-dotfiles.ps1 gitkraken -Delete
+.\scripts\link-dotfiles.ps1 lazydocker
+.\scripts\link-dotfiles.ps1 lazydocker -Delete
 ```
 
 The link script is idempotent and refuses to overwrite or delete unmanaged
