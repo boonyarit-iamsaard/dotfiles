@@ -84,28 +84,54 @@ git:
 #   authorColors:
 #     "*": "#b4befe"
 
-# One Dark (navarasu/onedark.nvim, dark variant).
+# Default Dark Modern (VS Code), palette from the wsl branch tmux theme.
 gui:
   theme:
     activeBorderColor:
-      - "#61afef"
+      - "#C586C0"
       - bold
     inactiveBorderColor:
-      - "#5c6370"
+      - "#6e7681"
     optionsTextColor:
-      - "#56b6c2"
+      - "#569CD6"
     selectedLineBgColor:
-      - "#393f4a"
+      - "#37373d"
     cherryPickedCommitBgColor:
-      - "#31353f"
+      - "#2b2b2b"
     cherryPickedCommitFgColor:
-      - "#e5c07b"
+      - "#D7BA7D"
     unstagedChangesColor:
-      - "#e86671"
+      - "#f85149"
     defaultFgColor:
-      - "#abb2bf"
+      - "#cccccc"
     searchingActiveBorderColor:
-      - "#e5c07b"
+      - "#D7BA7D"
 
   authorColors:
-    "*": "#c678dd"
+    "*": "#9CDCFE"
+
+# One Dark (navarasu/onedark.nvim, dark variant).
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#61afef"
+#       - bold
+#     inactiveBorderColor:
+#       - "#5c6370"
+#     optionsTextColor:
+#       - "#56b6c2"
+#     selectedLineBgColor:
+#       - "#393f4a"
+#     cherryPickedCommitBgColor:
+#       - "#31353f"
+#     cherryPickedCommitFgColor:
+#       - "#e5c07b"
+#     unstagedChangesColor:
+#       - "#e86671"
+#     defaultFgColor:
+#       - "#abb2bf"
+#     searchingActiveBorderColor:
+#       - "#e5c07b"
+#
+#   authorColors:
+#     "*": "#c678dd"
