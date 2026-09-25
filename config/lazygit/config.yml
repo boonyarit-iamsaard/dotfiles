@@ -2,6 +2,7 @@ git:
   log:
     showWholeGraph: true
   overrideGpg: true
+
 # dark 2026
 # gui:
 #   theme:
@@ -58,27 +59,53 @@ git:
 #   authorColors:
 #     "*": "#b7bdf8"
 # catppuccin mocha
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#f9e2af"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
+#     cherryPickedCommitBgColor:
+#       - "#45475a"
+#     cherryPickedCommitFgColor:
+#       - "#f9e2af"
+#     unstagedChangesColor:
+#       - "#f38ba8"
+#     defaultFgColor:
+#       - "#cdd6f4"
+#     searchingActiveBorderColor:
+#       - "#f9e2af"
+#
+#   authorColors:
+#     "*": "#b4befe"
+
+# One Dark (navarasu/onedark.nvim, dark variant).
 gui:
   theme:
     activeBorderColor:
-      - "#f9e2af"
+      - "#61afef"
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#5c6370"
     optionsTextColor:
-      - "#89b4fa"
+      - "#56b6c2"
     selectedLineBgColor:
-      - "#313244"
+      - "#393f4a"
     cherryPickedCommitBgColor:
-      - "#45475a"
+      - "#31353f"
     cherryPickedCommitFgColor:
-      - "#f9e2af"
+      - "#e5c07b"
     unstagedChangesColor:
-      - "#f38ba8"
+      - "#e86671"
     defaultFgColor:
-      - "#cdd6f4"
+      - "#abb2bf"
     searchingActiveBorderColor:
-      - "#f9e2af"
+      - "#e5c07b"
 
   authorColors:
-    "*": "#b4befe"
+    "*": "#c678dd"
