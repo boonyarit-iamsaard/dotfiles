@@ -60,8 +60,8 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
-# Oh My Posh keeps the Catppuccin prompt layout with One Dark colors.
-$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\onedark.omp.json'
+# Oh My Posh ports the Starship Nerd Font Symbols preset with Default Dark Modern colors.
+$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\default-dark-modern.omp.json'
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 
 if ($ompCommand) {
