@@ -21,10 +21,10 @@
       "target": "%LOCALAPPDATA%\\lazygit\\config.yml"
     }
   ],
-  "gitkraken": [
+  "lazydocker": [
     {
-      "source": "config/gitkraken/catppuccin-mocha.jsonc",
-      "target": "%USERPROFILE%\\.gitkraken\\themes\\catppuccin-mocha.jsonc"
+      "source": "config/lazydocker/config.yml",
+      "target": "%APPDATA%\\lazydocker\\config.yml"
     }
   ],
   "powershell": [

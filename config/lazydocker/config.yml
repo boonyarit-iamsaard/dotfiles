@@ -1,47 +1,4 @@
-# dark 2026
-# note: lazydocker only supports these four theme keys
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#3994bc"
-#       - bold
-#     inactiveBorderColor:
-#       - "#8c8c8c"
-#     optionsTextColor:
-#       - "#48a0c7"
-#     selectedLineBgColor:
-#       - "#276782"
-# common
-# gui:
-#   theme:
-#     selectedLineBgColor:
-#       - "#6e6a86"
-# catppuccin macchiato
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#eed49f"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a5adcb"
-#     optionsTextColor:
-#       - "#8aadf4"
-#     selectedLineBgColor:
-#       - "#363a4f"
-#     cherryPickedCommitBgColor:
-#       - "#494d64"
-#     cherryPickedCommitFgColor:
-#       - "#eed49f"
-#     unstagedChangesColor:
-#       - "#ed8796"
-#     defaultFgColor:
-#       - "#cad3f5"
-#     searchingActiveBorderColor:
-#       - "#eed49f"
-#
-#   authorColors:
-#     "*": "#b7bdf8"
-# catppuccin mocha
+# Catppuccin Mocha. LazyDocker supports these four theme colors.
 gui:
   theme:
     activeBorderColor:
@@ -53,16 +10,3 @@ gui:
       - "#89b4fa"
     selectedLineBgColor:
       - "#313244"
-    cherryPickedCommitBgColor:
-      - "#45475a"
-    cherryPickedCommitFgColor:
-      - "#f9e2af"
-    unstagedChangesColor:
-      - "#f38ba8"
-    defaultFgColor:
-      - "#cdd6f4"
-    searchingActiveBorderColor:
-      - "#f9e2af"
-
-  authorColors:
-    "*": "#b4befe"
