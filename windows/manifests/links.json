@@ -27,6 +27,12 @@
       "target": "%APPDATA%\\lazydocker\\config.yml"
     }
   ],
+  "windows-terminal": [
+    {
+      "source": "config/windows-terminal/onedark.json",
+      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\onedark.json"
+    }
+  ],
   "powershell": [
     {
       "source": "powershell/Microsoft.PowerShell_profile.ps1",

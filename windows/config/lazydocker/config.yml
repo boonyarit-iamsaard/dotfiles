@@ -1,12 +1,25 @@
 # Catppuccin Mocha. LazyDocker supports these four theme colors.
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#f9e2af"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
+
+# One Dark (navarasu/onedark.nvim, dark variant).
 gui:
   theme:
     activeBorderColor:
-      - "#f9e2af"
+      - "#61afef"
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#5c6370"
     optionsTextColor:
-      - "#89b4fa"
+      - "#56b6c2"
     selectedLineBgColor:
-      - "#313244"
+      - "#393f4a"

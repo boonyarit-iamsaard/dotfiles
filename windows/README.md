@@ -161,11 +161,36 @@ Expected results:
 Confirm idempotency by running bootstrap a second time. Existing packages and
 correct links should be reported without being replaced.
 
+## One Dark theme
+
+The Windows Terminal, LazyGit, and LazyDocker theme files use the `dark` variant
+of [navarasu/onedark.nvim](https://github.com/navarasu/onedark.nvim). Their
+colors come from the upstream
+[palette](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/palette.lua),
+and Windows Terminal's 16 ANSI colors follow the upstream
+[terminal mapping](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/terminal.lua).
+
+The linker installs `config\windows-terminal\onedark.json` as a Windows Terminal
+JSON fragment. Select **One Dark (navarasu)** under **Settings > Defaults >
+Appearance > Color scheme** to apply it to all profiles. Existing profile color
+scheme overrides may need the same selection in that profile's Appearance page.
+The fragment leaves Windows Terminal's user-owned `settings.json` intact.
+LazyGit retains its commented Dark 2026, Catppuccin Macchiato, and Catppuccin
+Mocha options. LazyDocker retains its Catppuccin Mocha colors as comments.
+`dark-2026.jsonc` is unchanged.
+
+Apply or check the managed theme links with:
+
+```powershell
+.\scripts\link-dotfiles.ps1 windows-terminal,lazygit,lazydocker
+.\scripts\verify-system.ps1
+```
+
 ## LazyDocker
 
-LazyDocker is installed through Scoop. Its Catppuccin Mocha configuration is
-tracked at `config\lazydocker\config.yml` and linked to its native Windows
-config directory:
+LazyDocker is installed through Scoop. Its One Dark configuration is tracked at
+`config\lazydocker\config.yml` and linked to its native Windows config
+directory:
 
 ```powershell
 .\scripts\link-dotfiles.ps1 lazydocker
