@@ -233,10 +233,11 @@ and linked into `%USERPROFILE%\Documents\PowerShell`:
 .\scripts\link-dotfiles.ps1 powershell
 ```
 
-Oh My Posh renders the Catppuccin Mocha theme from
-`powershell\oh-my-posh\catppuccin-mocha.omp.json` and is declared in
-`manifests/packages.json`. The Nerd Font Symbols preset remains available
-alongside it. One dependency is not a Scoop package and is installed separately:
+Oh My Posh keeps the Catppuccin prompt layout with One Dark colors from
+`powershell\oh-my-posh\onedark.omp.json`. The original
+`catppuccin-mocha.omp.json` and Nerd Font Symbols preset remain available. Oh My
+Posh is declared in `manifests/packages.json`. One dependency is not a Scoop
+package and is installed separately:
 
 - `Terminal-Icons` comes from the PowerShell Gallery:
   `Install-Module Terminal-Icons -Scope CurrentUser`. The profile imports it
