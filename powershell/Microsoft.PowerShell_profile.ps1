@@ -101,6 +101,7 @@ if ($Host.Name -eq 'ConsoleHost' -and -not [Console]::IsOutputRedirected) {
 # Aliases
 # ---------------------------------------------------------------------------
 Set-Alias -Name lzg -Value lazygit
+Set-Alias -Name lzd -Value lazydocker
 
 # ---------------------------------------------------------------------------
 # Dotfiles scripts

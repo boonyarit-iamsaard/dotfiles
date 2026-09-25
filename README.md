@@ -232,7 +232,7 @@ The profile also provides:
   `jdk17` before React Native Android builds; Temurin 25 remains the default for
   other development.
 - History-based command prediction in list view.
-- `lzg` for lazygit.
+- `lzg` for lazygit and `lzd` for lazydocker.
 - `docker-cleanup`, `link-dotfiles`, `set-environment`, `update-skills`,
   `update-system` and `verify-system` as aliases for the matching scripts in
   `scripts`, so they run from any directory. The profile finds the checkout
