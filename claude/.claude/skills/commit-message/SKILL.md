@@ -14,8 +14,8 @@ looks like it belongs in this repository's history.
    repository's pattern (see [Matching the repository](#matching-the-repository)).
 3. Pick the type and scope per [Commit Types](#commit-types) and the scope
    habit, preferring what the repository already uses for this kind of change.
-4. Output exactly one line satisfying every format rule - no explanation, no
-   markdown fences, no extra text.
+4. Output exactly one line satisfying every format rule - no body, no
+   explanation, no markdown fences, no extra text.
 
 ## Matching the repository
 
@@ -30,7 +30,8 @@ so treat them as authoritative for wording and mirror them:
 - **granularity** - match the observed subject length and level of detail. Terse
   histories get terse subjects; descriptive histories get descriptive ones.
 - **scope** - mirror the scope habit: if subjects carry a `(scope)`, use one and
-  reuse an existing scope name verbatim; if they don't, omit it.
+  reuse an existing scope name verbatim; if they don't, omit it. A scope rule
+  in the repository's `commitlint` config overrides the habit.
 
 Skip any subject that isn't conventional-commit shaped (a scaffold's
 `Initial commit`). With no history yet, set the pattern using the defaults below.
