@@ -60,5 +60,11 @@
       "source": "skills/vendor/impeccable/claude-agents/impeccable-manual-edit-applier.md",
       "target": "%USERPROFILE%\\.claude\\agents\\impeccable-manual-edit-applier.md"
     }
+  ],
+  "git": [
+    {
+      "source": "config/git/ignore",
+      "target": "%USERPROFILE%\\.config\\git\\ignore"
+    }
   ]
 }

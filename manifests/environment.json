@@ -1,7 +1,9 @@
 {
   "directoryVariables": {
     "ANDROID_HOME": "%LOCALAPPDATA%\\Android\\Sdk",
-    "JAVA_HOME": "%USERPROFILE%\\scoop\\apps\\temurin25-jdk\\current"
+    "JAVA_HOME": "%USERPROFILE%\\scoop\\apps\\temurin25-jdk\\current",
+    "npm_config_store_dir": "%LOCALAPPDATA%\\pnpm\\store",
+    "PNPM_CONFIG_STORE_DIR": "%LOCALAPPDATA%\\pnpm\\store"
   },
   "pathEntries": [
     "%USERPROFILE%\\scoop\\apps\\temurin25-jdk\\current\\bin",

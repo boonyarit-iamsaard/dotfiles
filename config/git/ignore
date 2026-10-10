@@ -1,0 +1,2 @@
+# Keep accidental pnpm stores out of Git scans in every repository.
+.pnpm-store/

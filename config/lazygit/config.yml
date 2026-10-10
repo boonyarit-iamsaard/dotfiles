@@ -25,9 +25,10 @@ git:
 #       - "#cccccc"
 #     searchingActiveBorderColor:
 #       - "#e5ba7d"
-#
+
 #   authorColors:
 #     "*": "#57a3f8"
+
 # common
 # gui:
 #   theme:
@@ -58,58 +59,59 @@ git:
 #
 #   authorColors:
 #     "*": "#b7bdf8"
-# catppuccin mocha
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#f9e2af"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a6adc8"
-#     optionsTextColor:
-#       - "#89b4fa"
-#     selectedLineBgColor:
-#       - "#313244"
-#     cherryPickedCommitBgColor:
-#       - "#45475a"
-#     cherryPickedCommitFgColor:
-#       - "#f9e2af"
-#     unstagedChangesColor:
-#       - "#f38ba8"
-#     defaultFgColor:
-#       - "#cdd6f4"
-#     searchingActiveBorderColor:
-#       - "#f9e2af"
-#
-#   authorColors:
-#     "*": "#b4befe"
 
-# Default Dark Modern (VS Code), palette from the wsl branch tmux theme.
+# catppuccin mocha
 gui:
   theme:
     activeBorderColor:
-      - "#C586C0"
+      - "#f9e2af"
       - bold
     inactiveBorderColor:
-      - "#6e7681"
+      - "#a6adc8"
     optionsTextColor:
-      - "#569CD6"
+      - "#89b4fa"
     selectedLineBgColor:
-      - "#37373d"
+      - "#313244"
     cherryPickedCommitBgColor:
-      - "#2b2b2b"
+      - "#45475a"
     cherryPickedCommitFgColor:
-      - "#D7BA7D"
+      - "#f9e2af"
     unstagedChangesColor:
-      - "#f85149"
+      - "#f38ba8"
     defaultFgColor:
-      - "#cccccc"
+      - "#cdd6f4"
     searchingActiveBorderColor:
-      - "#D7BA7D"
+      - "#f9e2af"
 
-  authorColors:
-    "*": "#9CDCFE"
+  # authorColors:
+  #   "*": "#b4befe"
 
+# Default Dark Modern (VS Code), palette from the wsl branch tmux theme.
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#C586C0"
+#       - bold
+#     inactiveBorderColor:
+#       - "#6e7681"
+#     optionsTextColor:
+#       - "#569CD6"
+#     selectedLineBgColor:
+#       - "#37373d"
+#     cherryPickedCommitBgColor:
+#       - "#2b2b2b"
+#     cherryPickedCommitFgColor:
+#       - "#D7BA7D"
+#     unstagedChangesColor:
+#       - "#f85149"
+#     defaultFgColor:
+#       - "#cccccc"
+#     searchingActiveBorderColor:
+#       - "#D7BA7D"
+#
+#   authorColors:
+#     "*": "#9CDCFE"
+#
 # One Dark (navarasu/onedark.nvim, dark variant).
 # gui:
 #   theme:
