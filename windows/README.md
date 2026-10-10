@@ -109,6 +109,31 @@ pnpm is provided by the Corepack shim bundled with the active NVM-managed Node
 installation. Projects select their pnpm version through the `packageManager`
 field; pnpm is intentionally not installed as a standalone Scoop package.
 
+The environment manifest pins pnpm's store to `%LOCALAPPDATA%\pnpm\store` for
+both pnpm 10 and 11. pnpm adds the versioned store subdirectory itself. An
+explicit store prevents the automatic project-local fallback when a sandbox
+cannot create hard links to the shared store. Agents use approved host execution
+when sandbox access blocks a dependency operation.
+
+The `git` link package installs `config/git/ignore` at Git's default global
+ignore location, `%USERPROFILE%\.config\git\ignore`. It excludes `.pnpm-store/`
+from untracked-file scans in every repository. A custom `core.excludesFile` or
+`XDG_CONFIG_HOME` overrides that default location.
+
+Apply these settings independently with:
+
+```powershell
+.\scripts\set-environment.ps1
+.\scripts\link-dotfiles.ps1 git
+pnpm store path
+git check-ignore -v .pnpm-store/probe
+```
+
+Restart Codex, editors, and terminals after applying the environment so new
+processes inherit the store settings. Editor watcher and search exclusions are
+separate from Git ignores; configure `**/.pnpm-store/**` if an editor still
+scans an existing accidental store.
+
 NVM currently uses `link` mode as a workaround for the NVM4306 shim-mode false
 positive tracked in nvm-windows issues
 [#1379](https://github.com/nvm-windows/nvm/issues/1379) and

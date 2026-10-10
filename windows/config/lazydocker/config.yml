@@ -1,29 +1,29 @@
 # Default Dark Modern (VS Code), palette from the wsl branch tmux theme.
 # LazyDocker supports these four theme colors.
-gui:
-  theme:
-    activeBorderColor:
-      - "#C586C0"
-      - bold
-    inactiveBorderColor:
-      - "#6e7681"
-    optionsTextColor:
-      - "#569CD6"
-    selectedLineBgColor:
-      - "#37373d"
-
-# Catppuccin Mocha.
 # gui:
 #   theme:
 #     activeBorderColor:
-#       - "#f9e2af"
+#       - "#C586C0"
 #       - bold
 #     inactiveBorderColor:
-#       - "#a6adc8"
+#       - "#6e7681"
 #     optionsTextColor:
-#       - "#89b4fa"
+#       - "#569CD6"
 #     selectedLineBgColor:
-#       - "#313244"
+#       - "#37373d"
+
+# Catppuccin Mocha.
+gui:
+  theme:
+    activeBorderColor:
+      - "#f9e2af"
+      - bold
+    inactiveBorderColor:
+      - "#a6adc8"
+    optionsTextColor:
+      - "#89b4fa"
+    selectedLineBgColor:
+      - "#313244"
 
 # One Dark (navarasu/onedark.nvim, dark variant).
 # gui:
