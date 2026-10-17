@@ -108,7 +108,7 @@ export PATH="$HOME/go/bin:$PATH"       # Binaries installed by go install.
 # Tooling and prompt
 # ---------------------------------------------------------------------------
 # Initialise the Starship prompt with the Catppuccin Mocha theme.
-export STARSHIP_CONFIG="$HOME/dotfiles/config/starship.catppuccin-mocha.toml"
+# export STARSHIP_CONFIG="$HOME/dotfiles/config/starship.catppuccin-mocha.toml"
 eval "$(starship init zsh)"
 
 # Load nvm and automatically switch the Node version on directory change,
@@ -204,6 +204,32 @@ CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
 CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
 ENABLE_TOOL_SEARCH=false \
 claude --model gpt-5.6-sol'
+
+# ---------------------------------------------------------------------------
+# gh (for Claude Code)
+# ---------------------------------------------------------------------------
+# gh is installed only for agents to handle PRs; it is never logged in. Each
+# call reads a fine-grained token from a file, so the token stays out of the
+# environment of every other process.
+#
+# Setting up on a new machine, or when the token expires:
+#   1. brew install gh
+#   2. GitHub → Settings → Developer settings → Fine-grained tokens:
+#      only the bookkeeping repository; Contents and Pull requests read and
+#      write, Actions and Commit statuses read-only, everything else none.
+#   3. mkdir -p ~/.config/gh-agent && (umask 077; cat > ~/.config/gh-agent/token)
+#      then paste the token, press Enter and Ctrl-D.
+#   4. Verify: gh api user --jq .login
+#
+# The token file is intentionally outside this dotfiles repo; gh falls back to
+# its own (absent) login when the file is missing.
+gh() {
+  if [[ -r ~/.config/gh-agent/token ]]; then
+    GH_TOKEN=$(<~/.config/gh-agent/token) command gh "$@"
+  else
+    command gh "$@"
+  fi
+}
 
 # ---------------------------------------------------------------------------
 # .NET
