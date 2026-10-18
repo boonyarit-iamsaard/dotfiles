@@ -28,6 +28,11 @@ LEGACY_ENTRIES = frozenset(
 )
 GROUPED_LEGACY_SKILLS = frozenset({"to-issues", "to-prd", "teach copy"})
 MANIFEST_VERSION = 1
+# Upstream checkouts that personal skills link into. They are pulled alongside
+# the skills checkout but never reconciled; dotfiles tracks their links.
+EXTRA_CHECKOUTS = {
+    "humanizer": "https://github.com/blader/humanizer.git",
+}
 
 
 class SyncError(RuntimeError):
@@ -56,6 +61,7 @@ class Config:
     skills_repo: Path
     state_root: Path
     backup_root: Path
+    extra_checkouts: dict[Path, str]
 
     @property
     def skills_root(self) -> Path:
@@ -443,21 +449,28 @@ def write_manifest(
     temporary.replace(manifest)
 
 
-def require_clean_checkout(config: Config) -> None:
+def require_checkout(repo: Path, url: str) -> None:
+    if not (repo / ".git").exists():
+        raise SyncError(
+            f"checkout not found at {repo}; clone it with: git clone {url} {repo}"
+        )
+
+
+def require_clean_checkout(repo: Path) -> None:
     status = subprocess.run(
-        ["git", "-C", str(config.skills_repo), "status", "--porcelain"],
+        ["git", "-C", str(repo), "status", "--porcelain"],
         check=True,
         text=True,
         capture_output=True,
     )
     if status.stdout:
-        raise SyncError("skills checkout has local changes; refusing to pull")
+        raise SyncError(f"checkout {repo} has local changes; refusing to pull")
 
 
-def pull_latest(config: Config) -> None:
-    print(f"pull: {config.skills_repo}")
+def pull_latest(repo: Path) -> None:
+    print(f"pull: {repo}")
     subprocess.run(
-        ["git", "-C", str(config.skills_repo), "pull", "--ff-only"],
+        ["git", "-C", str(repo), "pull", "--ff-only"],
         check=True,
     )
 
@@ -557,7 +570,7 @@ class StowGuard:
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Update and reconcile Matt Pocock skills."
+        description="Update upstream skill checkouts and reconcile Matt Pocock skills."
     )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument(
@@ -597,11 +610,19 @@ def config_from_environment() -> Config:
             / "backups",
         )
     ).resolve()
+    extra_root = Path(
+        os.environ.get(
+            "EXTRA_CHECKOUTS_ROOT", Path.home() / "workspace" / "personal"
+        )
+    ).resolve()
     return Config(
         dotfiles_root=dotfiles_root,
         skills_repo=skills_repo,
         state_root=state_root,
         backup_root=backup_root,
+        extra_checkouts={
+            extra_root / name: url for name, url in EXTRA_CHECKOUTS.items()
+        },
     )
 
 
@@ -612,9 +633,17 @@ def update_checkout(
 ) -> None:
     if args.no_pull or args.dry_run or args.check:
         return
-    require_clean_checkout(config)
+    for repo, url in config.extra_checkouts.items():
+        require_checkout(repo, url)
+    # Check every checkout before pulling any, so a dirty one pulls nothing.
+    for repo in (config.skills_repo, *config.extra_checkouts):
+        require_clean_checkout(repo)
+    # Extra checkouts only change file contents behind tracked links, so they
+    # need no unstow.
+    for repo in config.extra_checkouts:
+        pull_latest(repo)
     stow_guard.ensure_unstowed()
-    pull_latest(config)
+    pull_latest(config.skills_repo)
 
 
 def read_only_result(args: argparse.Namespace, plan: Plan) -> int | None:

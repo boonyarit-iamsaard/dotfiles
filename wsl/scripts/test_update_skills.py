@@ -27,6 +27,7 @@ class UpdateSkillsTest(unittest.TestCase):
         self.state = fixture / "state"
         self.backups = fixture / "backups"
         self.home = fixture / "home"
+        self.extras = fixture / "extras"
         self.agents = self.dotfiles / "agents" / ".agents" / "skills"
         self.claude = self.dotfiles / "claude" / ".claude" / "skills"
         self.home.mkdir()
@@ -86,6 +87,7 @@ class UpdateSkillsTest(unittest.TestCase):
                 "SKILLS_REPO": str(self.source),
                 "SKILL_SYNC_STATE_ROOT": str(self.state),
                 "SKILL_SYNC_BACKUP_ROOT": str(self.backups),
+                "EXTRA_CHECKOUTS_ROOT": str(self.extras),
                 "HOME": str(self.home),
             }
         )
@@ -270,6 +272,7 @@ class UpdateSkillsTest(unittest.TestCase):
 
     def test_normal_update_unstows_before_pull(self) -> None:
         self.make_skill("engineering", "alpha")
+        (self.extras / "humanizer" / ".git").mkdir(parents=True)
         fixture_bin = Path(self.temporary.name) / "bin"
         fixture_bin.mkdir()
         event_log = Path(self.temporary.name) / "events"
@@ -302,16 +305,51 @@ class UpdateSkillsTest(unittest.TestCase):
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
         events = event_log.read_text(encoding="utf-8").splitlines()
-        self.assertIn("status --porcelain", events[0])
-        self.assertIn("-D --no-folding agents", events[1])
-        self.assertIn("-D --no-folding claude", events[2])
-        self.assertIn("pull --ff-only", events[3])
-        self.assertIn("-D --no-folding agents", events[4])
-        self.assertIn("-D --no-folding claude", events[5])
-        self.assertIn("-R agents", events[6])
-        self.assertNotIn("--no-folding", events[6])
-        self.assertIn("-R claude", events[7])
-        self.assertNotIn("--no-folding", events[7])
+        humanizer = str(self.extras / "humanizer")
+        self.assertIn(f"{self.source} status --porcelain", events[0])
+        self.assertIn(f"{humanizer} status --porcelain", events[1])
+        self.assertIn(f"{humanizer} pull --ff-only", events[2])
+        self.assertIn("-D --no-folding agents", events[3])
+        self.assertIn("-D --no-folding claude", events[4])
+        self.assertIn(f"{self.source} pull --ff-only", events[5])
+        self.assertIn("-D --no-folding agents", events[6])
+        self.assertIn("-D --no-folding claude", events[7])
+        self.assertIn("-R agents", events[8])
+        self.assertNotIn("--no-folding", events[8])
+        self.assertIn("-R claude", events[9])
+        self.assertNotIn("--no-folding", events[9])
+
+    def test_missing_extra_checkout_fails_before_any_pull(self) -> None:
+        self.make_skill("engineering", "alpha")
+        fixture_bin = Path(self.temporary.name) / "bin"
+        fixture_bin.mkdir()
+        event_log = Path(self.temporary.name) / "events"
+        for command in ("git", "stow"):
+            executable = fixture_bin / command
+            executable.write_text(
+                "#!/bin/sh\n"
+                f"printf '{command} %s\\n' \"$*\" >> \"$EVENT_LOG\"\n",
+                encoding="utf-8",
+            )
+            executable.chmod(0o755)
+
+        environment = self.fixture_environment()
+        environment.update(
+            {
+                "EVENT_LOG": str(event_log),
+                "PATH": f"{fixture_bin}{os.pathsep}{environment['PATH']}",
+            }
+        )
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT)],
+            text=True,
+            capture_output=True,
+            env=environment,
+        )
+
+        self.assertEqual(2, result.returncode)
+        self.assertIn("git clone https://github.com/blader/humanizer.git", result.stderr)
+        self.assertFalse(event_log.exists())
 
     @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
     def test_restow_keeps_skill_roots_real_and_links_whole_skill_directories(
