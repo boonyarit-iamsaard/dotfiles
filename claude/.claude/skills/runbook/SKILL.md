@@ -36,6 +36,11 @@ Input is an issue or spec file, or a free-text goal.
 Read the repo for constraints the procedure must honour: region, naming, a
 public repository, an existing IaC tool.
 
+Read the **live names** of every existing resource the steps touch (services,
+projects, accounts) from the system itself with read-only CLI calls, linking
+the CLI first if needed. Specs and templates use default names that drift
+from what is deployed.
+
 **Done when:** you hold an ordered list of outcomes, each traceable to an
 acceptance criterion or confirmed "done when" item.
 
@@ -49,7 +54,8 @@ Research inline, so the docs stay in context for the run:
 3. WebSearch only to locate an official page; cite the page, never the search.
 
 Record for each outcome: the page URL, the exact console path or command,
-prerequisites, quotas, costs, and anything the docs mark irreversible.
+prerequisites, quotas, costs, the **plan or tier** that unlocks the feature,
+and anything the docs mark irreversible.
 
 **Done when:** every outcome maps to at least one official page fetched in
 this session, and every CLI command matches its current reference page.
@@ -60,6 +66,10 @@ The docs often fork: two ways to enable a feature, a setting that depends on
 account type, a capability that may be unavailable in a region. Put each fork
 to the user with a recommendation, and wait. Record the answers in the
 runbook's Decisions section.
+
+Read the account's current plan (read-only CLI where one exists, else ask).
+Each outcome whose plan or tier is above it is a fork: upgrade, or drop the
+outcome.
 
 **Done when:** no step depends on an option the user has not chosen.
 
@@ -76,6 +86,15 @@ notes convention, else use the scratchpad. Fill it:
   worked step. Mark irreversible steps `⚠️ Irreversible` and name what cannot
   be undone. Console paths carry "per docs, verify on screen": docs trail the
   UI.
+- **Step size**: a **Do** list of at most five actions; split a larger step
+  into numbered sub-steps (`5a`, `5b`), each with its own Expect.
+- **Verify before ⚠️**: each step's Verify runs before the next ⚠️ step that
+  depends on it. When the local CLI is not configured yet, the check uses the
+  provider's browser shell (AWS CloudShell) rather than pointing at a later
+  step.
+- **Secrets through a terminal** stay in a pipe or a `( … )` subshell, and
+  the command prints only its result: `clip.exe < key`, `age -d -i -`,
+  credentials exported inside a subshell.
 - **Placeholders** for every account ID, email, ARN, hostname and secret:
   `<BACKUPS_ACCOUNT_ID>`, `<ROOT_EMAIL>`. The runbook is safe to commit to a
   public repository.
@@ -95,11 +114,15 @@ Work through the steps as the human reports progress:
 - When they report a step done, run its **Verify** check if it is read-only
   and their session can run it; otherwise ask them for what the check shows.
   On a pass, tick the step's checkbox and the matching checkbox in the source
-  issue.
+  issue. A step's check passes before the next ⚠️ step begins.
+- Present one step, or one sub-step, per message.
 - When the screen differs from the doc, re-fetch the cited page, correct the
   step in the runbook, and log the difference in the Run log.
 - Append to the Run log: date, steps completed, every deviation from the
-  docs. Entries stay as safe to publish as the rest of the runbook.
+  docs. The conversation holds real values; the file holds **placeholders**
+  and descriptions ("the management account", "two accounts"). After each
+  edit to the runbook or the issue, search both for every real identifier
+  seen in the conversation so far, and replace any hit.
 
 **Resuming** in a new session: read the runbook and start at the first
 unticked step. If the "Docs checked" date is more than 30 days old, re-fetch
