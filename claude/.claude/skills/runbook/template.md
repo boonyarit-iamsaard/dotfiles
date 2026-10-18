@@ -1,28 +1,29 @@
-# Runbook: <procedure name>
+# Runbook: `<procedure name>`
 
 - **Source:** `<path to issue or spec>`
-- **Docs checked:** <YYYY-MM-DD>
-- **Estimated time:** <minutes> · **Estimated cost:** <amount and basis>
+- **Docs checked:** `<YYYY-MM-DD>`
+- **Estimated time:** `<minutes>` · **Estimated cost:** `<amount and basis>`
 
 Every identifier below is a placeholder. Substitute the real value on screen;
 never write it into this file.
 
 ## Prerequisites
 
-- [ ] <Tool and minimum version, with its install page>
-- [ ] <Access the human needs before step 1>
+- [ ] `<Tool and minimum version, with its install page>`
+- [ ] `<Access the human needs before step 1>`
 - Region: `<region>`
 
 ## Decisions
 
 | Fork | Choice | Why |
 | --- | --- | --- |
-| <option the docs leave open> | <chosen option> | <one line> |
+| `<option the docs leave open>` | `<chosen option>` | `<one line>` |
 
 ## Steps
 
-### - [ ] 1. Enable AWS Organizations with all features
+### 1. Enable AWS Organizations with all features
 
+- [ ] **Done** (tick once Verify passes)
 - **Goal:** The existing account becomes the management account of an
   Organization.
 - **Why:** Organizations lets member accounts be created and governed from one
@@ -40,11 +41,11 @@ never write it into this file.
 - **Undo:** ⚠️ Irreversible while member accounts exist; an organization can
   be deleted only after every member account is removed.
 - **Ticks:** "AWS Organizations enabled with all features" in the source issue.
-- **Source:** <official doc URL>
+- **Source:** `<official doc URL>`
 
 ## Run log
 
-### <YYYY-MM-DD>
+### `<YYYY-MM-DD>`
 
-- Completed: <steps>
-- Deviations from docs: <what differed and how the step was corrected, or "none">
+- Completed: `<steps>`
+- Deviations from docs: `<what differed and how the step was corrected, or "none">`
