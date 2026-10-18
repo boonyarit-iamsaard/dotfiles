@@ -241,8 +241,8 @@ class UpdateSkillsTest(unittest.TestCase):
         result = self.run_updater("--dry-run", expected_returncode=2)
 
         self.assertIn("duplicate skill name", result.stderr)
-        self.assertEqual(list(self.agents.iterdir()), [])
-        self.assertEqual(list(self.claude.iterdir()), [])
+        self.assertEqual([], list(self.agents.iterdir()))
+        self.assertEqual([], list(self.claude.iterdir()))
 
     def test_retargeted_managed_link_is_not_deleted(self) -> None:
         alpha = self.make_skill("engineering", "alpha")
@@ -300,8 +300,8 @@ class UpdateSkillsTest(unittest.TestCase):
         )
 
         self.assertEqual(
-            result.returncode,
             0,
+            result.returncode,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
         events = event_log.read_text(encoding="utf-8").splitlines()
@@ -385,8 +385,8 @@ class UpdateSkillsTest(unittest.TestCase):
         )
 
         self.assertEqual(
-            result.returncode,
             0,
+            result.returncode,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
         for consumer in (".agents", ".claude"):
@@ -438,16 +438,16 @@ class UpdateSkillsTest(unittest.TestCase):
         )
 
         self.assertEqual(
-            result.returncode,
             0,
+            result.returncode,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
         for consumer in (".agents", ".claude"):
             skill_md = self.home / consumer / "skills" / "impeccable" / "SKILL.md"
             self.assertFalse(skill_md.is_symlink())
             self.assertEqual(
-                skill_md.read_text(encoding="utf-8"),
                 "installer owned\n",
+                skill_md.read_text(encoding="utf-8"),
             )
 
 
