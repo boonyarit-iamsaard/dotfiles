@@ -26,6 +26,36 @@ git:
 #       - "#e5ba7d"
 #     authorColors:
 #       "*": "#57a3f8"
+# dark modern
+gui:
+  theme:
+    activeBorderColor:
+      - "#0078d4" # tab.activeBorderTop
+      - bold
+    inactiveBorderColor:
+      - "#9d9d9d" # descriptionForeground
+    optionsTextColor:
+      - "#4daafc" # textLink.foreground
+    selectedLineBgColor:
+      - "#264f78" # editor.selectionBackground
+    inactiveViewSelectedLineBgColor:
+      - "#37373d" # list.inactiveSelectionBackground
+    cherryPickedCommitBgColor:
+      - "#37373d" # tab.selectedBackground
+    cherryPickedCommitFgColor:
+      - "#e2c08d" # gitDecoration.modifiedResourceForeground
+    markedBaseCommitBgColor:
+      - "#37373d" # tab.selectedBackground
+    markedBaseCommitFgColor:
+      - "#3794ff" # charts.blue
+    unstagedChangesColor:
+      - "#c74e39" # gitDecoration.deletedResourceForeground
+    defaultFgColor:
+      - "#cccccc" # terminal.foreground
+    searchingActiveBorderColor:
+      - "#e2c08d" # gitDecoration.modifiedResourceForeground
+    authorColors:
+      "*": "#3794ff" # charts.blue
 # common
 # gui:
 #   theme:
@@ -53,30 +83,29 @@ git:
 #       - "#cad3f5"
 #     searchingActiveBorderColor:
 #       - "#eed49f"
-#
-#   authorColors:
-#     "*": "#b7bdf8"
+#     authorColors:
+#       "*": "#b7bdf8"
 # catppuccin mocha
-gui:
-  theme:
-    activeBorderColor:
-      - "#f9e2af"
-      - bold
-    inactiveBorderColor:
-      - "#a6adc8"
-    optionsTextColor:
-      - "#89b4fa"
-    selectedLineBgColor:
-      - "#313244"
-    cherryPickedCommitBgColor:
-      - "#45475a"
-    cherryPickedCommitFgColor:
-      - "#f9e2af"
-    unstagedChangesColor:
-      - "#f38ba8"
-    defaultFgColor:
-      - "#cdd6f4"
-    searchingActiveBorderColor:
-      - "#f9e2af"
-    authorColors:
-      "*": "#b4befe"
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#f9e2af"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
+#     cherryPickedCommitBgColor:
+#       - "#45475a"
+#     cherryPickedCommitFgColor:
+#       - "#f9e2af"
+#     unstagedChangesColor:
+#       - "#f38ba8"
+#     defaultFgColor:
+#       - "#cdd6f4"
+#     searchingActiveBorderColor:
+#       - "#f9e2af"
+#     authorColors:
+#       "*": "#b4befe"
