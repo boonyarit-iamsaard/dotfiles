@@ -60,8 +60,8 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
-# Oh My Posh uses the Catppuccin prompt layout with One Dark colors.
-$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\catppuccin-mocha.omp.json'
+# Oh My Posh uses a plain Starship-style prompt with VS Code Dark Modern colors.
+$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\default-dark-modern.omp.json'
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 
 if ($ompCommand) {

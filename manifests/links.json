@@ -31,6 +31,10 @@
     {
       "source": "config/windows-terminal/onedark.json",
       "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\onedark.json"
+    },
+    {
+      "source": "config/windows-terminal/dark-modern.json",
+      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\dark-modern.json"
     }
   ],
   "powershell": [
