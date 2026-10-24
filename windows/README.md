@@ -204,6 +204,34 @@ LazyGit retains its commented Dark 2026, Catppuccin Macchiato, and Catppuccin
 Mocha options. LazyDocker retains its Catppuccin Mocha colors as comments.
 `dark-2026.jsonc` is unchanged.
 
+## Dark Modern theme
+
+`config\windows-terminal\dark-modern.json` adds **Dark Modern (VS Code)**, a
+Windows Terminal port of VS Code's default dark theme. Select it the same way as
+One Dark. Colors are transcribed from upstream
+[`dark_modern.json`](https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json),
+which `include`s `dark_plus.json` and `dark_vs.json`. A key absent from all
+three falls back to VS Code's color registry default, as it does in the
+integrated terminal. This follows the transcription approach of
+[dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim).
+
+Windows Terminal fragments are strict JSON, so provenance lives here:
+
+| Scheme key            | Hex       | VS Code source                                                           |
+| --------------------- | --------- | ------------------------------------------------------------------------ |
+| `background`          | `#1f1f1f` | `editor.background` (theme)                                              |
+| `foreground`          | `#cccccc` | `terminal.foreground` (theme)                                            |
+| `cursorColor`         | `#cccccc` | `terminalCursor.foreground` is unset, so the terminal foreground         |
+| `selectionBackground` | `#264f78` | `terminal.selectionBackground` → `editor.selectionBackground` (registry) |
+| 16 ANSI colors        | see file  | `terminal.ansi*` (registry; the theme sets none)                         |
+
+`background` uses `editor.background` rather than `panel.background`
+(`#181818`), which VS Code paints behind its docked terminal. Here the terminal
+is the whole window. The registry defaults are in
+[`terminalColorRegistry.ts`](https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/terminal/common/terminalColorRegistry.ts)
+and
+[`editorColors.ts`](https://github.com/microsoft/vscode/blob/main/src/vs/platform/theme/common/colors/editorColors.ts).
+
 Apply or check the managed theme links with:
 
 ```powershell
