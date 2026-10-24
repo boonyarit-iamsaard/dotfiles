@@ -1,29 +1,44 @@
-# catppuccin mocha
+# Dark Modern
+# note: lazydocker only supports these four theme keys
 gui:
   theme:
     activeBorderColor:
-      - "#f9e2af"
+      - "#0078d4" # tab.activeBorderTop
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#9d9d9d" # descriptionForeground
     optionsTextColor:
-      - "#89b4fa"
+      - "#4daafc" # textLink.foreground
     selectedLineBgColor:
-      - "#313244"
-    cherryPickedCommitBgColor:
-      - "#45475a"
-    cherryPickedCommitFgColor:
-      - "#f9e2af"
-    unstagedChangesColor:
-      - "#f38ba8"
-    defaultFgColor:
-      - "#cdd6f4"
-    searchingActiveBorderColor:
-      - "#f9e2af"
+      - "#264f78" # editor.selectionBackground
 
-  authorColors:
-    "*": "#b4befe"# GitHub Dark Dimmed (@primer/primitives dark_dimmed)
+# catppuccin mocha
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#f9e2af"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
+#     cherryPickedCommitBgColor:
+#       - "#45475a"
+#     cherryPickedCommitFgColor:
+#       - "#f9e2af"
+#     unstagedChangesColor:
+#       - "#f38ba8"
+#     defaultFgColor:
+#       - "#cdd6f4"
+#     searchingActiveBorderColor:
+#       - "#f9e2af"
 
+#   authorColors:
+#     "*": "#b4befe"
+
+# GitHub Dark Dimmed (@primer/primitives dark_dimmed)
 # gui:
 #   theme:
 #     # accent.fg

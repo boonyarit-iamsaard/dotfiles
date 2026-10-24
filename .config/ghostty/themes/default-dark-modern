@@ -1,22 +1,68 @@
-palette = 0=#000000
-palette = 1=#cd3131
-palette = 2=#0dbc79
-palette = 3=#e5e510
-palette = 4=#2472c8
-palette = 5=#bc3fbc
-palette = 6=#11a8cd
-palette = 7=#e5e5e5
-palette = 8=#666666
-palette = 9=#f14c4c
-palette = 10=#23d18b
-palette = 11=#f5f543
-palette = 12=#3b8eea
-palette = 13=#d670d6
-palette = 14=#29b8db
-palette = 15=#e5e5e5
+# Default Dark Modern for Ghostty
+#
+# Hexes come from microsoft/vscode extensions/theme-defaults/themes/dark_modern.json
+# (which includes dark_plus.json / dark_vs.json); keys the theme leaves unset
+# fall back to VS Code's registered dark defaults (terminalColorRegistry.ts,
+# editorColors.ts) and the fallbacks in xtermTerminal.ts.
+#
+# The VS Code key each color comes from is named above it. Ghostty parses a
+# whole line after `=` as the value, so these comments cannot sit beside the
+# value — `ghostty +validate-config` rejects the file if they do.
+
+# --- surfaces -----------------------------------------------------------------
+# editor.background, rather than panel.background (#181818): a terminal
+# window is the whole surface here, not a panel docked below an editor.
 background = #1f1f1f
+# terminal.foreground
 foreground = #cccccc
-cursor-color = #aeafad
-cursor-text = #cccccc
+
+# terminal.selectionBackground -> editor.selectionBackground (dark default)
 selection-background = #264f78
+# terminal.foreground (terminal.selectionForeground is unset)
 selection-foreground = #cccccc
+
+# terminalCursor.foreground is unset, so xterm falls back to terminal.foreground
+cursor-color = #cccccc
+# terminalCursor.background is unset, so xterm falls back to the background
+cursor-text = #1f1f1f
+
+# panel.border
+split-divider-color = #2b2b2b
+# editor.background
+unfocused-split-fill = #1f1f1f
+
+# --- the 16 ANSI colors -------------------------------------------------------
+# dark_modern.json sets no terminal.ansi* key, so VS Code renders its built-in
+# dark defaults from terminalColorRegistry.ts.
+
+# black
+palette = 0=#000000
+palette = 8=#666666
+
+# red
+palette = 1=#cd3131
+palette = 9=#f14c4c
+
+# green
+palette = 2=#0dbc79
+palette = 10=#23d18b
+
+# yellow
+palette = 3=#e5e510
+palette = 11=#f5f543
+
+# blue
+palette = 4=#2472c8
+palette = 12=#3b8eea
+
+# magenta
+palette = 5=#bc3fbc
+palette = 13=#d670d6
+
+# cyan
+palette = 6=#11a8cd
+palette = 14=#29b8db
+
+# white
+palette = 7=#e5e5e5
+palette = 15=#e5e5e5

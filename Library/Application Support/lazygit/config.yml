@@ -2,30 +2,63 @@ git:
   log:
     showWholeGraph: true
   overrideGpg: true
-# catppuccin mocha
+# Dark Modern (microsoft/vscode theme-defaults/themes/dark_modern.json; keys it
+# leaves unset are VS Code's registered dark defaults)
 gui:
   theme:
     activeBorderColor:
-      - "#f9e2af"
+      - "#0078d4" # tab.activeBorderTop
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#9d9d9d" # descriptionForeground
     optionsTextColor:
-      - "#89b4fa"
+      - "#4daafc" # textLink.foreground
     selectedLineBgColor:
-      - "#313244"
+      - "#264f78" # editor.selectionBackground
+    inactiveViewSelectedLineBgColor:
+      - "#37373d" # list.inactiveSelectionBackground
     cherryPickedCommitBgColor:
-      - "#45475a"
+      - "#37373d" # tab.selectedBackground
     cherryPickedCommitFgColor:
-      - "#f9e2af"
+      - "#e2c08d" # gitDecoration.modifiedResourceForeground
+    markedBaseCommitBgColor:
+      - "#37373d" # tab.selectedBackground
+    markedBaseCommitFgColor:
+      - "#3794ff" # charts.blue
     unstagedChangesColor:
-      - "#f38ba8"
+      - "#c74e39" # gitDecoration.deletedResourceForeground
     defaultFgColor:
-      - "#cdd6f4"
+      - "#cccccc" # terminal.foreground
     searchingActiveBorderColor:
-      - "#f9e2af"
+      - "#e2c08d" # gitDecoration.modifiedResourceForeground
     authorColors:
-      "*": "#b4befe"
+      "*": "#3794ff" # charts.blue
+
+
+# catppuccin mocha
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#f9e2af"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
+#     cherryPickedCommitBgColor:
+#       - "#45475a"
+#     cherryPickedCommitFgColor:
+#       - "#f9e2af"
+#     unstagedChangesColor:
+#       - "#f38ba8"
+#     defaultFgColor:
+#       - "#cdd6f4"
+#     searchingActiveBorderColor:
+#       - "#f9e2af"
+#     authorColors:
+#       "*": "#b4befe"
 
 # GitHub Dark Dimmed (@primer/primitives dark_dimmed)
 # gui:
@@ -63,9 +96,8 @@ gui:
 #       - "#adbac7"
 #     searchingActiveBorderColor:
 #       - "#daaa3f"
-#
-#   authorColors:
-#     "*": "#6cb6ff"
+#     authorColors:
+#       "*": "#6cb6ff"
 
 # Dark 2026
 # gui:
@@ -95,6 +127,5 @@ gui:
 #       - "#cccccc"
 #     searchingActiveBorderColor:
 #       - "#e5ba7d"
-#
-#   authorColors:
-#     "*": "#57a3f8"
+#     authorColors:
+#       "*": "#57a3f8"

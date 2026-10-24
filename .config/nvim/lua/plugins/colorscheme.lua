@@ -91,10 +91,30 @@ return {
   --   end,
   -- },
 
-  -- {
-  --   "Mofiqul/vscode.nvim",
-  --   priority = 1000,
-  -- },
+  {
+    -- vscode.nvim mixes Dark+ and Dark Modern; these pull its surfaces onto
+    -- Dark Modern. Hexes from microsoft/vscode theme-defaults/themes/dark_modern.json,
+    -- each commented with the VS Code key it came from.
+    "Mofiqul/vscode.nvim",
+    priority = 1000,
+    config = function()
+      require("vscode").setup({
+        -- transparent = true,
+        color_overrides = {
+          vscFront = "#cccccc", -- editor.foreground
+          vscLineNumber = "#6e7681", -- editorLineNumber.foreground
+          vscLeftDark = "#181818", -- sideBar.background
+          vscTabOutside = "#181818", -- editorGroupHeader.tabsBackground
+          vscSplitDark = "#333333", -- editorGroup.border (#ffffff17 over editor.background)
+          vscSearchCurrent = "#9e6a03", -- editor.findMatchBackground
+        },
+        group_overrides = {
+          -- vscode.nvim leaves CurSearch unset, so it falls back to Neovim's default.
+          CurSearch = { link = "IncSearch" },
+        },
+      })
+    end,
+  },
 
   {
     "catppuccin/nvim",
@@ -117,9 +137,9 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin-mocha",
+      -- colorscheme = "catppuccin-mocha",
       -- colorscheme = "dark-2026",
-      -- colorscheme = "vscode",
+      colorscheme = "vscode",
     },
   },
 }
