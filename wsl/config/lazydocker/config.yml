@@ -1,5 +1,17 @@
-# dark 2026
+# dark modern
 # note: lazydocker only supports these four theme keys
+gui:
+  theme:
+    activeBorderColor:
+      - "#0078d4" # tab.activeBorderTop
+      - bold
+    inactiveBorderColor:
+      - "#9d9d9d" # descriptionForeground
+    optionsTextColor:
+      - "#4daafc" # textLink.foreground
+    selectedLineBgColor:
+      - "#264f78" # editor.selectionBackground
+# dark 2026
 # gui:
 #   theme:
 #     activeBorderColor:
@@ -28,41 +40,15 @@
 #       - "#8aadf4"
 #     selectedLineBgColor:
 #       - "#363a4f"
-#     cherryPickedCommitBgColor:
-#       - "#494d64"
-#     cherryPickedCommitFgColor:
-#       - "#eed49f"
-#     unstagedChangesColor:
-#       - "#ed8796"
-#     defaultFgColor:
-#       - "#cad3f5"
-#     searchingActiveBorderColor:
-#       - "#eed49f"
-#
-#   authorColors:
-#     "*": "#b7bdf8"
 # catppuccin mocha
-gui:
-  theme:
-    activeBorderColor:
-      - "#f9e2af"
-      - bold
-    inactiveBorderColor:
-      - "#a6adc8"
-    optionsTextColor:
-      - "#89b4fa"
-    selectedLineBgColor:
-      - "#313244"
-    cherryPickedCommitBgColor:
-      - "#45475a"
-    cherryPickedCommitFgColor:
-      - "#f9e2af"
-    unstagedChangesColor:
-      - "#f38ba8"
-    defaultFgColor:
-      - "#cdd6f4"
-    searchingActiveBorderColor:
-      - "#f9e2af"
-
-  authorColors:
-    "*": "#b4befe"
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#f9e2af"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
