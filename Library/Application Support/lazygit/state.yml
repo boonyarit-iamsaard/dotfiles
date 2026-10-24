@@ -1,14 +1,11 @@
 lastupdatecheck: 1726490949
 recentrepos:
     - /Users/boonyarit.i/dotfiles
-    - /Users/boonyarit.i/workspace/personal/bookkeeping
-    - /Users/boonyarit.i/workspace/personal/AIOD-4990
     - /Users/boonyarit.i/workspace/personal/skills
-    - /Users/boonyarit.i/workspace/personal/stay
-    - /Users/boonyarit.i/workspace/personal/dark-2026.nvim
+    - /Users/boonyarit.i/workspace/personal/bookkeeping
+    - /Users/boonyarit.i/workspace/personal/foundry
 startuppopupversion: 5
-didshowhunkstaginghint: true
-lastversion: 0.65.1
+lastversion: 0.66.2
 customcommandshistory:
     - w
     - git merge master --ff-only
