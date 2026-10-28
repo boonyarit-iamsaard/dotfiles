@@ -1,28 +1,28 @@
 # dark modern
 # note: lazydocker only supports these four theme keys
-gui:
-  theme:
-    activeBorderColor:
-      - "#0078d4" # tab.activeBorderTop
-      - bold
-    inactiveBorderColor:
-      - "#9d9d9d" # descriptionForeground
-    optionsTextColor:
-      - "#4daafc" # textLink.foreground
-    selectedLineBgColor:
-      - "#264f78" # editor.selectionBackground
-# dark 2026
 # gui:
 #   theme:
 #     activeBorderColor:
-#       - "#3994bc"
+#       - "#0078d4" # tab.activeBorderTop
 #       - bold
 #     inactiveBorderColor:
-#       - "#8c8c8c"
+#       - "#9d9d9d" # descriptionForeground
 #     optionsTextColor:
-#       - "#48a0c7"
+#       - "#4daafc" # textLink.foreground
 #     selectedLineBgColor:
-#       - "#276782"
+#       - "#264f78" # editor.selectionBackground
+# dark 2026
+gui:
+  theme:
+    activeBorderColor:
+      - "#3994bc"
+      - bold
+    inactiveBorderColor:
+      - "#8c8c8c"
+    optionsTextColor:
+      - "#48a0c7"
+    selectedLineBgColor:
+      - "#276782"
 # common
 # gui:
 #   theme:
