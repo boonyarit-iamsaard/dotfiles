@@ -63,5 +63,6 @@ font-size               = 14
 adjust-cursor-thickness = 2
 macos-titlebar-style    = "transparent"
 # theme                   = "catppuccin-mocha"
-theme                   = "default-dark-modern"
+# theme                   = "default-dark-modern"
+theme                   = "dark-2026"
 window-colorspace       = "display-p3"

@@ -37,52 +37,52 @@ return {
 
       -- Dark Modern (microsoft/vscode theme-defaults/themes/dark_modern.json; keys it
       -- leaves unset are VS Code's registered dark defaults)
-      lazygit = {
-        config = {
-          gui = {
-            theme = {
-              activeBorderColor = { "#0078d4", "bold" }, -- tab.activeBorderTop
-              inactiveBorderColor = { "#9d9d9d" }, -- descriptionForeground
-              optionsTextColor = { "#4daafc" }, -- textLink.foreground
-              selectedLineBgColor = { "#264f78" }, -- editor.selectionBackground
-              inactiveViewSelectedLineBgColor = { "#37373d" }, -- list.inactiveSelectionBackground
-              cherryPickedCommitBgColor = { "#37373d" }, -- tab.selectedBackground
-              cherryPickedCommitFgColor = { "#e2c08d" }, -- gitDecoration.modifiedResourceForeground
-              markedBaseCommitBgColor = { "#37373d" }, -- tab.selectedBackground
-              markedBaseCommitFgColor = { "#3794ff" }, -- charts.blue
-              unstagedChangesColor = { "#c74e39" }, -- gitDecoration.deletedResourceForeground
-              defaultFgColor = { "#cccccc" }, -- terminal.foreground
-              searchingActiveBorderColor = { "#e2c08d" }, -- gitDecoration.modifiedResourceForeground
-            },
-            -- The key has to carry its own quotes: snacks writes mapping keys to
-            -- YAML verbatim, and a bare `*:` is an alias anchor, not a string.
-            authorColors = { ['"*"'] = "#3794ff" }, -- charts.blue
-          },
-        },
-      },
-
-      -- Dark 2026
       -- lazygit = {
       --   config = {
       --     gui = {
       --       theme = {
-      --         activeBorderColor = { "#3994bc", "bold" }, -- tab.activeBorderTop
-      --         inactiveBorderColor = { "#8c8c8c" }, -- descriptionForeground
-      --         optionsTextColor = { "#48a0c7" }, -- textLink.foreground
-      --         selectedLineBgColor = { "#276782" }, -- editor.selectionBackground, opaque base
-      --         inactiveViewSelectedLineBgColor = { "#2c2d2e" }, -- list.inactiveSelectionBackground
+      --         activeBorderColor = { "#0078d4", "bold" }, -- tab.activeBorderTop
+      --         inactiveBorderColor = { "#9d9d9d" }, -- descriptionForeground
+      --         optionsTextColor = { "#4daafc" }, -- textLink.foreground
+      --         selectedLineBgColor = { "#264f78" }, -- editor.selectionBackground
+      --         inactiveViewSelectedLineBgColor = { "#37373d" }, -- list.inactiveSelectionBackground
       --         cherryPickedCommitBgColor = { "#37373d" }, -- tab.selectedBackground
-      --         cherryPickedCommitFgColor = { "#e5ba7d" }, -- gitDecoration.modifiedResourceForeground
+      --         cherryPickedCommitFgColor = { "#e2c08d" }, -- gitDecoration.modifiedResourceForeground
       --         markedBaseCommitBgColor = { "#37373d" }, -- tab.selectedBackground
-      --         markedBaseCommitFgColor = { "#57a3f8" }, -- charts.blue
-      --         unstagedChangesColor = { "#f48771" }, -- gitDecoration.deletedResourceForeground
+      --         markedBaseCommitFgColor = { "#3794ff" }, -- charts.blue
+      --         unstagedChangesColor = { "#c74e39" }, -- gitDecoration.deletedResourceForeground
       --         defaultFgColor = { "#cccccc" }, -- terminal.foreground
-      --         searchingActiveBorderColor = { "#e5ba7d" }, -- gitDecoration.modifiedResourceForeground
+      --         searchingActiveBorderColor = { "#e2c08d" }, -- gitDecoration.modifiedResourceForeground
       --       },
-      --       authorColors = { ['"*"'] = "#57a3f8" }, -- charts.blue
+      --       -- The key has to carry its own quotes: snacks writes mapping keys to
+      --       -- YAML verbatim, and a bare `*:` is an alias anchor, not a string.
+      --       authorColors = { ['"*"'] = "#3794ff" }, -- charts.blue
       --     },
       --   },
       -- },
+
+      -- Dark 2026
+      lazygit = {
+        config = {
+          gui = {
+            theme = {
+              activeBorderColor = { "#3994bc", "bold" }, -- tab.activeBorderTop
+              inactiveBorderColor = { "#8c8c8c" }, -- descriptionForeground
+              optionsTextColor = { "#48a0c7" }, -- textLink.foreground
+              selectedLineBgColor = { "#276782" }, -- editor.selectionBackground, opaque base
+              inactiveViewSelectedLineBgColor = { "#2c2d2e" }, -- list.inactiveSelectionBackground
+              cherryPickedCommitBgColor = { "#37373d" }, -- tab.selectedBackground
+              cherryPickedCommitFgColor = { "#e5ba7d" }, -- gitDecoration.modifiedResourceForeground
+              markedBaseCommitBgColor = { "#37373d" }, -- tab.selectedBackground
+              markedBaseCommitFgColor = { "#57a3f8" }, -- charts.blue
+              unstagedChangesColor = { "#f48771" }, -- gitDecoration.deletedResourceForeground
+              defaultFgColor = { "#cccccc" }, -- terminal.foreground
+              searchingActiveBorderColor = { "#e5ba7d" }, -- gitDecoration.modifiedResourceForeground
+            },
+            authorColors = { ['"*"'] = "#57a3f8" }, -- charts.blue
+          },
+        },
+      },
     },
   },
 }
