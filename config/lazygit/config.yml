@@ -3,59 +3,59 @@ git:
     showWholeGraph: true
   overrideGpg: true
 # dark 2026
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#3994bc"
-#       - bold
-#     inactiveBorderColor:
-#       - "#8c8c8c"
-#     optionsTextColor:
-#       - "#48a0c7"
-#     selectedLineBgColor:
-#       - "#276782"
-#     cherryPickedCommitBgColor:
-#       - "#37373d"
-#     cherryPickedCommitFgColor:
-#       - "#e5ba7d"
-#     unstagedChangesColor:
-#       - "#f48771"
-#     defaultFgColor:
-#       - "#cccccc"
-#     searchingActiveBorderColor:
-#       - "#e5ba7d"
-#     authorColors:
-#       "*": "#57a3f8"
-# dark modern
 gui:
   theme:
     activeBorderColor:
-      - "#0078d4" # tab.activeBorderTop
+      - "#3994bc"
       - bold
     inactiveBorderColor:
-      - "#9d9d9d" # descriptionForeground
+      - "#8c8c8c"
     optionsTextColor:
-      - "#4daafc" # textLink.foreground
+      - "#48a0c7"
     selectedLineBgColor:
-      - "#264f78" # editor.selectionBackground
-    inactiveViewSelectedLineBgColor:
-      - "#37373d" # list.inactiveSelectionBackground
+      - "#276782"
     cherryPickedCommitBgColor:
-      - "#37373d" # tab.selectedBackground
+      - "#37373d"
     cherryPickedCommitFgColor:
-      - "#e2c08d" # gitDecoration.modifiedResourceForeground
-    markedBaseCommitBgColor:
-      - "#37373d" # tab.selectedBackground
-    markedBaseCommitFgColor:
-      - "#3794ff" # charts.blue
+      - "#e5ba7d"
     unstagedChangesColor:
-      - "#c74e39" # gitDecoration.deletedResourceForeground
+      - "#f48771"
     defaultFgColor:
-      - "#cccccc" # terminal.foreground
+      - "#cccccc"
     searchingActiveBorderColor:
-      - "#e2c08d" # gitDecoration.modifiedResourceForeground
+      - "#e5ba7d"
     authorColors:
-      "*": "#3794ff" # charts.blue
+      "*": "#57a3f8"
+# dark modern
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#0078d4" # tab.activeBorderTop
+#       - bold
+#     inactiveBorderColor:
+#       - "#9d9d9d" # descriptionForeground
+#     optionsTextColor:
+#       - "#4daafc" # textLink.foreground
+#     selectedLineBgColor:
+#       - "#264f78" # editor.selectionBackground
+#     inactiveViewSelectedLineBgColor:
+#       - "#37373d" # list.inactiveSelectionBackground
+#     cherryPickedCommitBgColor:
+#       - "#37373d" # tab.selectedBackground
+#     cherryPickedCommitFgColor:
+#       - "#e2c08d" # gitDecoration.modifiedResourceForeground
+#     markedBaseCommitBgColor:
+#       - "#37373d" # tab.selectedBackground
+#     markedBaseCommitFgColor:
+#       - "#3794ff" # charts.blue
+#     unstagedChangesColor:
+#       - "#c74e39" # gitDecoration.deletedResourceForeground
+#     defaultFgColor:
+#       - "#cccccc" # terminal.foreground
+#     searchingActiveBorderColor:
+#       - "#e2c08d" # gitDecoration.modifiedResourceForeground
+#     authorColors:
+#       "*": "#3794ff" # charts.blue
 # common
 # gui:
 #   theme:
