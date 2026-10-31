@@ -28,32 +28,32 @@
 
 return {
   -- Dark 2026 (values from dark-2026.nvim extras/lazygit/dark-2026.yml)
-  -- "folke/snacks.nvim",
-  -- opts = {
-  --   lazygit = {
-  --     config = {
-  --       gui = {
-  --         theme = {
-  --           activeBorderColor = { "#3994bc", "bold" }, -- tab.activeBorderTop
-  --           inactiveBorderColor = { "#8c8c8c" }, -- descriptionForeground
-  --           optionsTextColor = { "#48a0c7" }, -- textLink.foreground
-  --           selectedLineBgColor = { "#276782" }, -- editor.selectionBackground, opaque base
-  --           inactiveViewSelectedLineBgColor = { "#2c2d2e" }, -- list.inactiveSelectionBackground
-  --           cherryPickedCommitBgColor = { "#37373d" },
-  --           cherryPickedCommitFgColor = { "#e5ba7d" }, -- gitDecoration.modifiedResourceForeground
-  --           markedBaseCommitBgColor = { "#37373d" },
-  --           markedBaseCommitFgColor = { "#57a3f8" }, -- charts.blue
-  --           unstagedChangesColor = { "#f48771" }, -- gitDecoration.deletedResourceForeground
-  --           defaultFgColor = { "#cccccc" }, -- terminal.foreground
-  --           searchingActiveBorderColor = { "#e5ba7d" },
-  --           -- The key has to carry its own quotes: snacks writes mapping keys to
-  --           -- YAML verbatim, and a bare `*:` is an alias anchor, not a string.
-  --           authorColors = { ['"*"'] = "#57a3f8" }, -- charts.blue
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
+  "folke/snacks.nvim",
+  opts = {
+    lazygit = {
+      config = {
+        gui = {
+          theme = {
+            activeBorderColor = { "#3994bc", "bold" }, -- tab.activeBorderTop
+            inactiveBorderColor = { "#8c8c8c" }, -- descriptionForeground
+            optionsTextColor = { "#48a0c7" }, -- textLink.foreground
+            selectedLineBgColor = { "#276782" }, -- editor.selectionBackground, opaque base
+            inactiveViewSelectedLineBgColor = { "#2c2d2e" }, -- list.inactiveSelectionBackground
+            cherryPickedCommitBgColor = { "#37373d" },
+            cherryPickedCommitFgColor = { "#e5ba7d" }, -- gitDecoration.modifiedResourceForeground
+            markedBaseCommitBgColor = { "#37373d" },
+            markedBaseCommitFgColor = { "#57a3f8" }, -- charts.blue
+            unstagedChangesColor = { "#f48771" }, -- gitDecoration.deletedResourceForeground
+            defaultFgColor = { "#cccccc" }, -- terminal.foreground
+            searchingActiveBorderColor = { "#e5ba7d" },
+            -- The key has to carry its own quotes: snacks writes mapping keys to
+            -- YAML verbatim, and a bare `*:` is an alias anchor, not a string.
+            authorColors = { ['"*"'] = "#57a3f8" }, -- charts.blue
+          },
+        },
+      },
+    },
+  },
 
   -- Dark Modern (microsoft/vscode theme-defaults/themes/dark_modern.json; keys it
   -- leaves unset are VS Code's registered dark defaults)
