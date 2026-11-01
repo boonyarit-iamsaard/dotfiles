@@ -1,5 +1,41 @@
 # Dotfiles
 
+## Agent gh wrapper
+
+`gh` is installed only so agents can handle pull requests; it is never logged
+in. `~/.local/bin/gh` (symlink to `~/dotfiles/.local/bin/gh`) reads a
+fine-grained token from `~/.config/gh-agent/token` for each call and runs
+`/opt/homebrew/bin/gh`, so the token never enters the environment of other
+processes. Three files put `~/.local/bin` ahead of Homebrew so the wrapper wins
+in every zsh mode: `.zshenv` (for `zsh -c`, which tools spawn), `.zprofile`
+(after its `brew shellenv`, for login shells), and `.zshrc` (interactive). A
+process started before these changed keeps its old `PATH`; check with
+`command -v gh`, or call `~/.local/bin/gh` directly. No account is logged in
+to the keyring (`gh auth status` shows none), so a bypassed wrapper or a
+missing token file makes `gh` fail with "set the GH_TOKEN environment variable"
+instead of acting as another account. To remove a login, run the real binary
+without the variable, because the wrapper's `GH_TOKEN` makes `gh auth logout`
+refuse: `env -u GH_TOKEN /opt/homebrew/bin/gh auth logout -u <user>`.
+
+Set up on a new Mac, or when the token expires:
+
+```bash
+brew install gh
+mkdir -p ~/.local/bin ~/.config/gh-agent
+ln -s ../../dotfiles/.local/bin/gh ~/.local/bin/gh
+ln -s dotfiles/.zshenv ~/.zshenv
+# ~/.zprofile is not tracked here (Docker, Homebrew and nvm edit it); append once:
+printf '\npath=("$HOME/.local/bin" ${path:#$HOME/.local/bin})\n' >> ~/.zprofile
+(umask 077; cat > ~/.config/gh-agent/token)   # paste token, Enter, Ctrl-D
+~/.local/bin/gh api user --jq .login          # must print the token owner; PATH reloads in a new terminal
+```
+
+Create the token under GitHub → Settings → Developer settings → Fine-grained
+tokens for the owner account, scoped to the `bookkeeping` repository only:
+Contents and Pull requests read/write, Actions and Commit statuses read-only,
+everything else none. The token file lives outside this repo and must never be
+committed.
+
 ## Shared agent skills
 
 Matt Pocock's engineering and productivity skills are read from the clean,

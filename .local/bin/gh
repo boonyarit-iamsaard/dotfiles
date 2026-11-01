@@ -1,0 +1,11 @@
+#!/bin/sh
+# Agent-only gh wrapper (macOS). gh is never logged in; each call reads a
+# fine-grained token from a file so it stays out of every other process's
+# environment. Falls back to gh's own login when the file is missing.
+# See "Agent gh wrapper" in ~/dotfiles/README.md.
+token_file="$HOME/.config/gh-agent/token"
+if [ -r "$token_file" ]; then
+  GH_TOKEN=$(cat "$token_file")
+  export GH_TOKEN
+fi
+exec /opt/homebrew/bin/gh "$@"
