@@ -129,7 +129,11 @@ return {
         --   dark = "macchiato",
         -- },
         flavour = "mocha", -- latte, frappe, macchiato, mocha
-        -- transparent_background = true,
+        transparent_background = true, -- let Ghostty's background-opacity/blur show through
+        float = {
+          transparent = true, -- also make floating windows (pickers, hover, etc.) transparent
+          solid = false,
+        },
       })
     end,
   },
@@ -137,8 +141,8 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      -- colorscheme = "catppuccin-mocha",
-      colorscheme = "dark-2026",
+      colorscheme = "catppuccin-mocha",
+      -- colorscheme = "dark-2026",
       -- colorscheme = "vscode",
     },
   },

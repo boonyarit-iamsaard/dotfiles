@@ -58,11 +58,11 @@
 # background-blur-radius  = 20
 cursor-color            = cell-foreground
 cursor-text             = cell-background
-font-family             = "MesloLGM Nerd Font Mono"
+font-family             = "JetBrainsMono Nerd Font Mono"
 font-size               = 14
 adjust-cursor-thickness = 2
-macos-titlebar-style    = "transparent"
-# theme                   = "catppuccin-mocha"
+macos-titlebar-style    = "hidden"
+theme                   = "catppuccin-mocha"
 # theme                   = "default-dark-modern"
-theme                   = "dark-2026"
+# theme                   = "dark-2026"
 window-colorspace       = "display-p3"
