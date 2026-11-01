@@ -12,17 +12,17 @@
 #     selectedLineBgColor:
 #       - "#264f78" # editor.selectionBackground
 # dark 2026
-gui:
-  theme:
-    activeBorderColor:
-      - "#3994bc"
-      - bold
-    inactiveBorderColor:
-      - "#8c8c8c"
-    optionsTextColor:
-      - "#48a0c7"
-    selectedLineBgColor:
-      - "#276782"
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#3994bc"
+#       - bold
+#     inactiveBorderColor:
+#       - "#8c8c8c"
+#     optionsTextColor:
+#       - "#48a0c7"
+#     selectedLineBgColor:
+#       - "#276782"
 # common
 # gui:
 #   theme:
@@ -41,14 +41,14 @@ gui:
 #     selectedLineBgColor:
 #       - "#363a4f"
 # catppuccin mocha
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#f9e2af"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a6adc8"
-#     optionsTextColor:
-#       - "#89b4fa"
-#     selectedLineBgColor:
-#       - "#313244"
+gui:
+  theme:
+    activeBorderColor:
+      - "#f9e2af"
+      - bold
+    inactiveBorderColor:
+      - "#a6adc8"
+    optionsTextColor:
+      - "#89b4fa"
+    selectedLineBgColor:
+      - "#313244"
