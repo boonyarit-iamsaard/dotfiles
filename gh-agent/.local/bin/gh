@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# gh is installed only for agents to handle PRs; it is never logged in. Each
+# call reads a fine-grained token from a file, so the token stays out of the
+# environment of every other process. This lives on PATH rather than as a
+# shell function so non-interactive agent shells (bash, sh) get it too.
+#
+# Setting up on a new machine, or when the token expires:
+#   1. brew install gh
+#   2. GitHub → Settings → Developer settings → Fine-grained tokens:
+#      only the bookkeeping and foundry repositories; Contents and Pull
+#      requests read and write, Actions and Commit statuses read-only,
+#      everything else none.
+#   3. mkdir -p ~/.config/gh-agent && (umask 077; cat > ~/.config/gh-agent/token)
+#      then paste the token, press Enter and Ctrl-D.
+#   4. cd ~/dotfiles && stow gh-agent
+#   5. Verify: gh api user --jq .login
+#
+# The token file is intentionally outside this dotfiles repo; gh falls back to
+# its own (absent) login when the file is missing.
+set -euo pipefail
+
+self=$(readlink -f "${BASH_SOURCE[0]}")
+real=
+while IFS= read -r candidate; do
+  if [[ $(readlink -f "$candidate") != "$self" ]]; then
+    real=$candidate
+    break
+  fi
+done < <(type -ap gh)
+
+if [[ -z $real ]]; then
+  echo "gh wrapper: no gh binary found on PATH (brew install gh)" >&2
+  exit 127
+fi
+
+token_file=~/.config/gh-agent/token
+if [[ -r $token_file ]]; then
+  GH_TOKEN=$(<"$token_file") exec "$real" "$@"
+fi
+exec "$real" "$@"
