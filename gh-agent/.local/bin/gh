@@ -7,16 +7,24 @@
 # Setting up on a new machine, or when the token expires:
 #   1. brew install gh
 #   2. GitHub → Settings → Developer settings → Fine-grained tokens:
-#      only the bookkeeping and foundry repositories; Contents and Pull
-#      requests read and write, Actions and Commit statuses read-only,
+#      only the bookkeeping and foundry repositories; Contents, Issues and
+#      Pull requests read and write, Actions and Commit statuses read-only,
 #      everything else none.
 #   3. mkdir -p ~/.config/gh-agent && (umask 077; cat > ~/.config/gh-agent/token)
 #      then paste the token, press Enter and Ctrl-D.
 #   4. cd ~/dotfiles && stow gh-agent
 #   5. Verify: gh api user --jq .login
 #
-# The token file is intentionally outside this dotfiles repo; gh falls back to
-# its own (absent) login when the file is missing.
+# Fine-grained tokens cannot reach Projects owned by a user account, so
+# `gh project ...` uses a separate classic token:
+#   1. GitHub → Settings → Developer settings → Tokens (classic): only the
+#      project, read:org and read:discussion scopes (gh project refuses to run
+#      without the last two).
+#   2. (umask 077; cat > ~/.config/gh-agent/project-token), paste, Enter, Ctrl-D.
+#   3. Verify: gh project list --owner @me
+#
+# The token files are intentionally outside this dotfiles repo; gh falls back
+# to its own (absent) login when a file is missing.
 set -euo pipefail
 
 self=$(readlink -f "${BASH_SOURCE[0]}")
@@ -34,6 +42,9 @@ if [[ -z $real ]]; then
 fi
 
 token_file=~/.config/gh-agent/token
+if [[ ${1-} == project ]]; then
+  token_file=~/.config/gh-agent/project-token
+fi
 if [[ -r $token_file ]]; then
   GH_TOKEN=$(<"$token_file") exec "$real" "$@"
 fi
