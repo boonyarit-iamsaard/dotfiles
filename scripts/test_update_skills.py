@@ -22,8 +22,68 @@ else:
 
 
 SCRIPT = Path(__file__).with_name("update_skills.py")
-AGENTS_STOW_IGNORE = SCRIPT.parent.parent / "agents" / ".stow-local-ignore"
-CLAUDE_STOW_IGNORE = SCRIPT.parent.parent / "claude" / ".stow-local-ignore"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+CONSUMERS_BY_NAME = {consumer.name: consumer for consumer in update_skills.CONSUMERS}
+
+
+class ConsumerTest(unittest.TestCase):
+    def test_installer_owned_skills_match_repository_ignores(self) -> None:
+        gitignore = REPO_ROOT / ".gitignore"
+        gitignore_lines = gitignore.read_text(encoding="utf-8").splitlines()
+        for consumer in update_skills.CONSUMERS:
+            stow_ignore = REPO_ROOT / consumer.name / ".stow-local-ignore"
+            stow_lines = stow_ignore.read_text(encoding="utf-8").splitlines()
+            for skill in sorted(consumer.installer_owned):
+                with self.subTest(consumer=consumer.name, skill=skill):
+                    relative_skill = (consumer.skills_dir / skill).as_posix()
+                    stow_line = "^/" + relative_skill.replace(".", r"\.")
+                    self.assertIn(
+                        stow_line, stow_lines,
+                        f"{stow_ignore}: missing line {stow_line!r}",
+                    )
+                    gitignore_line = f"{consumer.name}/{relative_skill}/"
+                    self.assertIn(
+                        gitignore_line, gitignore_lines,
+                        f"{gitignore}: missing line {gitignore_line!r}",
+                    )
+
+    def test_stow_commands_and_output_preserve_consumer_names(self) -> None:
+        dotfiles = Path("/dotfiles")
+        home = Path("/home/test")
+        config = update_skills.Config(
+            dotfiles, Path("/skills"), Path("/state"), Path("/backups"), {}
+        )
+        for operation, no_folding, action in (
+            ("-D", True, "unstow"),
+            ("-R", False, "stow"),
+        ):
+            with self.subTest(operation=operation):
+                stdout = io.StringIO()
+                with (
+                    mock.patch.object(Path, "home", return_value=home),
+                    mock.patch.object(update_skills.subprocess, "run") as run,
+                    redirect_stdout(stdout),
+                ):
+                    update_skills.run_stow(config, operation, no_folding=no_folding)
+                self.assertEqual(
+                    [
+                        mock.call(
+                            [
+                                "stow", f"--dir={dotfiles}", f"--target={home}",
+                                operation, *(["--no-folding"] if no_folding else []),
+                                consumer.name,
+                            ],
+                            check=True,
+                        )
+                        for consumer in update_skills.CONSUMERS
+                    ],
+                    run.call_args_list,
+                )
+                layout = " (--no-folding)" if no_folding else ""
+                self.assertEqual(
+                    f"{action}: agents{layout}\n{action}: claude{layout}\n",
+                    stdout.getvalue(),
+                )
 
 
 class MemoryCalls:
@@ -67,8 +127,8 @@ class MemoryStowAdapter:
 
 class PurePlannerTest(unittest.TestCase):
     source_root = Path("/checkout/skills")
-    agents = Path("/dotfiles/agents/.agents/skills")
-    claude = Path("/dotfiles/claude/.claude/skills")
+    agents = CONSUMERS_BY_NAME["agents"].package_root(Path("/dotfiles"))
+    claude = CONSUMERS_BY_NAME["claude"].package_root(Path("/dotfiles"))
     backup = Path("/fixed/session-backup")
     source = source_root / "engineering" / "alpha"
 
@@ -86,7 +146,10 @@ class PurePlannerTest(unittest.TestCase):
             skills=(update_skills.SourceSkill("alpha", self.source, self.source),),
             catalogs=(),
             resolved_skills_root=self.source_root,
-            consumer_roots=(("agents", self.agents), ("claude", self.claude)),
+            consumer_roots=tuple(
+                (consumer.name, consumer.package_root(Path("/dotfiles")))
+                for consumer in update_skills.CONSUMERS
+            ),
             manifest_entries=frozenset(),
             inferred_managed_links=frozenset(),
             migratable_copies=frozenset(),
@@ -295,8 +358,8 @@ class UpdateSkillsTest(unittest.TestCase):
         self.backups = fixture / "backups"
         self.home = fixture / "home"
         self.extras = fixture / "extras"
-        self.agents = self.dotfiles / "agents" / ".agents" / "skills"
-        self.claude = self.dotfiles / "claude" / ".claude" / "skills"
+        self.agents = CONSUMERS_BY_NAME["agents"].package_root(self.dotfiles)
+        self.claude = CONSUMERS_BY_NAME["claude"].package_root(self.dotfiles)
         self.home.mkdir()
         (self.source / "skills" / "engineering").mkdir(parents=True)
         (self.source / "skills" / "productivity").mkdir(parents=True)
@@ -854,7 +917,7 @@ class UpdateSkillsTest(unittest.TestCase):
     ) -> None:
         for root in (self.agents, self.claude):
             self.make_copy(root, "commit-message")
-        for consumer in ("agents", "claude"):
+        for consumer in update_skills.CONSUMERS:
             subprocess.run(
                 [
                     "stow",
@@ -862,12 +925,13 @@ class UpdateSkillsTest(unittest.TestCase):
                     f"--target={self.home}",
                     "-R",
                     "--no-folding",
-                    consumer,
+                    consumer.name,
                 ],
                 check=True,
             )
         self.assertFalse(
-            (self.home / ".agents" / "skills" / "commit-message").is_symlink()
+            (CONSUMERS_BY_NAME["agents"].live_root(self.home) / "commit-message")
+            .is_symlink()
         )
 
         result = subprocess.run(
@@ -886,8 +950,8 @@ class UpdateSkillsTest(unittest.TestCase):
             result.returncode,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
-        for consumer in (".agents", ".claude"):
-            skills_root = self.home / consumer / "skills"
+        for consumer in update_skills.CONSUMERS:
+            skills_root = consumer.live_root(self.home)
             self.assertTrue(skills_root.is_dir())
             self.assertFalse(skills_root.is_symlink())
             self.assertTrue(
@@ -897,26 +961,17 @@ class UpdateSkillsTest(unittest.TestCase):
 
     @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
     def test_restow_preserves_installer_owned_impeccable(self) -> None:
-        for consumer, ignore_source in (
-            ("agents", AGENTS_STOW_IGNORE),
-            ("claude", CLAUDE_STOW_IGNORE),
-        ):
-            package = self.dotfiles / consumer
+        for consumer in update_skills.CONSUMERS:
+            package = self.dotfiles / consumer.name
+            ignore_source = REPO_ROOT / consumer.name / ".stow-local-ignore"
             (package / ".stow-local-ignore").write_text(
                 ignore_source.read_text(encoding="utf-8"),
                 encoding="utf-8",
             )
-            skill_root = (
-                self.agents if consumer == "agents" else self.claude
-            )
+            skill_root = consumer.package_root(self.dotfiles)
             self.make_copy(skill_root, "impeccable", "shadow copy\n")
 
-            live_skill = (
-                self.home
-                / (".agents" if consumer == "agents" else ".claude")
-                / "skills"
-                / "impeccable"
-            )
+            live_skill = consumer.live_root(self.home) / "impeccable"
             live_skill.mkdir(parents=True)
             (live_skill / "SKILL.md").write_text(
                 "installer owned\n",
@@ -939,8 +994,8 @@ class UpdateSkillsTest(unittest.TestCase):
             result.returncode,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
-        for consumer in (".agents", ".claude"):
-            skill_md = self.home / consumer / "skills" / "impeccable" / "SKILL.md"
+        for consumer in update_skills.CONSUMERS:
+            skill_md = consumer.live_root(self.home) / "impeccable" / "SKILL.md"
             self.assertFalse(skill_md.is_symlink())
             self.assertEqual(
                 "installer owned\n",
