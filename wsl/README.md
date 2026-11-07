@@ -2,6 +2,12 @@
 
 Personal shell and tooling configuration managed with GNU Stow.
 
+## Maintenance scripts
+
+`update-system.sh` and `docker-cleanup.sh` share `scripts/lib/step-runner.zsh`:
+each prints a step summary and exits 1 when any error-severity step failed
+(warnings don't affect the exit status).
+
 ## Themes
 
 Two themes are maintained: catppuccin mocha (active) and dark 2026. Each tool
@@ -203,7 +209,8 @@ it archives.
 ### When to re-stow
 
 `npx impeccable update` does **not** require a re-stow — it only rewrites its
-own folder. The skills updater re-stows both consumers automatically. Re-stow
+own folder. The skills updater re-stows both consumers automatically, including
+after a failed run that had already unlinked them. Re-stow
 Claude manually only when:
 
 - You add (or rename) a custom skill under `claude/.claude/skills/` and need it
