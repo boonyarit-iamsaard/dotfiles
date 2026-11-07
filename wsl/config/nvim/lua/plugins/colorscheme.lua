@@ -67,31 +67,6 @@ return {
   },
 
   {
-    -- vscode.nvim mixes Dark+ and Dark Modern; these pull its surfaces onto
-    -- Dark Modern. Hexes from microsoft/vscode theme-defaults/themes/dark_modern.json,
-    -- each commented with the VS Code key it came from.
-    "Mofiqul/vscode.nvim",
-    priority = 1000,
-    config = function()
-      require("vscode").setup({
-        -- transparent = true,
-        color_overrides = {
-          vscFront = "#cccccc", -- editor.foreground
-          vscLineNumber = "#6e7681", -- editorLineNumber.foreground
-          vscLeftDark = "#181818", -- sideBar.background
-          vscTabOutside = "#181818", -- editorGroupHeader.tabsBackground
-          vscSplitDark = "#333333", -- editorGroup.border (#ffffff17 over editor.background)
-          vscSearchCurrent = "#9e6a03", -- editor.findMatchBackground
-        },
-        group_overrides = {
-          -- vscode.nvim leaves CurSearch unset, so it falls back to Neovim's default.
-          CurSearch = { link = "IncSearch" },
-        },
-      })
-    end,
-  },
-
-  {
     -- Published from this config; dark-2026.jsonc at the dotfiles root stays as
     -- the local porting reference. Upstream: github.com/boonyarit-iamsaard/dark-2026.nvim
     "boonyarit-iamsaard/dark-2026.nvim",
@@ -110,11 +85,12 @@ return {
     end,
   },
 
+  -- Uncomment together with the dark-2026 colorscheme line below.
+  -- { import = "themes.dark-2026" },
   {
     "LazyVim/LazyVim",
     opts = {
       colorscheme = "catppuccin-mocha",
-      -- colorscheme = "vscode",
       -- colorscheme = "dark-2026",
     },
   },

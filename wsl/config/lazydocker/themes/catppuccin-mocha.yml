@@ -1,0 +1,13 @@
+# catppuccin mocha
+# lazydocker supports only these four theme keys.
+gui:
+  theme:
+    activeBorderColor:
+      - "#f9e2af"
+      - bold
+    inactiveBorderColor:
+      - "#a6adc8"
+    optionsTextColor:
+      - "#89b4fa"
+    selectedLineBgColor:
+      - "#313244"
