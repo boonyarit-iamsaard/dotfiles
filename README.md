@@ -2,6 +2,26 @@
 
 Personal shell and tooling configuration managed with GNU Stow.
 
+## Themes
+
+Two themes are maintained: catppuccin mocha (active) and dark 2026. Each tool
+keeps a shared base config plus one theme variant per theme; switching is a
+one-line edit per tool:
+
+| Tool | Switch |
+| --- | --- |
+| tmux | `set -g @theme …` in `tmux/.tmux.conf` (variants in `tmux/.tmux/themes/`); restart the server for a clean switch |
+| lazygit | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `config/lazygit/themes/`) |
+| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `config/lazydocker/themes/<name>.yml` |
+| Neovim | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; for dark 2026 also uncomment `{ import = "themes.dark-2026" }` |
+
+The dark 2026 palette is owned by
+[dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim); its
+theme extras are vendored byte-for-byte at the commit pinned in
+`config/nvim/lazy-lock.json` (see `docs/adr/0001-palette-owned-upstream-extras-vendored.md`).
+After bumping the plugin, re-copy each extra from the new pin;
+`python3 -m unittest scripts/test_theme_extras.py` fails on any drift.
+
 ## Go toolchain
 
 Go is installed with Homebrew and pinned so routine `brew upgrade` runs do not change the local Go version unexpectedly.
