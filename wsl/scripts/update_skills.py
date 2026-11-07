@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Synchronize a read-only skills checkout into dotfiles Stow packages."""
+"""Synchronize a read-only skills checkout into dotfiles Stow packages.
+
+Disk discovery produces an immutable DiskSnapshot; plan() makes only pure
+decisions. SyncSession supplies the backup directory and owns execution/recovery.
+"""
 
 from __future__ import annotations
 
@@ -118,136 +122,177 @@ def resolved_link(path: Path) -> Path:
     return (path.parent / os.readlink(path)).resolve(strict=False)
 
 
-class Reconciler:
-    def __init__(self, config: Config, migrate: bool) -> None:
-        self.config = config
-        self.migrate = migrate
-        self.skills = self._discover_skills()
-        self.desired = self._build_desired()
-        self.previously_managed = (
-            self._read_manifest() | self._infer_managed_links()
+@dataclass(frozen=True)
+class SourceSkill:
+    name: str
+    path: Path
+    resolved_path: Path
+
+
+@dataclass(frozen=True)
+class ConsumerPath:
+    path: Path
+    is_symlink: bool = False
+    resolved_target: Path | None = None
+    exists: bool = False
+    is_dir: bool = False
+
+
+@dataclass(frozen=True)
+class DiskSnapshot:
+    """Immutable disk facts used to plan managed links for each Consumer."""
+
+    skills: tuple[SourceSkill, ...]
+    catalogs: tuple[SourceSkill, ...]
+    resolved_skills_root: Path
+    consumer_roots: tuple[tuple[str, Path], ...]
+    manifest_entries: frozenset[tuple[str, str]]
+    inferred_managed_links: frozenset[tuple[str, str]]
+    migratable_copies: frozenset[tuple[str, str]]
+    consumer_paths: tuple[ConsumerPath, ...]
+    grouped_entries: tuple[tuple[str, tuple[Path, ...]], ...]
+
+
+def read_snapshot(config: Config) -> DiskSnapshot:
+    """Read source skills, Managed links, and corroborated migration copies once."""
+    if not config.skills_root.is_dir():
+        raise SyncError(f"skills checkout not found at {config.skills_repo}")
+
+    skills: dict[str, SourceSkill] = {}
+    catalogs: list[SourceSkill] = []
+    for category in CATEGORIES:
+        category_root = config.skills_root / category
+        catalog = category_root / README_FILENAME
+        if not catalog.is_file():
+            raise SyncError(f"missing category catalog: {catalog}")
+        catalogs.append(
+            SourceSkill(f"{category.upper()}.md", catalog, catalog.resolve())
         )
-        self.migratable_copies = self._discover_migratable_copies()
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-        self.backup_dir = config.backup_root / timestamp
-
-    def _discover_skills(self) -> dict[str, Path]:
-        if not self.config.skills_root.is_dir():
-            raise SyncError(
-                f"skills checkout not found at {self.config.skills_repo}"
-            )
-
-        discovered: dict[str, Path] = {}
-        for category in CATEGORIES:
-            category_root = self.config.skills_root / category
-            catalog = category_root / README_FILENAME
-            if not catalog.is_file():
-                raise SyncError(f"missing category catalog: {catalog}")
-
-            for skill_md in sorted(category_root.glob("*/SKILL.md")):
-                name = skill_md.parent.name
-                previous = discovered.get(name)
-                if previous is not None:
-                    raise SyncError(
-                        f"duplicate skill name {name!r}: {previous} and {skill_md.parent}"
-                    )
-                discovered[name] = skill_md.parent
-
-        return discovered
-
-    def _build_desired(self) -> dict[tuple[str, str], Path]:
-        desired: dict[tuple[str, str], Path] = {}
-        for consumer in CONSUMERS:
-            for name, source in self.skills.items():
-                desired[(consumer, name)] = source
-            for category in CATEGORIES:
-                desired[(consumer, f"{category.upper()}.md")] = (
-                    self.config.skills_root / category / README_FILENAME
+        for skill_md in sorted(category_root.glob("*/SKILL.md")):
+            name = skill_md.parent.name
+            previous = skills.get(name)
+            if previous is not None:
+                raise SyncError(
+                    f"duplicate skill name {name!r}: {previous.path} and {skill_md.parent}"
                 )
-        return desired
+            skills[name] = SourceSkill(name, skill_md.parent, skill_md.parent.resolve())
 
-    def _read_manifest(self) -> set[tuple[str, str]]:
-        manifest = self.config.state_root / "managed-links.json"
-        if not manifest.exists():
-            return set()
+    manifest = config.state_root / "managed-links.json"
+    manifest_entries: set[tuple[str, str]] = set()
+    if manifest.exists():
         try:
             payload = json.loads(manifest.read_text(encoding="utf-8"))
             if payload.get("version") != MANIFEST_VERSION:
                 raise ValueError("unsupported manifest version")
-            return {
+            manifest_entries = {
                 (entry["consumer"], entry["name"])
                 for entry in payload.get("links", [])
             }
         except (OSError, ValueError, KeyError, TypeError) as error:
             raise SyncError(f"invalid sync manifest {manifest}: {error}") from error
 
-    def _is_source_managed_link(self, path: Path) -> bool:
-        if not path.is_symlink():
-            return False
-        return is_within(
-            resolved_link(path), self.config.skills_root.resolve(strict=False)
+    paths: dict[Path, ConsumerPath] = {}
+
+    def inspect(path: Path) -> ConsumerPath:
+        if path not in paths:
+            symlink = path.is_symlink()
+            paths[path] = ConsumerPath(
+                path=path,
+                is_symlink=symlink,
+                resolved_target=resolved_link(path) if symlink else None,
+                exists=path.exists(),
+                is_dir=path.is_dir(),
+            )
+        return paths[path]
+
+    resolved_skills_root = config.skills_root.resolve(strict=False)
+    consumer_roots = tuple(
+        (consumer, config.consumer_root(consumer)) for consumer in CONSUMERS
+    )
+    inferred: set[tuple[str, str]] = set()
+    for consumer, root in consumer_roots:
+        if inspect(root).is_dir:
+            for entry in root.iterdir():
+                state = inspect(entry)
+                if state.is_symlink and is_within(
+                    state.resolved_target, resolved_skills_root
+                ):
+                    inferred.add((consumer, entry.name))
+        for source in (*skills.values(), *catalogs):
+            inspect(root / source.name)
+
+    for consumer, name in manifest_entries | LEGACY_ENTRIES:
+        inspect(config.consumer_root(consumer) / name)
+
+    grouped_entries: list[tuple[str, tuple[Path, ...]]] = []
+    migratable_copies: set[tuple[str, str]] = set()
+    agents_root = config.consumer_root("agents")
+    claude_root = config.consumer_root("claude")
+    for category in CATEGORIES:
+        group = agents_root / category
+        state = inspect(group)
+        if not state.is_dir or state.is_symlink:
+            continue
+        entries = tuple(sorted(group.iterdir()))
+        grouped_entries.append((category, entries))
+        for entry in entries:
+            inspect(entry)
+            inspect(agents_root / entry.name)
+            agents_skill_md = entry / "SKILL.md"
+            claude_skill_md = claude_root / entry.name / "SKILL.md"
+            if (
+                entry.name in skills
+                and agents_skill_md.is_file()
+                and claude_skill_md.is_file()
+                and filecmp.cmp(agents_skill_md, claude_skill_md, shallow=False)
+            ):
+                migratable_copies.add(("claude", entry.name))
+
+    return DiskSnapshot(
+        skills=tuple(skills.values()),
+        catalogs=tuple(catalogs),
+        resolved_skills_root=resolved_skills_root,
+        consumer_roots=consumer_roots,
+        manifest_entries=frozenset(manifest_entries),
+        inferred_managed_links=frozenset(inferred),
+        migratable_copies=frozenset(migratable_copies),
+        consumer_paths=tuple(paths.values()),
+        grouped_entries=tuple(grouped_entries),
+    )
+
+
+def plan(snapshot: DiskSnapshot, *, migrate: bool, backup_dir: Path) -> Plan:
+    """Choose actions solely from captured disk facts and explicit run inputs."""
+    roots = dict(snapshot.consumer_roots)
+    paths = {state.path: state for state in snapshot.consumer_paths}
+    skills = {source.name for source in snapshot.skills}
+    desired = {
+        (consumer, source.name): source
+        for consumer in roots
+        for source in (*snapshot.skills, *snapshot.catalogs)
+    }
+    previously_managed = snapshot.manifest_entries | snapshot.inferred_managed_links
+    actions: list[Action] = []
+
+    def source_managed(state: ConsumerPath) -> bool:
+        return state.is_symlink and is_within(
+            state.resolved_target, snapshot.resolved_skills_root
         )
 
-    def _infer_managed_links(self) -> set[tuple[str, str]]:
-        inferred: set[tuple[str, str]] = set()
-        for consumer in CONSUMERS:
-            root = self.config.consumer_root(consumer)
-            if not root.is_dir():
-                continue
-            inferred.update(
-                (consumer, entry.name)
-                for entry in root.iterdir()
-                if self._is_source_managed_link(entry)
-            )
-        return inferred
-
-    def _discover_migratable_copies(self) -> set[tuple[str, str]]:
-        """Identify Claude copies whose entrypoint matches grouped Agents."""
-        copies: set[tuple[str, str]] = set()
-        agents_root = self.config.consumer_root("agents")
-        claude_root = self.config.consumer_root("claude")
-        for category in CATEGORIES:
-            group = agents_root / category
-            if not group.is_dir() or group.is_symlink():
-                continue
-            for entry in group.iterdir():
-                claude_copy = claude_root / entry.name
-                agents_skill_md = entry / "SKILL.md"
-                claude_skill_md = claude_copy / "SKILL.md"
-                if (
-                    entry.name in self.skills
-                    and agents_skill_md.is_file()
-                    and claude_skill_md.is_file()
-                    and filecmp.cmp(
-                        agents_skill_md,
-                        claude_skill_md,
-                        shallow=False,
-                    )
-                ):
-                    copies.add(("claude", entry.name))
-        return copies
-
-    def _plan_grouped_agents(self, actions: list[Action]) -> None:
-        if not self.migrate:
-            return
-
-        root = self.config.consumer_root("agents")
-        for category in CATEGORIES:
-            group = root / category
-            if not group.is_dir() or group.is_symlink():
-                continue
-
-            for entry in sorted(group.iterdir()):
+    if migrate:
+        root = roots["agents"]
+        for category, entries in snapshot.grouped_entries:
+            for entry in entries:
                 name = entry.name
                 if (
                     name == README_FILENAME
-                    or name in self.skills
+                    or name in skills
                     or name in GROUPED_LEGACY_SKILLS
                 ):
                     continue
-
                 target = root / name
-                if target.exists() or target.is_symlink():
+                state = paths[target]
+                if state.exists or state.is_symlink:
                     raise SyncError(
                         f"cannot flatten custom skill {name!r}; "
                         f"target already exists: {target}"
@@ -261,59 +306,37 @@ class Reconciler:
                         migration=True,
                     )
                 )
-
             actions.append(
                 Action(
                     kind=ActionKind.MOVE,
                     label=f"archive Agents category {category}",
-                    target=group,
-                    destination=(
-                        self.backup_dir / "removed" / "agents" / f"grouped-{category}"
-                    ),
+                    target=root / category,
+                    destination=backup_dir / "removed" / "agents" / f"grouped-{category}",
                     migration=True,
                 )
             )
-
-    def _plan_legacy_entries(self, actions: list[Action]) -> None:
-        if not self.migrate:
-            return
 
         for consumer, name in sorted(LEGACY_ENTRIES):
-            target = self.config.consumer_root(consumer) / name
-            if not target.exists() and not target.is_symlink():
-                continue
-            actions.append(
-                Action(
-                    kind=ActionKind.MOVE,
-                    label=f"archive legacy {consumer}/{name}",
-                    target=target,
-                    destination=(
-                        self.backup_dir
-                        / "removed"
-                        / consumer
-                        / f"legacy-{name}"
-                    ),
-                    migration=True,
+            target = roots[consumer] / name
+            state = paths[target]
+            if state.exists or state.is_symlink:
+                actions.append(
+                    Action(
+                        kind=ActionKind.MOVE,
+                        label=f"archive legacy {consumer}/{name}",
+                        target=target,
+                        destination=backup_dir / "removed" / consumer / f"legacy-{name}",
+                        migration=True,
+                    )
                 )
-            )
 
-    def _plan_link(
-        self,
-        actions: list[Action],
-        consumer: str,
-        name: str,
-        source: Path,
-    ) -> None:
-        target = self.config.consumer_root(consumer) / name
-        key = (consumer, name)
-
-        if target.is_symlink():
-            if resolved_link(target) == source.resolve():
-                return
-            if (
-                key not in self.previously_managed
-                and not self._is_source_managed_link(target)
-            ):
+    for (consumer, name), source in sorted(desired.items()):
+        target = roots[consumer] / name
+        state = paths[target]
+        if state.is_symlink:
+            if state.resolved_target == source.resolved_path:
+                continue
+            if (consumer, name) not in previously_managed and not source_managed(state):
                 raise SyncError(f"unmanaged symlink collision: {target}")
             actions.append(
                 Action(
@@ -322,8 +345,8 @@ class Reconciler:
                     target=target,
                 )
             )
-        elif target.exists():
-            if not self.migrate or key not in self.migratable_copies:
+        elif state.exists:
+            if not migrate or (consumer, name) not in snapshot.migratable_copies:
                 raise SyncError(
                     f"unverified real path collision: {target}; "
                     "--migrate only accepts copies corroborated by "
@@ -334,57 +357,41 @@ class Reconciler:
                     kind=ActionKind.MOVE,
                     label=f"archive copied {consumer}/{name}",
                     target=target,
-                    destination=(
-                        self.backup_dir
-                        / "removed"
-                        / consumer
-                        / f"copied-{name}"
-                    ),
+                    destination=backup_dir / "removed" / consumer / f"copied-{name}",
                     migration=True,
                 )
             )
-
         actions.append(
             Action(
                 kind=ActionKind.LINK,
                 label=f"link {consumer}/{name}",
                 target=target,
-                source=source,
+                source=source.path,
             )
         )
 
-    def _plan_stale_links(self, actions: list[Action]) -> None:
-        for consumer, name in sorted(
-            self.previously_managed - self.desired.keys()
-        ):
-            target = self.config.consumer_root(consumer) / name
-            if not target.exists() and not target.is_symlink():
-                continue
-            if not self._is_source_managed_link(target):
-                raise SyncError(
-                    "stale managed path was replaced outside the synchronizer: "
-                    f"{target}"
-                )
-            actions.append(
-                Action(
-                    kind=ActionKind.UNLINK,
-                    label=f"unlink stale {consumer}/{name}",
-                    target=target,
-                )
+    for consumer, name in sorted(previously_managed - desired.keys()):
+        target = roots[consumer] / name
+        state = paths[target]
+        if not state.exists and not state.is_symlink:
+            continue
+        if not source_managed(state):
+            raise SyncError(
+                "stale managed path was replaced outside the synchronizer: "
+                f"{target}"
             )
-
-    def plan(self) -> Plan:
-        actions: list[Action] = []
-        self._plan_grouped_agents(actions)
-        self._plan_legacy_entries(actions)
-        for (consumer, name), source in sorted(self.desired.items()):
-            self._plan_link(actions, consumer, name, source)
-        self._plan_stale_links(actions)
-        return Plan(
-            actions=tuple(actions),
-            desired_keys=tuple(sorted(self.desired)),
-            backup_dir=self.backup_dir,
+        actions.append(
+            Action(
+                kind=ActionKind.UNLINK,
+                label=f"unlink stale {consumer}/{name}",
+                target=target,
+            )
         )
+    return Plan(
+        actions=tuple(actions),
+        desired_keys=tuple(sorted(desired)),
+        backup_dir=backup_dir,
+    )
 
 
 def print_plan(plan: Plan) -> None:
@@ -568,6 +575,7 @@ class SyncSession:
     no_stow: bool = False
     dry_run: bool = False
     check: bool = False
+    backup_dir: Path | None = None
 
     def run(self) -> int:
         consumers_unlinked = False
@@ -587,18 +595,26 @@ class SyncSession:
                         self.stow.unstow()
                     self.git.pull(self.config.skills_repo)
 
-                plan = Reconciler(self.config, migrate=self.migrate).plan()
-                print_plan(plan)
+                backup_dir = self.backup_dir
+                if backup_dir is None:
+                    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+                    backup_dir = self.config.backup_root / timestamp
+                sync_plan = plan(
+                    read_snapshot(self.config),
+                    migrate=self.migrate,
+                    backup_dir=backup_dir,
+                )
+                print_plan(sync_plan)
                 if self.dry_run:
                     return 0
                 if self.check:
-                    return 1 if plan.actions else 0
+                    return 1 if sync_plan.actions else 0
 
-                if plan.actions and not self.no_stow and not consumers_unlinked:
+                if sync_plan.actions and not self.no_stow and not consumers_unlinked:
                     consumers_unlinked = True
                     self.stow.unstow()
-                execute_plan(self.config, plan)
-                write_manifest(self.config, plan.desired_keys)
+                execute_plan(self.config, sync_plan)
+                write_manifest(self.config, sync_plan.desired_keys)
                 if not self.no_stow:
                     # Restow itself unlinks the legacy layout before rebuilding it.
                     consumers_unlinked = True

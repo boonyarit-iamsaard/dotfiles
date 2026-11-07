@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import redirect_stderr, redirect_stdout
+from contextlib import ExitStack, redirect_stderr, redirect_stdout
 from dataclasses import replace
 from pathlib import Path
 from unittest import mock
@@ -63,6 +63,225 @@ class MemoryStowAdapter:
 
     def restow(self) -> None:
         self.calls.record("restow")
+
+
+class PurePlannerTest(unittest.TestCase):
+    source_root = Path("/checkout/skills")
+    agents = Path("/dotfiles/agents/.agents/skills")
+    claude = Path("/dotfiles/claude/.claude/skills")
+    backup = Path("/fixed/session-backup")
+    source = source_root / "engineering" / "alpha"
+
+    def snapshot(self) -> update_skills.DiskSnapshot:
+        paths = (
+            update_skills.ConsumerPath(self.agents / "alpha"),
+            update_skills.ConsumerPath(
+                self.claude / "alpha", True, self.source, True, True
+            ),
+            *(update_skills.ConsumerPath(self.claude / name) for _, name in sorted(
+                update_skills.LEGACY_ENTRIES
+            )),
+        )
+        return update_skills.DiskSnapshot(
+            skills=(update_skills.SourceSkill("alpha", self.source, self.source),),
+            catalogs=(),
+            resolved_skills_root=self.source_root,
+            consumer_roots=(("agents", self.agents), ("claude", self.claude)),
+            manifest_entries=frozenset(),
+            inferred_managed_links=frozenset(),
+            migratable_copies=frozenset(),
+            consumer_paths=paths,
+            grouped_entries=(),
+        )
+
+    def with_paths(
+        self, snapshot: update_skills.DiskSnapshot, *states: update_skills.ConsumerPath
+    ) -> update_skills.DiskSnapshot:
+        paths = {state.path: state for state in snapshot.consumer_paths}
+        paths.update((state.path, state) for state in states)
+        return replace(snapshot, consumer_paths=tuple(paths.values()))
+
+    def plan(
+        self, snapshot: update_skills.DiskSnapshot, *, migrate: bool = False
+    ) -> update_skills.Plan:
+        # Every table case runs with disk, clock, and subprocess access forbidden.
+        with ExitStack() as stack:
+            for method in (
+                "exists", "is_symlink", "is_dir", "is_file", "resolve",
+                "open", "iterdir", "glob", "stat", "lstat", "readlink",
+            ):
+                stack.enter_context(mock.patch.object(
+                    Path, method, side_effect=AssertionError(f"planner called Path.{method}")
+                ))
+            for owner, name in (
+                (update_skills.os, "readlink"),
+                (update_skills.filecmp, "cmp"),
+                (update_skills.subprocess, "run"),
+            ):
+                stack.enter_context(mock.patch.object(
+                    owner, name, side_effect=AssertionError(f"planner called {name}")
+                ))
+            clock = stack.enter_context(mock.patch.object(update_skills, "datetime"))
+            clock.now.side_effect = AssertionError("planner read the clock")
+            return update_skills.plan(snapshot, migrate=migrate, backup_dir=self.backup)
+
+    def test_link_collision_table(self) -> None:
+        target = self.agents / "alpha"
+        missing = update_skills.ConsumerPath(target)
+        correct = update_skills.ConsumerPath(target, True, self.source, True, True)
+        old = update_skills.ConsumerPath(
+            target, True, self.source_root / "old-alpha", False, False
+        )
+        outside = update_skills.ConsumerPath(
+            target, True, Path("/installer/alpha"), False, False
+        )
+        directory = update_skills.ConsumerPath(target, exists=True, is_dir=True)
+        file = update_skills.ConsumerPath(target, exists=True)
+        link = update_skills.ActionKind.LINK
+        unlink = update_skills.ActionKind.UNLINK
+        move = update_skills.ActionKind.MOVE
+        collision = (
+            f"unverified real path collision: {target}; "
+            "--migrate only accepts copies corroborated by the grouped Agents layout"
+        )
+        # name, disk state, ownership evidence, corroboration, migrate, actions, error
+        cases = (
+            ("missing", missing, "", False, False, (link,), None),
+            ("already correct unmanaged link", correct, "", False, False, (), None),
+            ("manifest stale link", old, "manifest", False, False, (unlink, link), None),
+            ("inferred stale link", old, "inferred", False, False, (unlink, link), None),
+            ("source-managed without manifest", old, "", False, False, (unlink, link), None),
+            ("manifest desired retarget replaced", outside, "manifest", False, False,
+             (unlink, link), None),
+            ("unmanaged dangling symlink", outside, "", False, False, (),
+             f"unmanaged symlink collision: {target}"),
+            ("real directory migrate off", directory, "", False, False, (), collision),
+            ("uncorroborated directory migrate on", directory, "", False, True, (), collision),
+            ("corroborated copy migrate off", directory, "", True, False, (), collision),
+            ("corroborated copy migrate on", directory, "", True, True, (move, link), None),
+            ("real file migrate on", file, "", False, True, (), collision),
+        )
+        for name, state, ownership, corroborated, migrate, kinds, error in cases:
+            with self.subTest(name=name):
+                key = ("agents", "alpha")
+                snapshot = replace(
+                    self.with_paths(self.snapshot(), state),
+                    manifest_entries=frozenset({key}) if ownership == "manifest" else frozenset(),
+                    inferred_managed_links=(
+                        frozenset({key}) if ownership == "inferred" else frozenset()
+                    ),
+                    migratable_copies=frozenset({key}) if corroborated else frozenset(),
+                )
+                if error:
+                    with self.assertRaises(update_skills.SyncError) as raised:
+                        self.plan(snapshot, migrate=migrate)
+                    self.assertEqual(error, str(raised.exception))
+                    continue
+                result = self.plan(snapshot, migrate=migrate)
+                self.assertEqual(kinds, tuple(action.kind for action in result.actions))
+                self.assertEqual(self.backup, result.backup_dir)
+                self.assertEqual((("agents", "alpha"), ("claude", "alpha")), result.desired_keys)
+                for action in result.actions:
+                    self.assertEqual(target, action.target)
+                    if action.kind is link:
+                        self.assertEqual(self.source, action.source)
+                    if action.kind is move:
+                        self.assertEqual(
+                            self.backup / "removed" / "agents" / "copied-alpha",
+                            action.destination,
+                        )
+                        self.assertTrue(action.migration)
+
+    def test_stale_managed_link_table(self) -> None:
+        target = self.agents / "obsolete"
+        error = f"stale managed path was replaced outside the synchronizer: {target}"
+        cases = (
+            ("missing", update_skills.ConsumerPath(target), False, None),
+            ("managed dangling link", update_skills.ConsumerPath(
+                target, True, self.source_root / "obsolete", False, False
+            ), True, None),
+            ("managed live link", update_skills.ConsumerPath(
+                target, True, self.source_root / "obsolete", True, True
+            ), True, None),
+            ("retargeted link", update_skills.ConsumerPath(
+                target, True, Path("/installer/obsolete"), True, True
+            ), False, error),
+            ("retargeted dangling link", update_skills.ConsumerPath(
+                target, True, Path("/installer/obsolete"), False, False
+            ), False, error),
+            ("replaced real directory", update_skills.ConsumerPath(
+                target, exists=True, is_dir=True
+            ), False, error),
+        )
+        for name, state, removed, error in cases:
+            for migrate in (False, True):
+                with self.subTest(name=name, migrate=migrate):
+                    snapshot = replace(
+                        self.with_paths(self.snapshot(), state),
+                        manifest_entries=frozenset({("agents", "obsolete")}),
+                    )
+                    if error:
+                        with self.assertRaises(update_skills.SyncError) as raised:
+                            self.plan(snapshot, migrate=migrate)
+                        self.assertEqual(error, str(raised.exception))
+                    else:
+                        result = self.plan(snapshot, migrate=migrate)
+                        stale = [action for action in result.actions if action.target == target]
+                        self.assertEqual(
+                            (update_skills.ActionKind.UNLINK,) if removed else (),
+                            tuple(action.kind for action in stale),
+                        )
+
+    def test_grouped_and_legacy_migration_table(self) -> None:
+        group = self.agents / "engineering"
+        custom = self.agents / "local-tool"
+        legacy = self.claude / "to-issues"
+        entries = tuple(group / name for name in (
+            "README.md", "alpha", "local-tool", "teach copy", "to-issues", "to-prd"
+        ))
+        cases = (
+            ("migrate off preserves layout", False, update_skills.ConsumerPath(custom), None),
+            ("migrate on flattens custom and archives", True,
+             update_skills.ConsumerPath(custom), None),
+            ("custom directory collision", True,
+             update_skills.ConsumerPath(custom, exists=True, is_dir=True),
+             f"cannot flatten custom skill 'local-tool'; target already exists: {custom}"),
+            ("custom dangling symlink collision", True,
+             update_skills.ConsumerPath(custom, True, Path("/missing/custom")),
+             f"cannot flatten custom skill 'local-tool'; target already exists: {custom}"),
+            ("migrate off ignores custom collision", False,
+             update_skills.ConsumerPath(custom, exists=True, is_dir=True), None),
+        )
+        for name, migrate, custom_state, error in cases:
+            with self.subTest(name=name):
+                snapshot = replace(
+                    self.with_paths(
+                        self.snapshot(), custom_state,
+                        update_skills.ConsumerPath(legacy, True, Path("/missing/legacy")),
+                    ),
+                    grouped_entries=(("engineering", entries),),
+                )
+                if error:
+                    with self.assertRaises(update_skills.SyncError) as raised:
+                        self.plan(snapshot, migrate=migrate)
+                    self.assertEqual(error, str(raised.exception))
+                    continue
+                result = self.plan(snapshot, migrate=migrate)
+                moves = [action for action in result.actions if action.migration]
+                expected = (
+                    (
+                        (group / "local-tool", custom),
+                        (group, self.backup / "removed" / "agents" / "grouped-engineering"),
+                        (legacy, self.backup / "removed" / "claude" / "legacy-to-issues"),
+                    )
+                    if migrate else ()
+                )
+                self.assertEqual(
+                    expected, tuple((action.target, action.destination) for action in moves)
+                )
+                self.assertTrue(all(action.kind is update_skills.ActionKind.MOVE for action in moves))
+                self.assertEqual(self.backup, result.backup_dir)
+                self.assertEqual(migrate, result.needs_migration_backup)
 
 
 class UpdateSkillsTest(unittest.TestCase):
@@ -186,6 +405,29 @@ class UpdateSkillsTest(unittest.TestCase):
         self.make_copy(self.claude, "to-issues", "legacy\n")
         self.make_copy(self.claude, "to-prd", "legacy\n")
         return alpha, beta
+
+    def test_session_uses_fixed_backup_without_reading_clock(self) -> None:
+        self.seed_grouped_layout()
+        session = self.session("--migrate", "--no-pull", "--no-stow")
+        session.backup_dir = self.backups / "fixed-session"
+        with mock.patch.object(update_skills, "datetime") as clock:
+            clock.now.side_effect = AssertionError("fixed backup must not read the clock")
+            with redirect_stdout(self.stdout), redirect_stderr(self.stderr):
+                self.assertEqual(0, session.run(), self.stderr.getvalue())
+        self.assertTrue((session.backup_dir / "snapshot" / "claude" / "alpha").is_dir())
+        self.assertTrue((session.backup_dir / "removed" / "claude" / "copied-alpha").is_dir())
+
+    def test_session_reads_clock_once(self) -> None:
+        session = self.session("--dry-run")
+        with mock.patch.object(update_skills, "datetime") as clock:
+            clock.now.return_value.strftime.return_value = "fixed-timestamp"
+            with mock.patch.object(update_skills, "print_plan") as print_plan:
+                with redirect_stdout(self.stdout), redirect_stderr(self.stderr):
+                    self.assertEqual(0, session.run())
+            clock.now.assert_called_once_with()
+            self.assertEqual(
+                self.backups / "fixed-timestamp", print_plan.call_args.args[0].backup_dir
+            )
 
     def test_migration_flattens_and_preserves_owned_skills(self) -> None:
         alpha, beta = self.seed_grouped_layout()
@@ -346,12 +588,14 @@ class UpdateSkillsTest(unittest.TestCase):
         humanizer = self.extras / "humanizer"
         execute_plan = update_skills.execute_plan
         write_manifest = update_skills.write_manifest
-        make_plan = update_skills.Reconciler.plan
+        make_plan = update_skills.plan
         print_plan = update_skills.print_plan
 
-        def plan(reconciler: update_skills.Reconciler) -> update_skills.Plan:
+        def plan(
+            snapshot: update_skills.DiskSnapshot, *, migrate: bool, backup_dir: Path
+        ) -> update_skills.Plan:
             self.calls.record("plan")
-            return make_plan(reconciler)
+            return make_plan(snapshot, migrate=migrate, backup_dir=backup_dir)
 
         def show_plan(plan: update_skills.Plan) -> None:
             self.calls.record("print_plan")
@@ -370,7 +614,7 @@ class UpdateSkillsTest(unittest.TestCase):
         with (
             mock.patch.object(update_skills, "execute_plan", side_effect=execute),
             mock.patch.object(update_skills, "write_manifest", side_effect=manifest),
-            mock.patch.object(update_skills.Reconciler, "plan", plan),
+            mock.patch.object(update_skills, "plan", plan),
             mock.patch.object(update_skills, "print_plan", side_effect=show_plan),
         ):
             self.assertEqual(0, self.run_session())
@@ -507,13 +751,15 @@ class UpdateSkillsTest(unittest.TestCase):
 
     def test_no_pull_unlinks_only_after_planning_and_still_relinks(self) -> None:
         self.make_skill("engineering", "alpha")
-        plan = update_skills.Reconciler.plan
+        planner = update_skills.plan
 
-        def record_plan(reconciler: update_skills.Reconciler) -> update_skills.Plan:
+        def record_plan(
+            snapshot: update_skills.DiskSnapshot, *, migrate: bool, backup_dir: Path
+        ) -> update_skills.Plan:
             self.calls.record("plan")
-            return plan(reconciler)
+            return planner(snapshot, migrate=migrate, backup_dir=backup_dir)
 
-        with mock.patch.object(update_skills.Reconciler, "plan", record_plan):
+        with mock.patch.object(update_skills, "plan", record_plan):
             self.assertEqual(0, self.run_session("--no-pull"))
 
         self.assert_before(("plan", None), ("unstow", None))
