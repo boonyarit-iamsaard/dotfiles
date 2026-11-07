@@ -1,20 +1,68 @@
 #!/usr/bin/env python3
-"""Integration tests for the update-skills command."""
+"""Tests for the update-skills command and Sync session."""
 
 from __future__ import annotations
 
+import io
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
+from dataclasses import replace
 from pathlib import Path
+from unittest import mock
+
+if __package__:
+    from . import update_skills
+else:
+    import update_skills
 
 
 SCRIPT = Path(__file__).with_name("update_skills.py")
 AGENTS_STOW_IGNORE = SCRIPT.parent.parent / "agents" / ".stow-local-ignore"
 CLAUDE_STOW_IGNORE = SCRIPT.parent.parent / "claude" / ".stow-local-ignore"
+
+
+class MemoryCalls:
+    """Shared call order and injected failures for the in-memory adapters."""
+
+    def __init__(self) -> None:
+        self.events: list[tuple[str, Path | None]] = []
+        self.failures: dict[tuple[str, Path | None], BaseException] = {}
+
+    def record(self, operation: str, repo: Path | None = None) -> None:
+        event = (operation, repo)
+        self.events.append(event)
+        if event in self.failures:
+            raise self.failures[event]
+
+
+class MemoryGitAdapter:
+    def __init__(self, calls: MemoryCalls) -> None:
+        self.calls = calls
+
+    def require_checkout(self, repo: Path) -> None:
+        self.calls.record("require_checkout", repo)
+
+    def require_clean(self, repo: Path) -> None:
+        self.calls.record("require_clean", repo)
+
+    def pull(self, repo: Path) -> None:
+        self.calls.record("pull", repo)
+
+
+class MemoryStowAdapter:
+    def __init__(self, calls: MemoryCalls) -> None:
+        self.calls = calls
+
+    def unstow(self) -> None:
+        self.calls.record("unstow")
+
+    def restow(self) -> None:
+        self.calls.record("restow")
 
 
 class UpdateSkillsTest(unittest.TestCase):
@@ -41,6 +89,11 @@ class UpdateSkillsTest(unittest.TestCase):
         )
         self.agents.mkdir(parents=True)
         self.claude.mkdir(parents=True)
+        self.calls = MemoryCalls()
+        self.git = MemoryGitAdapter(self.calls)
+        self.stow = MemoryStowAdapter(self.calls)
+        self.stdout = io.StringIO()
+        self.stderr = io.StringIO()
 
     def make_skill(self, category: str, name: str) -> Path:
         directory = self.source / "skills" / category / name
@@ -92,6 +145,24 @@ class UpdateSkillsTest(unittest.TestCase):
             }
         )
         return environment
+
+    def session(self, *arguments: str) -> update_skills.SyncSession:
+        with mock.patch.dict(os.environ, self.fixture_environment()):
+            config = update_skills.config_from_environment()
+        return update_skills.SyncSession(
+            config, self.git, self.stow, **vars(update_skills.parse_args(list(arguments)))
+        )
+
+    def run_session(self, *arguments: str) -> int:
+        with redirect_stdout(self.stdout), redirect_stderr(self.stderr):
+            return self.session(*arguments).run()
+
+    def assert_before(
+        self, before: tuple[str, Path | None], after: tuple[str, Path | None]
+    ) -> None:
+        remaining = iter(self.calls.events)
+        self.assertIn(before, remaining)
+        self.assertIn(after, remaining)
 
     def assert_link_to(self, link: Path, expected: Path) -> None:
         self.assertTrue(link.is_symlink(), f"expected symlink: {link}")
@@ -271,85 +342,265 @@ class UpdateSkillsTest(unittest.TestCase):
         self.assertFalse((self.claude / "alpha").exists())
 
     def test_normal_update_unstows_before_pull(self) -> None:
-        self.make_skill("engineering", "alpha")
-        (self.extras / "humanizer" / ".git").mkdir(parents=True)
-        fixture_bin = Path(self.temporary.name) / "bin"
-        fixture_bin.mkdir()
-        event_log = Path(self.temporary.name) / "events"
-        for command in ("git", "stow"):
-            executable = fixture_bin / command
-            executable.write_text(
-                "#!/bin/sh\n"
-                f"printf '{command} %s\\n' \"$*\" >> \"$EVENT_LOG\"\n",
-                encoding="utf-8",
-            )
-            executable.chmod(0o755)
+        alpha = self.make_skill("engineering", "alpha")
+        humanizer = self.extras / "humanizer"
+        execute_plan = update_skills.execute_plan
+        write_manifest = update_skills.write_manifest
+        make_plan = update_skills.Reconciler.plan
+        print_plan = update_skills.print_plan
 
-        environment = self.fixture_environment()
-        environment.update(
-            {
-                "EVENT_LOG": str(event_log),
-                "PATH": f"{fixture_bin}{os.pathsep}{environment['PATH']}",
-            }
+        def plan(reconciler: update_skills.Reconciler) -> update_skills.Plan:
+            self.calls.record("plan")
+            return make_plan(reconciler)
+
+        def show_plan(plan: update_skills.Plan) -> None:
+            self.calls.record("print_plan")
+            print_plan(plan)
+
+        def execute(config: update_skills.Config, plan: update_skills.Plan) -> None:
+            self.calls.record("execute")
+            execute_plan(config, plan)
+
+        def manifest(
+            config: update_skills.Config, desired_keys: tuple[tuple[str, str], ...]
+        ) -> None:
+            self.calls.record("manifest")
+            write_manifest(config, desired_keys)
+
+        with (
+            mock.patch.object(update_skills, "execute_plan", side_effect=execute),
+            mock.patch.object(update_skills, "write_manifest", side_effect=manifest),
+            mock.patch.object(update_skills.Reconciler, "plan", plan),
+            mock.patch.object(update_skills, "print_plan", side_effect=show_plan),
+        ):
+            self.assertEqual(0, self.run_session())
+
+        for repo in (self.source, humanizer):
+            self.assert_before(("require_clean", repo), ("pull", humanizer))
+        self.assert_before(("require_checkout", humanizer), ("require_clean", self.source))
+        self.assert_before(("pull", humanizer), ("unstow", None))
+        self.assert_before(("unstow", None), ("pull", self.source))
+        self.assert_before(("pull", self.source), ("plan", None))
+        self.assert_before(("plan", None), ("print_plan", None))
+        self.assert_before(("print_plan", None), ("execute", None))
+        self.assert_before(("execute", None), ("manifest", None))
+        self.assert_before(("manifest", None), ("restow", None))
+        self.assertEqual(("restow", None), next(reversed(self.calls.events)))
+        self.assert_link_to(self.agents / "alpha", alpha)
+        self.assertTrue((self.state / "managed-links.json").is_file())
+
+    def test_missing_extra_checkout_fails_before_any_pull(self) -> None:
+        humanizer = self.extras / "humanizer"
+        self.calls.failures[("require_checkout", humanizer)] = update_skills.SyncError(
+            f"checkout not found at {humanizer}; clone it with: "
+            f"git clone https://github.com/blader/humanizer.git {humanizer}"
         )
-        result = subprocess.run(
-            [sys.executable, str(SCRIPT)],
-            text=True,
-            capture_output=True,
-            env=environment,
+
+        self.assertEqual(2, self.run_session())
+
+        self.assertIn(
+            "git clone https://github.com/blader/humanizer.git", self.stderr.getvalue()
         )
+        self.assertEqual([("require_checkout", humanizer)], self.calls.events)
+
+    def test_dirty_checkout_prevents_all_pulls_and_unlinking(self) -> None:
+        humanizer = self.extras / "humanizer"
+        self.calls.failures[("require_clean", humanizer)] = update_skills.SyncError(
+            "checkout has local changes"
+        )
+
+        self.assertEqual(2, self.run_session())
+
+        self.assertFalse(
+            any(
+                operation in ("pull", "unstow", "restow")
+                for operation, _ in self.calls.events
+            )
+        )
+
+    def test_skills_pull_failure_relinks_consumers(self) -> None:
+        self.calls.failures[("pull", self.source)] = subprocess.CalledProcessError(
+            1, ["git", "pull", "--ff-only"]
+        )
+
+        self.assertEqual(2, self.run_session())
+
+        self.assert_before(("unstow", None), ("pull", self.source))
+        self.assert_before(("pull", self.source), ("restow", None))
+        self.assertEqual(("restow", None), next(reversed(self.calls.events)))
+        self.assertFalse((self.state / "managed-links.json").exists())
+
+    def test_execution_failure_relinks_without_rolling_back_partial_plan(self) -> None:
+        self.make_skill("engineering", "alpha")
+        execute_plan = update_skills.execute_plan
+        applied: list[Path] = []
+
+        def fail_midway(config: update_skills.Config, plan: update_skills.Plan) -> None:
+            first, *_ = plan.actions
+            execute_plan(config, replace(plan, actions=(first,)))
+            applied.append(first.target)
+            self.calls.record("execute_failure")
+            raise update_skills.SyncError("execution stopped midway")
+
+        with mock.patch.object(update_skills, "execute_plan", side_effect=fail_midway):
+            self.assertEqual(2, self.run_session())
+
+        self.assert_before(("execute_failure", None), ("restow", None))
+        self.assertTrue(all(path.is_symlink() for path in applied))
+        self.assertFalse((self.state / "managed-links.json").exists())
+        self.assertIn("execution stopped midway", self.stderr.getvalue())
+
+    def test_unexpected_exception_relinks_then_propagates(self) -> None:
+        failure = ValueError("unexpected pull failure")
+        self.calls.failures[("pull", self.source)] = failure
+
+        with self.assertRaises(ValueError) as raised:
+            self.run_session()
+
+        self.assertIs(failure, raised.exception)
+        self.assert_before(("pull", self.source), ("restow", None))
+        self.assertEqual(("restow", None), next(reversed(self.calls.events)))
+
+    def test_recovery_failure_is_reported_without_masking_original_exception(self) -> None:
+        failure = ValueError("original failure")
+        self.calls.failures[("pull", self.source)] = failure
+        self.calls.failures[("restow", None)] = RuntimeError("relink failure")
+
+        with self.assertRaises(ValueError) as raised:
+            self.run_session()
+
+        self.assertIs(failure, raised.exception)
+        self.assertIn(
+            "error: failed to restore Stow layout: relink failure",
+            self.stderr.getvalue(),
+        )
+
+    def test_extra_checkout_pull_failure_does_not_relink(self) -> None:
+        humanizer = self.extras / "humanizer"
+        self.calls.failures[("pull", humanizer)] = OSError("extra pull failed")
+
+        self.assertEqual(2, self.run_session())
+
+        self.assertNotIn(("unstow", None), self.calls.events)
+        self.assertNotIn(("restow", None), self.calls.events)
+        self.assertNotIn(("pull", self.source), self.calls.events)
+
+    def test_no_stow_still_pulls_and_applies(self) -> None:
+        alpha = self.make_skill("engineering", "alpha")
+
+        self.assertEqual(0, self.run_session("--no-stow"))
+
+        self.assertIn(("pull", self.source), self.calls.events)
+        self.assertIn(("pull", self.extras / "humanizer"), self.calls.events)
+        self.assertNotIn(("unstow", None), self.calls.events)
+        self.assertNotIn(("restow", None), self.calls.events)
+        self.assert_link_to(self.agents / "alpha", alpha)
+
+    def test_read_only_modes_skip_git_and_stow(self) -> None:
+        self.make_skill("engineering", "alpha")
+        for mode, expected in (("--check", 1), ("--dry-run", 0)):
+            with self.subTest(mode=mode):
+                self.assertEqual(expected, self.run_session(mode))
+                self.assertEqual([], self.calls.events)
+                self.assertEqual([], list(self.agents.iterdir()))
+                self.assertFalse((self.state / "managed-links.json").exists())
+
+    def test_no_pull_unlinks_only_after_planning_and_still_relinks(self) -> None:
+        self.make_skill("engineering", "alpha")
+        plan = update_skills.Reconciler.plan
+
+        def record_plan(reconciler: update_skills.Reconciler) -> update_skills.Plan:
+            self.calls.record("plan")
+            return plan(reconciler)
+
+        with mock.patch.object(update_skills.Reconciler, "plan", record_plan):
+            self.assertEqual(0, self.run_session("--no-pull"))
+
+        self.assert_before(("plan", None), ("unstow", None))
+        self.assert_before(("unstow", None), ("restow", None))
+        self.assertFalse(
+            any(
+                operation in ("require_checkout", "require_clean", "pull")
+                for operation, _ in self.calls.events
+            )
+        )
+
+    def test_empty_applying_plan_still_relinks_consumers(self) -> None:
+        self.assertEqual(0, self.run_session("--no-pull", "--no-stow"))
+        self.calls.events.clear()
+
+        self.assertEqual(0, self.run_session("--no-pull"))
+
+        self.assertEqual([("restow", None)], self.calls.events)
+        self.assertEqual(0, self.run_session("--check"))
+        self.assertEqual([("restow", None)], self.calls.events)
+
+    def test_planning_failure_after_unlink_relinks_consumers(self) -> None:
+        self.make_skill("engineering", "duplicate")
+        self.make_skill("productivity", "duplicate")
+
+        self.assertEqual(2, self.run_session())
+
+        self.assert_before(("unstow", None), ("restow", None))
+        self.assertIn("duplicate skill name", self.stderr.getvalue())
+        self.assertFalse((self.state / "managed-links.json").exists())
+
+    def test_partial_unstow_failure_still_relinks_consumers(self) -> None:
+        self.calls.failures[("unstow", None)] = OSError("second consumer failed")
+
+        self.assertEqual(2, self.run_session())
+
+        self.assert_before(("unstow", None), ("restow", None))
+        self.assertNotIn(("pull", self.source), self.calls.events)
+
+    def test_handled_error_keeps_exit_code_when_recovery_also_fails(self) -> None:
+        self.calls.failures[("pull", self.source)] = update_skills.SyncError(
+            "original pull failure"
+        )
+        self.calls.failures[("restow", None)] = ValueError("relink failure")
+
+        self.assertEqual(2, self.run_session())
+
+        self.assertIn("error: original pull failure", self.stderr.getvalue())
+        self.assertIn(
+            "error: failed to restore Stow layout: relink failure",
+            self.stderr.getvalue(),
+        )
+
+    def test_session_migrate_option_reconciles_copied_skills(self) -> None:
+        alpha = self.make_skill("engineering", "alpha")
+        self.make_copy(self.agents / "engineering", "alpha")
+        self.make_copy(self.claude, "alpha")
 
         self.assertEqual(
             0,
-            result.returncode,
-            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
-        )
-        events = event_log.read_text(encoding="utf-8").splitlines()
-        humanizer = str(self.extras / "humanizer")
-        self.assertIn(f"{self.source} status --porcelain", events[0])
-        self.assertIn(f"{humanizer} status --porcelain", events[1])
-        self.assertIn(f"{humanizer} pull --ff-only", events[2])
-        self.assertIn("-D --no-folding agents", events[3])
-        self.assertIn("-D --no-folding claude", events[4])
-        self.assertIn(f"{self.source} pull --ff-only", events[5])
-        self.assertIn("-D --no-folding agents", events[6])
-        self.assertIn("-D --no-folding claude", events[7])
-        self.assertIn("-R agents", events[8])
-        self.assertNotIn("--no-folding", events[8])
-        self.assertIn("-R claude", events[9])
-        self.assertNotIn("--no-folding", events[9])
-
-    def test_missing_extra_checkout_fails_before_any_pull(self) -> None:
-        self.make_skill("engineering", "alpha")
-        fixture_bin = Path(self.temporary.name) / "bin"
-        fixture_bin.mkdir()
-        event_log = Path(self.temporary.name) / "events"
-        for command in ("git", "stow"):
-            executable = fixture_bin / command
-            executable.write_text(
-                "#!/bin/sh\n"
-                f"printf '{command} %s\\n' \"$*\" >> \"$EVENT_LOG\"\n",
-                encoding="utf-8",
-            )
-            executable.chmod(0o755)
-
-        environment = self.fixture_environment()
-        environment.update(
-            {
-                "EVENT_LOG": str(event_log),
-                "PATH": f"{fixture_bin}{os.pathsep}{environment['PATH']}",
-            }
-        )
-        result = subprocess.run(
-            [sys.executable, str(SCRIPT)],
-            text=True,
-            capture_output=True,
-            env=environment,
+            self.run_session("--migrate", "--no-pull"),
+            msg=self.stderr.getvalue(),
         )
 
-        self.assertEqual(2, result.returncode)
-        self.assertIn("git clone https://github.com/blader/humanizer.git", result.stderr)
-        self.assertFalse(event_log.exists())
+        for root in (self.agents, self.claude):
+            self.assert_link_to(root / "alpha", alpha)
+        self.assertFalse((self.agents / "engineering").exists())
+        backup = next(self.backups.iterdir())
+        self.assertTrue(
+            (backup / "snapshot" / "agents" / "engineering" / "alpha").is_dir()
+        )
+        self.assertTrue((backup / "snapshot" / "claude" / "alpha").is_dir())
+        self.assertTrue(
+            (backup / "removed" / "agents" / "grouped-engineering" / "alpha").is_dir()
+        )
+        self.assertTrue((backup / "removed" / "claude" / "copied-alpha").is_dir())
+        self.assertEqual(("restow", None), next(reversed(self.calls.events)))
+
+    def test_empty_plan_restow_failure_attempts_recovery(self) -> None:
+        self.assertEqual(0, self.run_session("--no-pull", "--no-stow"))
+        self.calls.events.clear()
+        self.calls.failures[("restow", None)] = OSError("restow stopped after unlink")
+
+        self.assertEqual(2, self.run_session("--no-pull"))
+
+        self.assertEqual(2, self.calls.events.count(("restow", None)))
+        self.assertIn("failed to restore Stow layout", self.stderr.getvalue())
 
     @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
     def test_restow_keeps_skill_roots_real_and_links_whole_skill_directories(

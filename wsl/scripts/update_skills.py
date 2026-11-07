@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, TypedDict
+from typing import Iterable, Protocol, TypedDict
 
 
 CATEGORIES = ("engineering", "productivity")
@@ -426,8 +426,6 @@ def execute_plan(config: Config, plan: Plan) -> None:
         else:
             raise SyncError(f"unknown action kind: {action.kind}")
 
-    write_manifest(config, plan.desired_keys)
-
 
 def write_manifest(
     config: Config, desired_keys: Iterable[tuple[str, str]]
@@ -449,30 +447,47 @@ def write_manifest(
     temporary.replace(manifest)
 
 
-def require_checkout(repo: Path, url: str) -> None:
-    if not (repo / ".git").exists():
-        raise SyncError(
-            f"checkout not found at {repo}; clone it with: git clone {url} {repo}"
+class GitAdapter(Protocol):
+    def require_checkout(self, repo: Path) -> None: ...
+
+    def require_clean(self, repo: Path) -> None: ...
+
+    def pull(self, repo: Path) -> None: ...
+
+
+class StowAdapter(Protocol):
+    def unstow(self) -> None: ...
+
+    def restow(self) -> None: ...
+
+
+@dataclass
+class SubprocessGitAdapter:
+    checkout_urls: dict[Path, str]
+
+    def require_checkout(self, repo: Path) -> None:
+        if not (repo / ".git").exists():
+            url = self.checkout_urls[repo]
+            raise SyncError(
+                f"checkout not found at {repo}; clone it with: git clone {url} {repo}"
+            )
+
+    def require_clean(self, repo: Path) -> None:
+        status = subprocess.run(
+            ["git", "-C", str(repo), "status", "--porcelain"],
+            check=True,
+            text=True,
+            capture_output=True,
         )
+        if status.stdout:
+            raise SyncError(f"checkout {repo} has local changes; refusing to pull")
 
-
-def require_clean_checkout(repo: Path) -> None:
-    status = subprocess.run(
-        ["git", "-C", str(repo), "status", "--porcelain"],
-        check=True,
-        text=True,
-        capture_output=True,
-    )
-    if status.stdout:
-        raise SyncError(f"checkout {repo} has local changes; refusing to pull")
-
-
-def pull_latest(repo: Path) -> None:
-    print(f"pull: {repo}")
-    subprocess.run(
-        ["git", "-C", str(repo), "pull", "--ff-only"],
-        check=True,
-    )
+    def pull(self, repo: Path) -> None:
+        print(f"pull: {repo}")
+        subprocess.run(
+            ["git", "-C", str(repo), "pull", "--ff-only"],
+            check=True,
+        )
 
 
 def run_stow(config: Config, operation: str, *, no_folding: bool) -> None:
@@ -525,47 +540,86 @@ def prepare_live_skill_roots(config: Config) -> None:
                 target.rmdir()
 
 
-def unstow(config: Config) -> None:
-    """Remove live links while every pre-reconciliation source still exists."""
-    run_stow(config, "-D", no_folding=True)
+@dataclass
+class SubprocessStowAdapter:
+    config: Config
 
+    def unstow(self) -> None:
+        """Unlink consumers while pre-reconciliation sources still exist."""
+        run_stow(self.config, "-D", no_folding=True)
 
-def restow(config: Config) -> None:
-    # Remove the legacy file-by-file layout even when this run did not need to
-    # unstow before reconciliation.
-    unstow(config)
-    prepare_live_skill_roots(config)
-    run_stow(config, "-R", no_folding=False)
+    def restow(self) -> None:
+        # Remove the legacy file-by-file layout even when this Sync session did
+        # not need to unlink consumers before reconciliation.
+        self.unstow()
+        prepare_live_skill_roots(self.config)
+        run_stow(self.config, "-R", no_folding=False)
 
 
 @dataclass
-class StowGuard:
+class SyncSession:
+    """Own ordering and recovery for one reconciliation of consumer links."""
+
     config: Config
-    enabled: bool
-    unstowed: bool = False
+    git: GitAdapter
+    stow: StowAdapter
+    migrate: bool = False
+    no_pull: bool = False
+    no_stow: bool = False
+    dry_run: bool = False
+    check: bool = False
 
-    def ensure_unstowed(self) -> None:
-        if not self.enabled or self.unstowed:
-            return
-        unstow(self.config)
-        self.unstowed = True
-
-    def restore(self) -> None:
-        if not self.enabled:
-            return
-        restow(self.config)
-        self.unstowed = False
-
-    def recover(self) -> None:
-        if not self.unstowed:
-            return
+    def run(self) -> int:
+        consumers_unlinked = False
         try:
-            self.restore()
-        except (subprocess.CalledProcessError, OSError) as error:
-            print(
-                f"error: failed to restore Stow layout: {error}",
-                file=sys.stderr,
-            )
+            try:
+                if not (self.no_pull or self.dry_run or self.check):
+                    for repo in self.config.extra_checkouts:
+                        self.git.require_checkout(repo)
+                    # Clean checkouts are a Precondition: a dirty one pulls nothing.
+                    for repo in (self.config.skills_repo, *self.config.extra_checkouts):
+                        self.git.require_clean(repo)
+                    for repo in self.config.extra_checkouts:
+                        self.git.pull(repo)
+                    if not self.no_stow:
+                        # Unstow can fail after unlinking only some consumers.
+                        consumers_unlinked = True
+                        self.stow.unstow()
+                    self.git.pull(self.config.skills_repo)
+
+                plan = Reconciler(self.config, migrate=self.migrate).plan()
+                print_plan(plan)
+                if self.dry_run:
+                    return 0
+                if self.check:
+                    return 1 if plan.actions else 0
+
+                if plan.actions and not self.no_stow and not consumers_unlinked:
+                    consumers_unlinked = True
+                    self.stow.unstow()
+                execute_plan(self.config, plan)
+                write_manifest(self.config, plan.desired_keys)
+                if not self.no_stow:
+                    # Restow itself unlinks the legacy layout before rebuilding it.
+                    consumers_unlinked = True
+                    self.stow.restow()
+                    consumers_unlinked = False
+                print("skills: synchronized")
+                return 0
+            finally:
+                if consumers_unlinked:
+                    try:
+                        self.stow.restow()
+                    except BaseException as error:
+                        # Recovery must never replace the original failure,
+                        # including exceptions outside the CLI's handled errors.
+                        print(
+                            f"error: failed to restore Stow layout: {error}",
+                            file=sys.stderr,
+                        )
+        except (SyncError, subprocess.CalledProcessError, OSError) as error:
+            print(f"error: {error}", file=sys.stderr)
+            return 2
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -626,59 +680,15 @@ def config_from_environment() -> Config:
     )
 
 
-def update_checkout(
-    config: Config,
-    args: argparse.Namespace,
-    stow_guard: StowGuard,
-) -> None:
-    if args.no_pull or args.dry_run or args.check:
-        return
-    for repo, url in config.extra_checkouts.items():
-        require_checkout(repo, url)
-    # Check every checkout before pulling any, so a dirty one pulls nothing.
-    for repo in (config.skills_repo, *config.extra_checkouts):
-        require_clean_checkout(repo)
-    # Extra checkouts only change file contents behind tracked links, so they
-    # need no unstow.
-    for repo in config.extra_checkouts:
-        pull_latest(repo)
-    stow_guard.ensure_unstowed()
-    pull_latest(config.skills_repo)
-
-
-def read_only_result(args: argparse.Namespace, plan: Plan) -> int | None:
-    if args.dry_run:
-        return 0
-    if args.check:
-        return 1 if plan.actions else 0
-    return None
-
-
-def apply_sync(config: Config, plan: Plan, stow_guard: StowGuard) -> None:
-    if plan.actions:
-        stow_guard.ensure_unstowed()
-    execute_plan(config, plan)
-    stow_guard.restore()
-    print("skills: synchronized")
-
-
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv if argv is not None else sys.argv[1:])
     config = config_from_environment()
-    stow_guard = StowGuard(config, enabled=not args.no_stow)
-    try:
-        update_checkout(config, args, stow_guard)
-        plan = Reconciler(config, migrate=args.migrate).plan()
-        print_plan(plan)
-        result = read_only_result(args, plan)
-        if result is not None:
-            return result
-        apply_sync(config, plan, stow_guard)
-        return 0
-    except (SyncError, subprocess.CalledProcessError, OSError) as error:
-        stow_guard.recover()
-        print(f"error: {error}", file=sys.stderr)
-        return 2
+    return SyncSession(
+        config,
+        SubprocessGitAdapter(config.extra_checkouts),
+        SubprocessStowAdapter(config),
+        **vars(args),
+    ).run()
 
 
 if __name__ == "__main__":
