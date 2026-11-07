@@ -1,210 +1,71 @@
 #!/bin/zsh
 
-# ==========================================
-# System Update Script
-# ==========================================
-#
-# Description:
-#   Updates system and development tooling through APT, Homebrew, npm,
-#   Composer, and SDKMAN. It checks for each package manager before running.
-#   Uses Unicode escape codes for robust emoji support.
-#
-# Usage:
-#   ./update-system.sh
-#
-# ==========================================
-
-# --- Configuration & Colors ---
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
-
-# --- Emoji Definitions (Unicode Escapes) ---
-# We use printf to generate emojis so the script file itself remains pure ASCII.
-# This prevents encoding issues when copying/pasting.
-EMOJI_INFO=$(printf '\U2139\UFE0F')     # Information Source
-EMOJI_SUCCESS=$(printf '\U2705')        # White Heavy Check Mark
-EMOJI_WARN=$(printf '\U26A0\UFE0F')     # Warning Sign
-EMOJI_ERROR=$(printf '\U274C')          # Cross Mark
-EMOJI_OUTPUT=$(printf '\U1F539')        # Small Blue Diamond
-EMOJI_BAD_OUT=$(printf '\U1F534')       # Red Circle
-EMOJI_ROCKET=$(printf '\U1F680')        # Rocket
-EMOJI_PARTY=$(printf '\U1F389')         # Party Popper
-
-# --- Helper Functions ---
-
-get_timestamp() {
-    date "+%Y-%m-%d %H:%M:%S"
-}
-
-log_info() {
-    printf "${BLUE}[%s] ${EMOJI_INFO}  ${NC}%s\n" "$(get_timestamp)" "$1"
-}
-
-log_success() {
-    printf "${GREEN}[%s] ${EMOJI_SUCCESS}  ${NC}%s\n" "$(get_timestamp)" "$1"
-}
-
-log_warn() {
-    printf "${YELLOW}[%s] ${EMOJI_WARN}  ${NC}%s\n" "$(get_timestamp)" "$1"
-}
-
-log_error() {
-    printf "${RED}[%s] ${EMOJI_ERROR}  ${NC}%s\n" "$(get_timestamp)" "$1"
-}
+# Update system and development tooling, leaving pinned tool versions unchanged.
+source "${0:A:h:h}/scripts/lib/step-runner.zsh"
 
 is_wsl() {
     [[ -r /proc/sys/kernel/osrelease ]] && grep -qi microsoft /proc/sys/kernel/osrelease
 }
 
-# Wraps a command to timestamp its standard output and error
-execute_and_log() {
-    setopt local_options pipefail
+log_info "Starting System Update Process..."
 
-    # Execute command, redirect stderr to stdout, and pipe to formatting loop
-    "$@" 2>&1 | while IFS= read -r line; do
-        # Handle empty lines
-        if [[ -z "${line// /}" ]]; then
-             printf "${CYAN}[%s] ${EMOJI_OUTPUT}  ${NC}---\n" "$(get_timestamp)"
-             continue
-        fi
-
-        # Highlight lines containing "Error" in Red, otherwise Cyan
-        if [[ "$line" == *"Error"* || "$line" == *"Err"* ]]; then
-             printf "${RED}[%s] ${EMOJI_BAD_OUT}  %s${NC}\n" "$(get_timestamp)" "$line"
-        else
-             printf "${CYAN}[%s] ${EMOJI_OUTPUT}  ${NC}%s\n" "$(get_timestamp)" "$line"
-        fi
-    done
-
-    return $pipestatus[1]
-}
-
-# --- Main Execution ---
-
-echo -e "${YELLOW}[$(get_timestamp)] ${EMOJI_ROCKET}  Starting System Update Process...${NC}"
-
-# 1. Update APT (Ubuntu/Debian)
-# Defensive: Check if 'apt' exists first
 if command -v apt &> /dev/null; then
     log_info "Detected 'apt' package manager. Checking sudo permissions..."
-
+    group_begin "APT maintenance"
     # Refresh sudo credentials upfront so the password prompt isn't hidden by the logger
-    if ! sudo -v; then
+    if ! precondition "Sudo authentication" sudo -v; then
         log_error "Sudo authentication failed. Skipping APT update."
+    fi
+    step error "Updating APT repositories" sudo apt update
+    step error "Upgrading APT packages" sudo apt upgrade -y
+    step error "Autoremoving unused packages and old configs" sudo apt autoremove --purge -y
+    step error "Cleaning APT cache" sudo apt-get clean
+    if command -v journalctl &> /dev/null; then
+        step warn "Vacuuming systemd journal logs older than 14 days" sudo journalctl --vacuum-time=14d
     else
-        apt_failed=0
+        step_skip "Vacuuming systemd journal logs" "'journalctl' command not found. Skipping systemd journal cleanup."
+    fi
+    group_end
 
-        log_info "Updating APT repositories..."
-        execute_and_log sudo apt update || apt_failed=1
-
-        if (( apt_failed == 0 )); then
-            log_info "Upgrading APT packages..."
-            execute_and_log sudo apt upgrade -y || apt_failed=1
-        fi
-
-        if (( apt_failed == 0 )); then
-            log_info "Autoremoving unused packages and old configs..."
-            execute_and_log sudo apt autoremove --purge -y || apt_failed=1
-        fi
-
-        if (( apt_failed == 0 )); then
-            log_info "Cleaning APT cache..."
-            execute_and_log sudo apt-get clean || apt_failed=1
-        fi
-
-        if (( apt_failed == 0 )); then
-            log_success "APT update sequence completed."
+    if [[ -f /var/run/reboot-required ]]; then
+        if is_wsl; then
+            log_warn "WSL restart required for some updates to fully apply. From Windows, run: wsl --shutdown"
         else
-            log_error "APT update sequence failed."
-        fi
-
-        if command -v journalctl &> /dev/null; then
-            log_info "Vacuuming systemd journal logs older than 14 days..."
-            if execute_and_log sudo journalctl --vacuum-time=14d; then
-                log_success "systemd journal cleanup completed."
-            else
-                log_warn "systemd journal cleanup encountered issues."
-            fi
-        fi
-
-        if [[ -f /var/run/reboot-required ]]; then
-            if is_wsl; then
-                log_warn "WSL restart required for some updates to fully apply. From Windows, run: wsl --shutdown"
-            else
-                log_warn "System reboot required for some updates to fully apply."
-            fi
+            log_warn "System reboot required for some updates to fully apply."
         fi
     fi
 else
-    log_warn "'apt' command not found. Skipping APT update."
+    step_skip "APT maintenance" "'apt' command not found. Skipping APT update."
 fi
 
-# Pinned Homebrew formulas are intentionally excluded from routine upgrades.
-# Go is pinned and upgraded explicitly when needed.
-
-# 2. Update Homebrew
-# Defensive: Check if 'brew' exists first
+# Pinned Homebrew formulas (including Go) are upgraded explicitly when needed.
 if command -v brew &> /dev/null; then
     log_info "Detected 'brew' package manager. Updating..."
     log_info "Pinned Homebrew formulas such as Go are skipped by routine upgrades."
-
-    if execute_and_log brew upgrade; then
-        log_success "Homebrew packages upgraded."
-    else
-        log_error "Homebrew upgrade encountered issues."
-    fi
-
-    log_info "Cleaning Homebrew..."
-    if execute_and_log brew cleanup --prune=all; then
-        log_success "Homebrew cleanup finished."
-    else
-        log_error "Homebrew cleanup encountered issues."
-    fi
+    step error "Upgrading Homebrew packages" brew upgrade
+    step error "Cleaning Homebrew" brew cleanup --prune=all
 else
-    log_warn "'brew' command not found. Skipping Homebrew update."
+    step_skip "Homebrew update" "'brew' command not found. Skipping Homebrew update."
 fi
 
-# 3. Update npm global packages
-# Defensive: Check if 'npm' exists first
 if command -v npm &> /dev/null; then
     log_info "Detected 'npm'. Updating global packages..."
-
-    if execute_and_log npm update -g; then
-        log_success "npm global packages updated."
-    else
-        log_error "npm update encountered issues."
-    fi
-
-    log_info "Cleaning npm cache logs..."
+    step error "Updating npm global packages" npm update -g
     NPM_LOG_DIR="$HOME/.npm/_logs"
-
-    if [ -d "$NPM_LOG_DIR" ]; then
-        # We don't pipe rm to execute_and_log as it has no output usually
-        # and we need wildcard expansion to work in the shell
-        rm -rf "$NPM_LOG_DIR"/*
-        log_success "Cleared logs in $NPM_LOG_DIR"
+    if [[ -d "$NPM_LOG_DIR" ]]; then
+        step error "Cleaning npm cache logs" rm -rf -- "$NPM_LOG_DIR"/*(N)
     else
-        log_warn "npm log directory not found at $NPM_LOG_DIR. Skipping cleanup."
+        step_skip "Cleaning npm cache logs" "npm log directory not found at $NPM_LOG_DIR. Skipping cleanup."
     fi
 else
-    log_warn "'npm' command not found. Skipping npm update."
+    step_skip "npm update" "'npm' command not found. Skipping npm update."
 fi
 
-# 4. Update Composer and global packages
 # Composer itself is updated only when the installation supports self-update.
 if command -v composer &> /dev/null; then
     log_info "Detected 'composer'. Checking for self-update support..."
-
     if composer self-update --help &> /dev/null; then
-        if execute_and_log composer self-update --stable --no-interaction; then
-            log_success "Composer updated."
-        else
-            log_error "Composer self-update encountered issues."
-        fi
+        step error "Updating Composer" composer self-update --stable --no-interaction
     else
         log_info "Composer self-update is unavailable. The system package manager may manage this installation."
     fi
@@ -213,58 +74,34 @@ if command -v composer &> /dev/null; then
     if [[ -z "$COMPOSER_HOME" && ! -f "$COMPOSER_GLOBAL_HOME/composer.json" && -f "$HOME/.composer/composer.json" ]]; then
         COMPOSER_GLOBAL_HOME="$HOME/.composer"
     fi
-
     if [[ -f "$COMPOSER_GLOBAL_HOME/composer.json" ]]; then
-        log_info "Updating global Composer packages..."
-        if execute_and_log env COMPOSER_HOME="$COMPOSER_GLOBAL_HOME" composer global update --no-interaction; then
-            log_success "Global Composer packages updated."
-        else
-            log_error "Global Composer package update encountered issues."
-        fi
+        COMPOSER_HOME="$COMPOSER_GLOBAL_HOME" step error "Updating global Composer packages" composer global update --no-interaction
     else
         log_info "No global Composer packages are configured. Skipping their update."
     fi
 else
-    log_warn "'composer' command not found. Skipping Composer update."
+    step_skip "Composer update" "'composer' command not found. Skipping Composer update."
 fi
 
-# 5. Update SDKMAN
-# Defensive: Check the SDKMAN init script exists, then load the `sdk` function
-# (this script does not source .zshrc, so `sdk` is not otherwise available).
-# Candidate versions (JDK, Maven) are intentionally left pinned and upgraded
-# manually, consistent with the Go and Homebrew pinning policy above.
+# This script does not source .zshrc; SDKMAN supplies sdk through its init script.
+# Candidate versions (JDK, Maven) stay pinned and are upgraded manually.
 SDKMAN_INIT="${SDKMAN_DIR:-$HOME/.sdkman}/bin/sdkman-init.sh"
 if [[ -s "$SDKMAN_INIT" ]]; then
     log_info "Detected SDKMAN. Updating the tool and flushing caches..."
     source "$SDKMAN_INIT"
-
-    if execute_and_log sdk selfupdate; then
-        log_success "SDKMAN tool updated."
-    else
-        log_warn "SDKMAN self-update encountered issues."
-    fi
-
-    log_info "Flushing SDKMAN temp, archive, and metadata caches..."
-    if execute_and_log sdk flush; then
-        log_success "SDKMAN caches flushed."
-    else
-        log_warn "SDKMAN flush encountered issues."
-    fi
+    step warn "Updating SDKMAN" sdk selfupdate
+    step warn "Flushing SDKMAN temp, archive, and metadata caches" sdk flush
 else
-    log_warn "SDKMAN not found. Skipping SDKMAN update."
+    step_skip "SDKMAN update" "SDKMAN not found. Skipping SDKMAN update."
 fi
 
-# 6. Update shared agent skills
-SKILLS_UPDATER="${DOTFILES_ROOT:-$HOME/dotfiles}/scripts/update-skills"
+# A separately installed updater may override the default beside the resolved script.
+SKILLS_UPDATER="${SKILLS_UPDATER:-${0:A:h:h}/scripts/update-skills}"
 if [[ -x "$SKILLS_UPDATER" ]]; then
-    log_info "Updating shared agent skills..."
-    if execute_and_log "$SKILLS_UPDATER"; then
-        log_success "Shared agent skills updated."
-    else
-        log_warn "Shared agent skills update encountered issues."
-    fi
+    step warn "Updating shared agent skills" "$SKILLS_UPDATER"
 else
-    log_warn "Skills updater not found at $SKILLS_UPDATER. Skipping."
+    step_skip "Updating shared agent skills" "Skills updater not found at $SKILLS_UPDATER. Skipping."
 fi
 
-echo -e "\n${GREEN}[$(get_timestamp)] ${EMOJI_PARTY}  System update process finished.${NC}"
+steps_finish "System update process finished."
+exit $?
