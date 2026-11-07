@@ -21,8 +21,26 @@ from pathlib import Path
 from typing import Iterable, Protocol, TypedDict
 
 
+@dataclass(frozen=True)
+class Consumer:
+    """One agent tool's skill layout and installer-owned skills."""
+
+    name: str
+    skills_dir: Path
+    installer_owned: frozenset[str]
+
+    def package_root(self, dotfiles_root: Path) -> Path:
+        return dotfiles_root / self.name / self.skills_dir
+
+    def live_root(self, home: Path) -> Path:
+        return home / self.skills_dir
+
+
 CATEGORIES = ("engineering", "productivity")
-CONSUMERS = ("agents", "claude")
+CONSUMERS: tuple[Consumer, ...] = (
+    Consumer("agents", Path(".agents/skills"), frozenset({"impeccable"})),
+    Consumer("claude", Path(".claude/skills"), frozenset({"impeccable"})),
+)
 README_FILENAME = "README.md"
 LEGACY_ENTRIES = frozenset(
     {
@@ -71,12 +89,6 @@ class Config:
     def skills_root(self) -> Path:
         return self.skills_repo / "skills"
 
-    def consumer_root(self, consumer: str) -> Path:
-        if consumer == "agents":
-            return self.dotfiles_root / "agents" / ".agents" / "skills"
-        if consumer == "claude":
-            return self.dotfiles_root / "claude" / ".claude" / "skills"
-        raise ValueError(f"unknown consumer: {consumer}")
 
 
 @dataclass(frozen=True)
@@ -207,8 +219,10 @@ def read_snapshot(config: Config) -> DiskSnapshot:
 
     resolved_skills_root = config.skills_root.resolve(strict=False)
     consumer_roots = tuple(
-        (consumer, config.consumer_root(consumer)) for consumer in CONSUMERS
+        (consumer.name, consumer.package_root(config.dotfiles_root))
+        for consumer in CONSUMERS
     )
+    roots = dict(consumer_roots)
     inferred: set[tuple[str, str]] = set()
     for consumer, root in consumer_roots:
         if inspect(root).is_dir:
@@ -222,12 +236,12 @@ def read_snapshot(config: Config) -> DiskSnapshot:
             inspect(root / source.name)
 
     for consumer, name in manifest_entries | LEGACY_ENTRIES:
-        inspect(config.consumer_root(consumer) / name)
+        inspect(roots[consumer] / name)
 
     grouped_entries: list[tuple[str, tuple[Path, ...]]] = []
     migratable_copies: set[tuple[str, str]] = set()
-    agents_root = config.consumer_root("agents")
-    claude_root = config.consumer_root("claude")
+    agents_root = roots["agents"]
+    claude_root = roots["claude"]
     for category in CATEGORIES:
         group = agents_root / category
         state = inspect(group)
@@ -406,10 +420,10 @@ def print_plan(plan: Plan) -> None:
 
 def snapshot_consumers(config: Config, backup_dir: Path) -> None:
     for consumer in CONSUMERS:
-        source = config.consumer_root(consumer)
+        source = consumer.package_root(config.dotfiles_root)
         if not source.is_dir():
             continue
-        destination = backup_dir / "snapshot" / consumer
+        destination = backup_dir / "snapshot" / consumer.name
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(source, destination, symlinks=True)
 
@@ -501,7 +515,7 @@ def run_stow(config: Config, operation: str, *, no_folding: bool) -> None:
     action = "unstow" if operation == "-D" else "stow"
     layout = " (--no-folding)" if no_folding else ""
     for consumer in CONSUMERS:
-        print(f"{action}: {consumer}{layout}")
+        print(f"{action}: {consumer.name}{layout}")
         command = [
             "stow",
             f"--dir={config.dotfiles_root}",
@@ -510,29 +524,21 @@ def run_stow(config: Config, operation: str, *, no_folding: bool) -> None:
         ]
         if no_folding:
             command.append("--no-folding")
-        command.append(consumer)
+        command.append(consumer.name)
         subprocess.run(command, check=True)
-
-
-def live_consumer_root(consumer: str) -> Path:
-    if consumer == "agents":
-        return Path.home() / ".agents" / "skills"
-    if consumer == "claude":
-        return Path.home() / ".claude" / "skills"
-    raise ValueError(f"unknown consumer: {consumer}")
 
 
 def prepare_live_skill_roots(config: Config) -> None:
     """Keep shared roots real and let Stow fold each managed skill directory."""
     for consumer in CONSUMERS:
-        live_root = live_consumer_root(consumer)
+        live_root = consumer.live_root(Path.home())
         if live_root.is_symlink():
             raise SyncError(
                 f"skill root must be a real directory before restow: {live_root}"
             )
         live_root.mkdir(parents=True, exist_ok=True)
 
-        package_root = config.consumer_root(consumer)
+        package_root = consumer.package_root(config.dotfiles_root)
         if not package_root.is_dir():
             continue
         for source in package_root.iterdir():
