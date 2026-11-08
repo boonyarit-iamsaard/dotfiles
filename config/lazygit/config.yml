@@ -3,32 +3,27 @@ git:
     showWholeGraph: true
   overrideGpg: true
 
+# catppuccin mocha
 gui:
   theme:
     activeBorderColor:
-      - "#0078d4" # tab.activeBorderTop
+      - "#f9e2af"
       - bold
     inactiveBorderColor:
-      - "#9d9d9d" # descriptionForeground
+      - "#a6adc8"
     optionsTextColor:
-      - "#4daafc" # textLink.foreground
+      - "#89b4fa"
     selectedLineBgColor:
-      - "#264f78" # editor.selectionBackground
-    inactiveViewSelectedLineBgColor:
-      - "#37373d" # list.inactiveSelectionBackground
+      - "#313244"
     cherryPickedCommitBgColor:
-      - "#37373d" # tab.selectedBackground
+      - "#45475a"
     cherryPickedCommitFgColor:
-      - "#e2c08d" # gitDecoration.modifiedResourceForeground
-    markedBaseCommitBgColor:
-      - "#37373d" # tab.selectedBackground
-    markedBaseCommitFgColor:
-      - "#3794ff" # charts.blue
+      - "#f9e2af"
     unstagedChangesColor:
-      - "#c74e39" # gitDecoration.deletedResourceForeground
+      - "#f38ba8"
     defaultFgColor:
-      - "#cccccc" # terminal.foreground
+      - "#cdd6f4"
     searchingActiveBorderColor:
-      - "#e2c08d" # gitDecoration.modifiedResourceForeground
+      - "#f9e2af"
     authorColors:
-      "*": "#3794ff" # charts.blue
+      "*": "#b4befe"
