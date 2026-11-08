@@ -153,7 +153,7 @@ alias nv="nvim"
 alias lzd='lazydocker'
 alias lzg="lazygit"
 # Switch theme by changing the second path.
-export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/themes/default-dark-modern.yml"
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/themes/catppuccin-mocha.yml"
 
 # ---------------------------------------------------------------------------
 # Key bindings
