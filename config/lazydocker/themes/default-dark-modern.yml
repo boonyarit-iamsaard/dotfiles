@@ -1,0 +1,15 @@
+# Default Dark Modern (VS Code) for lazydocker. Hand-ported from
+# microsoft/vscode theme-defaults/themes/dark_modern.json.
+# lazydocker supports only these four theme keys.
+
+gui:
+  theme:
+    activeBorderColor:
+      - "#0078d4" # tab.activeBorderTop
+      - bold
+    inactiveBorderColor:
+      - "#9d9d9d" # descriptionForeground
+    optionsTextColor:
+      - "#4daafc" # textLink.foreground
+    selectedLineBgColor:
+      - "#264f78" # editor.selectionBackground
