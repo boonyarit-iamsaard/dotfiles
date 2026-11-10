@@ -295,6 +295,34 @@ class PurePlannerTest(unittest.TestCase):
                             tuple(action.kind for action in stale),
                         )
 
+    def test_unknown_real_path_table(self) -> None:
+        claude = CONSUMERS_BY_NAME["claude"]
+        personal = sorted(claude.personal)[0]
+        installer = sorted(claude.installer_owned)[0]
+        error = (
+            f"unknown real skill path: {self.claude / 'retired'}; it is neither a "
+            "personal skill nor installer-owned, so remove it or declare it "
+            "personal in CONSUMERS"
+        )
+        cases = (
+            ("stale upstream copy", "retired", error),
+            ("personal skill", personal, None),
+            ("installer-owned skill", installer, None),
+            ("package readme", update_skills.README_FILENAME, None),
+        )
+        for name, entry, expected in cases:
+            with self.subTest(name=name):
+                snapshot = self.with_paths(
+                    self.snapshot(),
+                    update_skills.ConsumerPath(self.claude / entry, exists=True, is_dir=True),
+                )
+                if expected:
+                    with self.assertRaises(update_skills.SyncError) as raised:
+                        self.plan(snapshot)
+                    self.assertEqual(expected, str(raised.exception))
+                else:
+                    self.plan(snapshot)
+
     def test_grouped_and_legacy_migration_table(self) -> None:
         group = self.agents / "engineering"
         custom = self.agents / "local-tool"
@@ -464,7 +492,7 @@ class UpdateSkillsTest(unittest.TestCase):
         self.make_copy(productivity, "local-flow", "local\n")
         self.make_copy(productivity, "teach copy", "accidental\n")
         self.make_copy(self.claude, "alpha")
-        self.make_copy(self.claude, "local-claude", "local\n")
+        self.make_copy(self.claude, "runbook", "local\n")
         self.make_copy(self.claude, "to-issues", "legacy\n")
         self.make_copy(self.claude, "to-prd", "legacy\n")
         return alpha, beta
@@ -515,7 +543,7 @@ class UpdateSkillsTest(unittest.TestCase):
 
         self.assertTrue((self.agents / "local-tool").is_dir())
         self.assertTrue((self.agents / "local-flow").is_dir())
-        self.assertTrue((self.claude / "local-claude").is_dir())
+        self.assertTrue((self.claude / "runbook").is_dir())
         self.assertFalse((self.agents / "engineering").exists())
         self.assertFalse((self.agents / "productivity").exists())
         self.assertFalse((self.agents / "teach copy").exists())

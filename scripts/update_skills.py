@@ -23,11 +23,14 @@ from typing import Iterable, Protocol, TypedDict
 
 @dataclass(frozen=True)
 class Consumer:
-    """One agent tool's skill layout and installer-owned skills."""
+    """One agent tool's skill layout, personal skills, and installer-owned skills."""
 
     name: str
     skills_dir: Path
     installer_owned: frozenset[str]
+    # Personal skills are real directories tracked in dotfiles. Any other real
+    # entry is a stale copy the sync cannot retire, so planning rejects it.
+    personal: frozenset[str] = frozenset()
 
     def package_root(self, dotfiles_root: Path) -> Path:
         return dotfiles_root / self.name / self.skills_dir
@@ -38,8 +41,18 @@ class Consumer:
 
 CATEGORIES = ("engineering", "productivity")
 CONSUMERS: tuple[Consumer, ...] = (
-    Consumer("agents", Path(".agents/skills"), frozenset({"impeccable"})),
-    Consumer("claude", Path(".claude/skills"), frozenset({"impeccable"})),
+    Consumer(
+        "agents",
+        Path(".agents/skills"),
+        frozenset({"impeccable"}),
+        frozenset({"commit-message", "typescript-house-style"}),
+    ),
+    Consumer(
+        "claude",
+        Path(".claude/skills"),
+        frozenset({"impeccable"}),
+        frozenset({"commit-message", "edit-prose", "runbook", "typescript-house-style"}),
+    ),
 )
 README_FILENAME = "README.md"
 LEGACY_ENTRIES = frozenset(
@@ -401,11 +414,47 @@ def plan(snapshot: DiskSnapshot, *, migrate: bool, backup_dir: Path) -> Plan:
                 target=target,
             )
         )
+    reject_unknown_real_paths(snapshot, desired.keys() | previously_managed)
     return Plan(
         actions=tuple(actions),
         desired_keys=tuple(sorted(desired)),
         backup_dir=backup_dir,
     )
+
+
+def reject_unknown_real_paths(
+    snapshot: DiskSnapshot, owned: Iterable[tuple[str, str]]
+) -> None:
+    """Reject real entries the sync cannot retire: stale copies of upstream skills.
+
+    Personal skills, installer-owned skills, the package README, and paths that
+    planning already handles (desired links, stale managed links, the grouped
+    Agents layout) are the only real entries a consumer package may hold.
+    """
+    owned = frozenset(owned)
+    consumers = {consumer.name: consumer for consumer in CONSUMERS}
+    grouped = {entry.name for _, entries in snapshot.grouped_entries for entry in entries}
+    roots = {root: consumer for consumer, root in snapshot.consumer_roots}
+    for state in snapshot.consumer_paths:
+        consumer = roots.get(state.path.parent)
+        name = state.path.name
+        if (
+            consumer is None
+            or state.is_symlink
+            or not state.exists
+            or (consumer, name) in owned
+            or name == README_FILENAME
+            or name in CATEGORIES
+            or name in grouped
+            or name in consumers[consumer].personal
+            or name in consumers[consumer].installer_owned
+        ):
+            continue
+        raise SyncError(
+            f"unknown real skill path: {state.path}; it is neither a personal "
+            "skill nor installer-owned, so remove it or declare it personal "
+            "in CONSUMERS"
+        )
 
 
 def print_plan(plan: Plan) -> None:
