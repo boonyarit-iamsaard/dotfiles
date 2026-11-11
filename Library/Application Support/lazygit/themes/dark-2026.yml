@@ -34,6 +34,5 @@ gui:
       - "#cccccc" # terminal.foreground
     searchingActiveBorderColor:
       - "#e5ba7d" # gitDecoration.modifiedResourceForeground
-
-  authorColors:
-    "*": "#57a3f8" # charts.blue
+    authorColors:
+      "*": "#57a3f8" # charts.blue
