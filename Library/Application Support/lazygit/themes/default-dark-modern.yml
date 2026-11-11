@@ -1,0 +1,34 @@
+# Default Dark Modern (VS Code) for lazygit. Hand-ported from
+# microsoft/vscode theme-defaults/themes/dark_modern.json; keys it leaves unset
+# are VS Code's registered dark defaults. Mirrors
+# .config/nvim/lua/themes/default-dark-modern/lazygit.lua; change both together.
+
+gui:
+  theme:
+    activeBorderColor:
+      - "#0078d4" # tab.activeBorderTop
+      - bold
+    inactiveBorderColor:
+      - "#9d9d9d" # descriptionForeground
+    optionsTextColor:
+      - "#4daafc" # textLink.foreground
+    selectedLineBgColor:
+      - "#264f78" # editor.selectionBackground
+    inactiveViewSelectedLineBgColor:
+      - "#37373d" # list.inactiveSelectionBackground
+    cherryPickedCommitBgColor:
+      - "#37373d" # tab.selectedBackground
+    cherryPickedCommitFgColor:
+      - "#e2c08d" # gitDecoration.modifiedResourceForeground
+    markedBaseCommitBgColor:
+      - "#37373d" # tab.selectedBackground
+    markedBaseCommitFgColor:
+      - "#3794ff" # charts.blue
+    unstagedChangesColor:
+      - "#c74e39" # gitDecoration.deletedResourceForeground
+    defaultFgColor:
+      - "#cccccc" # terminal.foreground
+    searchingActiveBorderColor:
+      - "#e2c08d" # gitDecoration.modifiedResourceForeground
+  authorColors:
+    "*": "#3794ff" # charts.blue

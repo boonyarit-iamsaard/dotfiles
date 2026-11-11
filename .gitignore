@@ -1,2 +1,10 @@
 # Local reconciliation state for scripts/update-skills.
 .skill-sync/
+
+# Test bytecode and runtime state are generated locally.
+__pycache__/
+*.log
+
+# Installer-owned skills are updated in place.
+agents/.agents/skills/impeccable/
+claude/.claude/skills/impeccable/

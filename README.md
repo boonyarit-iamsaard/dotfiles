@@ -1,5 +1,37 @@
 # Dotfiles
 
+## Maintenance
+
+`~/dotfiles/update-system/update-system.sh` updates installed package managers
+and shared skills. It leaves pinned Homebrew formulas unchanged. The
+`update-system` alias is available in new shells.
+
+It and `docker-cleanup/docker-cleanup.sh` share `scripts/lib/step-runner.zsh`.
+Both print a summary and exit 1 when an error-severity step fails; warning-only
+failures leave the exit status successful. Docker cleanup removes containers
+and unused volumes, networks, and build cache. Its tests use fake executables
+and never contact a real Docker daemon or run package updates.
+
+## Themes
+
+Catppuccin remains active. Shared settings and theme variants are separate:
+
+| Tool | Switch |
+| --- | --- |
+| tmux | Change `@theme` in `.tmux.conf` to `catppuccin`, `dark-2026`, or `default-dark-modern`; restart the server for a clean switch. |
+| lazygit | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `Library/Application Support/lazygit/themes/`. |
+| lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments. |
+| Neovim | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern. |
+
+`~/.tmux/themes` links to `~/dotfiles/.tmux/themes`. The existing root tmux
+configuration paths continue to work. macOS Application Support paths and the
+transparent Neovim floating window are retained.
+
+Dark 2026 extras are vendored byte-for-byte from the plugin revision pinned in
+`.config/nvim/lazy-lock.json`. To update them, copy the four upstream extras at
+the new pin and run `python3 -m unittest scripts/test_theme_extras.py`. These
+files work without depending on Neovim's plugin directory at runtime.
+
 ## Agent gh wrapper
 
 `gh` is installed only so agents can handle pull requests; it is never logged
@@ -36,7 +68,24 @@ Contents and Pull requests read/write, Actions and Commit statuses read-only,
 everything else none. The token file lives outside this repo and must never be
 committed.
 
+`gh project ...` reads `~/.config/gh-agent/project-token` instead of the default
+token file, so project access can use a separately scoped token. Other commands
+keep using `~/.config/gh-agent/token`.
+
 ## Shared agent skills
+
+The personal skills `commit-message`, `edit-prose`, `typescript-house-style`,
+and `runbook` are tracked for both Claude and Codex. The old
+`typescript-object-composition` link is retired automatically. The updater
+creates missing personal directory links, checks their resources, and preserves
+installer-owned skills such as Impeccable.
+
+`edit-prose` layers house rules over the MIT-licensed Humanizer rules. On a new
+machine, clone its supporting checkout before syncing:
+
+```bash
+git clone https://github.com/blader/humanizer.git ~/workspace/personal/humanizer
+```
 
 Matt Pocock's engineering and productivity skills are read from the clean,
 read-only checkout at `~/workspace/personal/skills`. Run the synchronizer on
@@ -47,8 +96,10 @@ reconcile both Agent Skills consumers:
 ~/dotfiles/scripts/update-skills
 ```
 
-The command never commits or pushes. It refuses to pull a checkout with local
-changes and uses `git pull --ff-only`.
+The command never commits or pushes. It checks both the skills and Humanizer
+checkouts for local changes before any pull and uses `git pull --ff-only`.
+Matt's live catalogs are `ENGINEERING.md` and `PRODUCTIVITY.md` in each consumer;
+the package README points there instead of keeping a stale copied catalog.
 
 Preview or diagnose reconciliation with:
 
@@ -69,12 +120,19 @@ The first conversion from copied skills must be previewed before it is run:
 Migration accepts only files whose Git blobs can be traced to the skills
 checkout's history. It snapshots both dotfiles skill packages under
 `~/.local/state/dotfiles-skills/backups`, archives verified Matt copies, and
-keeps the local `commit-message` and `typescript-object-composition` skills.
+keeps the four personal skills listed above.
 The obsolete Matt skills `diagnose`, `to-issues`, `to-prd`, and `zoom-out` are
 archived during migration. A failed migration restores moved package copies
 and attempts to restore the previous Stow layout.
 
-After migration, dotfiles and GNU Stow own local skills while the synchronizer
-owns direct links from `~/.agents/skills` and `~/.claude/skills` to the
-read-only checkout. This keeps the dotfiles repository clean when Matt adds or
-removes a skill.
+After migration, personal skills link to their dotfiles directories while Matt's
+skills link directly to the read-only checkout. The synchronizer retires deleted
+upstream links, including broken ones, and refuses unexpected package copies.
+`--migrate` can archive retired skills verified against upstream Git history;
+it checks every file and restores moved package copies if migration fails.
+
+Run the maintenance, synchronization, and theme checks with:
+
+```bash
+python3 -m unittest scripts/test_update_skills.py scripts/test_step_runner.py scripts/test_theme_extras.py
+```

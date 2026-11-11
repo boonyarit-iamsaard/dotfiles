@@ -4,6 +4,9 @@
 # environment. Falls back to gh's own login when the file is missing.
 # See "Agent gh wrapper" in ~/dotfiles/README.md.
 token_file="$HOME/.config/gh-agent/token"
+if [ "${1-}" = project ]; then
+  token_file="$HOME/.config/gh-agent/project-token"
+fi
 if [ -r "$token_file" ]; then
   GH_TOKEN=$(cat "$token_file")
   export GH_TOKEN

@@ -19,7 +19,7 @@ class UpdateSkillsTest(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        fixture = Path(self.temporary.name)
+        fixture = Path(self.temporary.name).resolve()
         self.source = fixture / "source"
         self.dotfiles = fixture / "dotfiles"
         self.home = fixture / "home"
@@ -377,6 +377,117 @@ class UpdateSkillsTest(unittest.TestCase):
         backup = next(self.backups.iterdir())
         for consumer in ("agents", "claude"):
             self.assertTrue((backup / "removed" / consumer / "alpha").is_dir())
+
+    def test_personal_skills_are_linked_and_old_house_style_name_is_retired(self) -> None:
+        names = ("commit-message", "edit-prose", "typescript-house-style", "runbook")
+        for package, live in (
+            (self.agents_package, self.agents_live),
+            (self.claude_package, self.claude_live),
+        ):
+            live.mkdir(parents=True)
+            for name in names:
+                self.make_local_skill(package, name)
+            (live / "typescript-object-composition").symlink_to(
+                package / "typescript-object-composition"
+            )
+        self.run_updater()
+        for package, live in (
+            (self.agents_package, self.agents_live),
+            (self.claude_package, self.claude_live),
+        ):
+            self.assertFalse((live / "typescript-object-composition").is_symlink())
+            for name in names:
+                self.assertEqual((package / name).resolve(), (live / name).resolve())
+        self.run_updater("--check")
+
+    def test_personal_skill_collision_preserves_an_unmanaged_directory(self) -> None:
+        self.make_local_skill(self.agents_package, "runbook")
+        self.agents_live.mkdir(parents=True)
+        existing = self.make_local_skill(self.agents_live, "runbook")
+        result = self.run_updater(expected_returncode=2)
+        self.assertIn("unmanaged personal skill collision", result.stderr)
+        self.assertFalse(existing.is_symlink())
+
+    def test_missing_personal_resource_is_reported_before_linking(self) -> None:
+        skill = self.make_local_skill(self.agents_package, "edit-prose")
+        (skill / "rules.md").symlink_to(self.source / "missing-rules.md")
+        result = self.run_updater(expected_returncode=2)
+        self.assertIn("missing personal skill resource", result.stderr)
+        self.assertFalse(self.agents_live.exists())
+
+    @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
+    def test_migration_also_installs_new_personal_links(self) -> None:
+        alpha = self.make_source_skill("alpha")
+        self.commit_source("add alpha")
+        for package, live in (
+            (self.agents_package, self.agents_live),
+            (self.claude_package, self.claude_live),
+        ):
+            self.make_package_copy(package, "alpha", alpha)
+            self.make_local_skill(package, "runbook")
+            live.mkdir(parents=True)
+        self.run_updater("--migrate")
+        for package, live in (
+            (self.agents_package, self.agents_live),
+            (self.claude_package, self.claude_live),
+        ):
+            self.assertEqual((package / "runbook").resolve(), (live / "runbook").resolve())
+            self.assertEqual(alpha.resolve(), (live / "alpha").resolve())
+
+    def test_migration_rejects_a_custom_resource_even_with_unmodified_skill_md(self) -> None:
+        alpha = self.make_source_skill("alpha")
+        self.commit_source("add alpha")
+        copy = self.make_package_copy(self.agents_package, "alpha", alpha)
+        (copy / "helper.py").write_text("custom helper\n", encoding="utf-8")
+        result = self.run_updater("--migrate", "--no-stow", expected_returncode=2)
+        self.assertIn("unverified Matt copy collision", result.stderr)
+        self.assertTrue((copy / "helper.py").is_file())
+        self.assertFalse(self.backups.exists())
+
+    def test_retired_package_copy_is_rejected_then_verified_against_history(self) -> None:
+        retired = self.make_source_skill("old-name")
+        self.commit_source("add old skill")
+        self.make_package_copy(self.agents_package, "old-name", retired)
+        shutil.rmtree(retired)
+        self.commit_source("retire old skill")
+        result = self.run_updater(expected_returncode=2)
+        self.assertIn("unmanaged skill in dotfiles package", result.stderr)
+        self.run_updater("--migrate", "--no-stow")
+        self.assertFalse((self.agents_package / "old-name").exists())
+        backup = next(self.backups.iterdir())
+        self.assertTrue((backup / "removed/agents/old-name/SKILL.md").is_file())
+
+    def test_installer_owned_skills_are_preserved(self) -> None:
+        installer = self.make_local_skill(self.claude_package, "impeccable")
+        self.run_updater()
+        self.assertTrue(installer.is_dir())
+
+    def test_all_checkouts_are_checked_before_any_pull(self) -> None:
+        self.make_source_skill("alpha")
+        humanizer = self.source.parent / "humanizer"
+        humanizer.mkdir()
+        fixture_bin = self.source.parent / "git-bin"
+        fixture_bin.mkdir()
+        event_log = self.source.parent / "git-events"
+        fake_git = fixture_bin / "git"
+        fake_git.write_text(
+            '#!/bin/sh\nprintf "%s\\n" "$*" >> "$EVENT_LOG"\n'
+            'case "$*" in *humanizer*status*) printf " M SKILL.md\\n" ;; esac\n',
+            encoding="utf-8",
+        )
+        fake_git.chmod(0o755)
+        result = self.run_updater(
+            no_pull=False,
+            expected_returncode=2,
+            extra_environment={
+                "EVENT_LOG": str(event_log),
+                "PATH": f"{fixture_bin}{os.pathsep}{os.environ['PATH']}",
+            },
+        )
+        self.assertIn("local changes", result.stderr)
+        events = event_log.read_text().splitlines()
+        self.assertEqual(2, len(events))
+        self.assertFalse(any("pull" in event for event in events))
 
 
 if __name__ == "__main__":

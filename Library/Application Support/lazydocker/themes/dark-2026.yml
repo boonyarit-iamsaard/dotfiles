@@ -1,0 +1,16 @@
+# Dark 2026 for lazydocker
+#
+# Merge into ~/.config/lazydocker/config.yml.
+# lazydocker supports only these four theme keys.
+
+gui:
+  theme:
+    activeBorderColor:
+      - "#3994bc" # tab.activeBorderTop
+      - bold
+    inactiveBorderColor:
+      - "#8c8c8c" # descriptionForeground
+    optionsTextColor:
+      - "#48a0c7" # textLink.foreground
+    selectedLineBgColor:
+      - "#276782" # editor.selectionBackground, opaque base

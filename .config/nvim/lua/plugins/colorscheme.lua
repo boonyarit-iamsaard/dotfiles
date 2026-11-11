@@ -1,6 +1,9 @@
 -- local helpers = require("helpers")
 
 return {
+  -- Uncomment the matching theme import when selecting a different colorscheme.
+  -- { import = "themes.dark-2026" },
+  -- { import = "themes.default-dark-modern" },
   {
     "boonyarit-iamsaard/dark-2026.nvim",
     lazy = false,
