@@ -64,9 +64,10 @@ printf '\npath=("$HOME/.local/bin" ${path:#$HOME/.local/bin})\n' >> ~/.zprofile
 
 Create the token under GitHub → Settings → Developer settings → Fine-grained
 tokens for the owner account, scoped to the `bookkeeping` repository only:
-Contents and Pull requests read/write, Actions and Commit statuses read-only,
-everything else none. The token file lives outside this repo and must never be
-committed.
+Contents, Issues and Pull requests read/write, Actions and Commit statuses
+read-only, everything else none. Without Issues write, commenting on or editing
+an issue fails with "Resource not accessible by personal access token". The
+token file lives outside this repo and must never be committed.
 
 `gh project ...` reads `~/.config/gh-agent/project-token` instead of the default
 token file, so project access can use a separately scoped token. Other commands
