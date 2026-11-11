@@ -5,7 +5,7 @@ recentrepos:
     - /Users/boonyarit.i/workspace/personal/bookkeeping
     - /Users/boonyarit.i/workspace/personal/skills
 startuppopupversion: 5
-lastversion: 0.66.2
+lastversion: 0.66.3
 customcommandshistory:
     - w
     - git merge master --ff-only
