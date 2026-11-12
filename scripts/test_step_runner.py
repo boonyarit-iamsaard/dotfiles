@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Maintenance integration tests using an isolated PATH and fake executables.
 
-SKILLS_UPDATER is a normal executable override: production defaults to the updater
-beside the resolved script, while these tests use a harmless fixture executable.
-No real package manager, Docker daemon, or skill sync is reachable through PATH.
+SKILLS_UPDATER and PLUGINS_SYNC are normal executable overrides: production defaults
+to the scripts beside the resolved script, while these tests use harmless fixture
+executables. No real package manager, Docker daemon, skill sync, or agent CLI is
+reachable through PATH.
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNNER = ROOT / "scripts" / "lib" / "step-runner.zsh"
 UPDATE = ROOT / "update-system" / "update-system.sh"
 DOCKER = ROOT / "docker-cleanup" / "docker-cleanup.sh"
+PLUGINS = ROOT / "scripts" / "sync-agent-plugins"
 ZSH = shutil.which("zsh")
 
 FAKE_EXECUTABLE = r'''
@@ -66,6 +68,7 @@ class StepRunnerTest(unittest.TestCase):
         self.home.mkdir()
         self.bin.mkdir()
         self.make_executable("skills-updater")
+        self.make_executable("plugins-sync")
         self.environment = os.environ.copy()
         for variable in ("COMPOSER_HOME", "DOTFILES_ROOT", "ENV", "BASH_ENV"):
             self.environment.pop(variable, None)
@@ -80,6 +83,7 @@ class StepRunnerTest(unittest.TestCase):
                 "CONTAINER_IDS": "",
                 "SDKMAN_DIR": str(self.home / ".sdkman"),
                 "SKILLS_UPDATER": str(self.bin / "skills-updater"),
+                "PLUGINS_SYNC": str(self.bin / "plugins-sync"),
                 "STEP_RUNNER": str(RUNNER),
             }
         )
@@ -231,7 +235,7 @@ class StepRunnerTest(unittest.TestCase):
             ["brew", "cleanup", "--prune=all"], ["npm", "update", "-g"],
             ["composer", "self-update", "--stable", "--no-interaction"],
             ["composer", "global", "update", "--no-interaction"],
-            ["sdk-free", "selfupdate"], ["sdk-free", "flush"], ["skills-updater"],
+            ["sdk-free", "selfupdate"], ["sdk-free", "flush"], ["skills-updater"], ["plugins-sync"],
         ):
             self.assertIn(call, calls)
         self.assertIn(["rm", "-rf", "--", str(self.home / ".npm" / "_logs" / "debug.log")], calls)
@@ -276,14 +280,17 @@ class StepRunnerTest(unittest.TestCase):
             "SDKMAN not found. Skipping SDKMAN update.",
         ):
             self.assertIn(message, result.stdout)
-        self.assertEqual([["skills-updater"]], self.recorded_calls())
-        self.assertIn("1 succeeded, 0 failed (0 errors, 0 warnings), 5 skipped", result.stdout)
+        self.assertEqual([["skills-updater"], ["plugins-sync"]], self.recorded_calls())
+        self.assertIn("2 succeeded, 0 failed (0 errors, 0 warnings), 5 skipped", result.stdout)
 
     def test_update_warning_failures_leave_exit_status_successful(self) -> None:
         self.install_update_tools()
-        self.fail_commands("journalctl --vacuum-time=14d", "sdk-free selfupdate", "skills-updater")
+        self.fail_commands(
+            "journalctl --vacuum-time=14d", "sdk-free selfupdate", "skills-updater", "plugins-sync"
+        )
         result = self.run_script(UPDATE)
-        self.assertIn("3 failed (0 errors, 3 warnings)", result.stdout)
+        self.assertIn("4 failed (0 errors, 4 warnings)", result.stdout)
+        self.assertIn("Updating agent plugins [warn]", result.stdout)
         self.assertIn(["sdk-free", "flush"], self.recorded_calls())
         self.assertIn("Updating shared agent skills [warn]", result.stdout)
 
@@ -299,6 +306,42 @@ class StepRunnerTest(unittest.TestCase):
         self.assertIn(["composer", "global", "update", "--no-interaction"], self.recorded_calls())
         self.assertIn(f"COMPOSER_HOME={legacy_home}", result.stdout)
         self.assertIn("0 failed", result.stdout)
+
+    def test_plugin_sync_installs_and_updates_for_both_clients(self) -> None:
+        self.make_executable("claude")
+        self.make_executable("codex")
+        result = self.run_script(PLUGINS, linked=True)
+        self.assertEqual(
+            [
+                ["claude", "plugin", "marketplace", "add", "DietrichGebert/ponytail"],
+                ["claude", "plugin", "marketplace", "update", "ponytail"],
+                ["claude", "plugin", "install", "ponytail@ponytail", "--scope", "user"],
+                ["claude", "plugin", "update", "ponytail@ponytail"],
+                ["codex", "plugin", "marketplace", "add", "DietrichGebert/ponytail"],
+                ["codex", "plugin", "marketplace", "upgrade", "ponytail"],
+                ["codex", "plugin", "add", "ponytail@ponytail"],
+            ],
+            self.recorded_calls(),
+        )
+        self.assertIn("7 succeeded, 0 failed", result.stdout)
+        self.assertIn("[FINISHED] Agent plugin sync finished.", result.stdout)
+
+    def test_plugin_sync_skips_absent_clients(self) -> None:
+        result = self.run_script(PLUGINS)
+        self.assertIn("'claude' command not found. Skipping Claude plugin ponytail@ponytail.", result.stdout)
+        self.assertIn("'codex' command not found. Skipping Codex plugin ponytail@ponytail.", result.stdout)
+        self.assertEqual([], self.recorded_calls())
+        self.assertIn("0 succeeded, 0 failed (0 errors, 0 warnings), 2 skipped", result.stdout)
+
+    def test_plugin_sync_failure_stops_client_group_and_fails_script(self) -> None:
+        self.make_executable("claude")
+        self.make_executable("codex")
+        self.fail_commands("claude plugin marketplace add DietrichGebert/ponytail")
+        result = self.run_script(PLUGINS, expected_returncode=1)
+        calls = self.recorded_calls()
+        self.assertFalse(any(call[:3] == ["claude", "plugin", "install"] for call in calls))
+        self.assertIn(["codex", "plugin", "add", "ponytail@ponytail"], calls)
+        self.assertIn("Failed steps: Adding Claude marketplace ponytail [error]", result.stdout)
 
     def test_docker_missing_aborts_before_any_cleanup(self) -> None:
         result = self.run_script(DOCKER, expected_returncode=1)

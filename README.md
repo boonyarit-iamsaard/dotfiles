@@ -221,3 +221,28 @@ Claude manually only when:
   symlinked into `~/.claude/skills`.
 - An installer ever clobbers `~/.claude/skills` itself (the `--no-folding`
   real-directory layout means a single re-stow restores every link).
+
+### Agent plugins
+
+Plugins that ship hooks or commands (currently
+[Ponytail](https://github.com/DietrichGebert/ponytail)) are installed at user
+scope through each client's own plugin system, never copied into the skills
+packages. `scripts/sync-agent-plugins` declares them and installs or updates
+each one for Claude Code and Codex, skipping a client that is not on PATH.
+Every command it runs is safe to repeat, so the same script bootstraps a new
+machine and updates an existing one; `update-system.sh` runs it after the
+skills updater.
+
+```bash
+~/dotfiles/scripts/sync-agent-plugins
+```
+
+To add a plugin, append `<plugin>@<marketplace> <owner/repo>` to the `plugins`
+array in the script. After a first install, trust Ponytail's lifecycle hooks
+once in Codex with `/hooks`, then start a new thread. Claude Code applies
+plugin updates on its next restart.
+
+Ponytail keeps its board data in `~/.config/ponytail/`. Do not Stow that
+directory, since folding it into a link would write the data into this repo.
+Set a default level with `PONYTAIL_DEFAULT_MODE` in `zsh/.zshrc` if the
+default ever needs changing.
