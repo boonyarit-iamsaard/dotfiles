@@ -1,0 +1,41 @@
+#!/bin/zsh
+
+# Install and update agent plugins at user scope for every client on PATH.
+# Each command is safe to re-run: adding an existing marketplace or installing an
+# installed plugin succeeds without changes, so first runs and updates share one path.
+source "${0:A:h}/lib/step-runner.zsh"
+
+# Each entry is "<plugin>@<marketplace> <GitHub owner/repo of the marketplace>".
+plugins=(
+    "ponytail@ponytail DietrichGebert/ponytail"
+)
+
+for entry in $plugins; do
+    plugin=${entry%% *} source_repo=${entry#* }
+    marketplace=${plugin#*@}
+
+    if command -v claude &> /dev/null; then
+        group_begin "Claude Code: $plugin"
+        step error "Adding Claude marketplace $marketplace" claude plugin marketplace add "$source_repo"
+        step error "Refreshing Claude marketplace $marketplace" claude plugin marketplace update "$marketplace"
+        step error "Installing Claude plugin $plugin" claude plugin install "$plugin" --scope user
+        step error "Updating Claude plugin $plugin" claude plugin update "$plugin"
+        group_end
+    else
+        step_skip "Claude Code: $plugin" "'claude' command not found. Skipping Claude plugin $plugin."
+    fi
+
+    # Codex has no per-plugin update: add reinstalls from the refreshed snapshot.
+    if command -v codex &> /dev/null; then
+        group_begin "Codex: $plugin"
+        step error "Adding Codex marketplace $marketplace" codex plugin marketplace add "$source_repo"
+        step error "Refreshing Codex marketplace $marketplace" codex plugin marketplace upgrade "$marketplace"
+        step error "Installing Codex plugin $plugin" codex plugin add "$plugin"
+        group_end
+    else
+        step_skip "Codex: $plugin" "'codex' command not found. Skipping Codex plugin $plugin."
+    fi
+done
+
+steps_finish "Agent plugin sync finished."
+exit $?

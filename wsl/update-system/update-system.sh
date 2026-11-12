@@ -103,5 +103,12 @@ else
     step_skip "Updating shared agent skills" "Skills updater not found at $SKILLS_UPDATER. Skipping."
 fi
 
+PLUGINS_SYNC="${PLUGINS_SYNC:-${0:A:h:h}/scripts/sync-agent-plugins}"
+if [[ -x "$PLUGINS_SYNC" ]]; then
+    step warn "Updating agent plugins" "$PLUGINS_SYNC"
+else
+    step_skip "Updating agent plugins" "Plugin sync not found at $PLUGINS_SYNC. Skipping."
+fi
+
 steps_finish "System update process finished."
 exit $?
