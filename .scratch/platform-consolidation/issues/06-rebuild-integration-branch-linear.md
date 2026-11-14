@@ -25,5 +25,5 @@ from the Mac.
 - [ ] Root tooling and root guides match the old integration branch
 - [ ] `git log --follow` on a file in `windows/` and in `wsl/` reaches its first commit
 - [ ] Integration branch force-pushed (owner approved)
-- [ ] Windows machine: fetch, `git reset --hard` to the new branch, `verify-system.ps1` passes
+- [ ] Windows machine: `git fetch`, then `git reset --hard origin/restructure/platform-folders` (the rebuilt integration branch); `verify-system.ps1` passes
 - [ ] Mac: live checkout switched to the integration branch; link check passes
