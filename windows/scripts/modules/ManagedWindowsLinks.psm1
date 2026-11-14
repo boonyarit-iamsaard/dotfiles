@@ -81,6 +81,26 @@ function Test-ManagedLink {
     return $null -ne $target -and (Test-PathEquivalent -Left $target -Right $Source)
 }
 
+function Test-StaleCheckoutLink {
+    # True when Path is a symlink whose target no longer exists and lies inside
+    # CheckoutRoot: a managed link left behind when its source moved within the
+    # repository. Links that resolve, or point outside the checkout, are never
+    # considered stale.
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string] $Path,
+        [Parameter(Mandatory)] [string] $CheckoutRoot
+    )
+
+    $target = Get-ManagedLinkTarget -Path $Path
+    if (-not $target -or (Test-Path -LiteralPath $target)) {
+        return $false
+    }
+
+    $root = [IO.Path]::GetFullPath($CheckoutRoot).TrimEnd('\') + '\'
+    return $target.StartsWith($root, [StringComparison]::OrdinalIgnoreCase)
+}
+
 function New-ManagedLink {
     [CmdletBinding()]
     param(
@@ -124,6 +144,7 @@ Export-ModuleMember -Function @(
     'Get-ManagedLinkTarget',
     'Test-PathEquivalent',
     'Test-ManagedLink',
+    'Test-StaleCheckoutLink',
     'New-ManagedLink',
     'Remove-ManagedLink'
 )

@@ -1,8 +1,8 @@
 # PowerShell 7 profile.
 #
 # Managed by the dotfiles repository. The real file lives in
-# dotfiles\powershell and is symlinked to $PROFILE by
-# scripts\link-dotfiles.ps1, so $PSScriptRoot below resolves to
+# dotfiles\windows\powershell and is symlinked to $PROFILE by
+# windows\scripts\link-dotfiles.ps1, so $PSScriptRoot below resolves to
 # Documents\PowerShell either way.
 
 # ---------------------------------------------------------------------------
@@ -19,7 +19,7 @@ else {
     Join-Path ([Environment]::GetFolderPath('UserProfile')) 'scoop'
 }
 $scoopShims = Join-Path $scoopRoot 'shims'
-$ghAgentBin = Join-Path ([Environment]::GetFolderPath('UserProfile')) 'dotfiles\gh-agent\bin'
+$ghAgentBin = Join-Path ([Environment]::GetFolderPath('UserProfile')) 'dotfiles\windows\gh-agent\bin'
 
 $preferredPathEntries = @(
     foreach ($entry in $ghAgentBin, $scoopShims) {
@@ -120,7 +120,7 @@ $profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
 if ($profileTarget) {
     $dotfilesRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
 
-    foreach ($script in 'check-manual-updates', 'docker-cleanup','link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
+    foreach ($script in 'check-manual-updates', 'docker-cleanup', 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
         $scriptPath = Join-Path $dotfilesRoot "scripts\$script.ps1"
         if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
             Set-Alias -Name $script -Value $scriptPath -Scope Global

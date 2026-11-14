@@ -1,8 +1,10 @@
 # Windows developer dotfiles
 
 Native Windows developer tooling and configuration managed with PowerShell and
-Scoop. This branch is independent from the macOS (`main`) and WSL (`wsl`)
-branches.
+Scoop. It lives in the `windows/` folder of the dotfiles checkout; run every
+command below from that folder unless it says otherwise. The macOS (`main`) and
+WSL (`wsl`) branches move into their own folders later; see the root
+[HANDOFF.md](../HANDOFF.md).
 
 ## Scope
 
@@ -82,7 +84,7 @@ pwsh --version
 
 ```powershell
 git clone --branch windows https://github.com/boonyarit-iamsaard/dotfiles.git "$HOME\dotfiles"
-Set-Location "$HOME\dotfiles"
+Set-Location "$HOME\dotfiles\windows"
 git branch --show-current
 ```
 
@@ -160,7 +162,8 @@ It checks:
 
 - Windows and PowerShell prerequisites.
 - The effective execution policy and Developer Mode.
-- Git availability and the checked-out `windows` branch.
+- Git availability, and that the scripts run from the checkout's `windows`
+  folder.
 - Scoop availability and Scoop ownership of every declared package.
 - Command availability for declared packages. Packages whose executable names
   differ from their Scoop names declare those commands in `packageCommands`.
@@ -352,7 +355,7 @@ them.
 ## Daily use
 
 Format tracked JSON, JSONC, and Markdown files with the repository-pinned
-Prettier version:
+Prettier version, from the checkout root (`..` from this folder):
 
 ```powershell
 pnpm install --frozen-lockfile
@@ -480,5 +483,5 @@ continue to share one source of truth.
   `$HOME\skills`; the updater deliberately refuses to pull a dirty checkout.
 - **Skill target already exists:** inspect it first. Use `-Migrate` only for an
   unchanged copied skill; modified or unrelated paths are never replaced.
-- **Wrong branch:** switch explicitly with `git switch windows` before running
-  setup or verification.
+- **Wrong branch or folder:** switch explicitly with `git switch windows`, and
+  run setup and verification from `$HOME\dotfiles\windows`.

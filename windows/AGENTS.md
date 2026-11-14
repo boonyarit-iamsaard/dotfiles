@@ -1,7 +1,8 @@
 # Windows dotfiles agent guide
 
-This branch configures a native Windows developer environment. Do not add macOS,
-Linux, or WSL setup to this branch.
+The `windows/` folder configures a native Windows developer environment. Do not
+add macOS, Linux, or WSL setup to it. Paths below are relative to `windows/`;
+repository-wide rules live in the root [AGENTS.md](../AGENTS.md).
 
 ## Canonical workflow
 
@@ -11,7 +12,8 @@ Linux, or WSL setup to this branch.
 - `manifests/environment.json` is the source of truth for managed user
   environment variables and `PATH` entries.
 - `manifests/node-toolchain.json` is the source of truth for the active Node.js
-  release line and NVM operating mode; `package.json` pins pnpm for Corepack.
+  release line and NVM operating mode; the root `package.json` pins pnpm for
+  Corepack.
 - `manifests/links.json` is the source of truth for managed config links.
 - `manifests/skills.json` is the source of truth for shared and local agent
   skills.
@@ -72,20 +74,3 @@ After changing bootstrap, manifests, linking, or update behavior:
 
 Do not delete and recreate a working user link merely to test setup. Do not run
 the updater unless the user authorized package updates in the current task.
-
-## Agent skills
-
-### Issue tracker
-
-Issues and specs live as local markdown files under `.scratch/<feature>/`. See
-`docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-The five default triage roles, each label string equal to its role name. See
-`docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See
-`docs/agents/domain.md`.
