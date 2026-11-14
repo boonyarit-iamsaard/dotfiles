@@ -5,6 +5,19 @@
     "checkout": "{home}\\skills",
     "categories": ["engineering", "productivity"]
   },
+  "vendor": {
+    "impeccable": {
+      "npm": "impeccable",
+      "version": "4.9.1",
+      "doc": "docs/impeccable.md"
+    },
+    "ponytail": {
+      "git": "https://github.com/DietrichGebert/ponytail.git",
+      "branch": "main",
+      "commit": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "doc": "docs/ponytail.md"
+    }
+  },
   "consumers": {
     "codex": {
       "target": "{home}\\.agents\\skills"

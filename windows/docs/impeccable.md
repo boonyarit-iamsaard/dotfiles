@@ -25,10 +25,13 @@ npx --yes impeccable@4.9.1 install -y `
   --no-hooks
 ```
 
-The resulting skill metadata reports Impeccable 4.9.0 and its launcher pins
-engine 0.1.23. The platform binary and runtime cache are intentionally omitted:
-the checked-in launcher downloads the pinned engine on first use and verifies it
-against the vendored `scripts\engine-checksums.txt`.
+The installed npm version is recorded as `vendor.impeccable.version` in
+`manifests\skills.json`; `scripts\check-manual-updates.ps1` (run at the end of
+`update-system`) reports when npm has a newer release. The resulting skill
+metadata reports Impeccable 4.9.0 and its launcher pins engine 0.1.23. The
+platform binary and runtime cache are intentionally omitted: the checked-in
+launcher downloads the pinned engine on first use and verifies it against the
+vendored `scripts\engine-checksums.txt`.
 
 Impeccable is redistributed under Apache 2.0. Keep
 `skills\vendor\impeccable\LICENSE` with every vendored refresh.
@@ -61,7 +64,9 @@ Treat a refresh as a reviewed dependency update:
    permissions, and reported versions.
 6. Preserve upstream formatting under `skills\vendor`; `.prettierignore` keeps
    dependency refreshes reviewable.
-7. Run the verification sequence below before committing.
+7. Update `vendor.impeccable.version` in `manifests\skills.json` and the
+   generation details above.
+8. Run the verification sequence below before committing.
 
 Use the dotfiles reconcilers after the vendor copy. Running
 `npx impeccable update` from a home directory would bypass manifest ownership

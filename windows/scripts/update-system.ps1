@@ -49,3 +49,6 @@ foreach ($package in $manifest.scoop.packages) {
 & (Join-Path $PSScriptRoot 'set-environment.ps1')
 
 Write-Host 'Developer environment update complete.'
+
+# Report, but never apply, updates that need a reviewed manual step.
+& (Join-Path $PSScriptRoot 'check-manual-updates.ps1')
