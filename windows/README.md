@@ -190,29 +190,52 @@ Expected results:
 Confirm idempotency by running bootstrap a second time. Existing packages and
 correct links should be reported without being replaced.
 
-## One Dark theme
+## Themes
 
-The Windows Terminal, LazyGit, and LazyDocker theme files use the `dark` variant
-of [navarasu/onedark.nvim](https://github.com/navarasu/onedark.nvim). Their
-colors come from the upstream
-[palette](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/palette.lua),
-and Windows Terminal's 16 ANSI colors follow the upstream
-[terminal mapping](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/terminal.lua).
+Windows Terminal, Oh My Posh, LazyGit and LazyDocker each ship the same four
+themes. **Default Dark Modern** is active everywhere; the others are
+alternatives.
 
-The linker installs `config\windows-terminal\onedark.json` as a Windows Terminal
-JSON fragment. Select **One Dark (navarasu)** under **Settings > Defaults >
-Appearance > Color scheme** to apply it to all profiles. Existing profile color
-scheme overrides may need the same selection in that profile's Appearance page.
-The fragment leaves Windows Terminal's user-owned `settings.json` intact.
-LazyGit retains its commented Dark 2026, Catppuccin Macchiato, and Catppuccin
-Mocha options. LazyDocker retains its Catppuccin Mocha colors as comments.
-`dark-2026.jsonc` is unchanged.
+| Theme               | Windows Terminal scheme | Oh My Posh                     | LazyGit / LazyDocker |
+| ------------------- | ----------------------- | ------------------------------ | -------------------- |
+| Default Dark Modern | Dark Modern (VS Code)   | `default-dark-modern.omp.json` | active block         |
+| Dark 2026           | Dark 2026 (VS Code)     | `dark-2026.omp.json`           | commented block      |
+| Catppuccin Mocha    | Catppuccin Mocha        | `catppuccin-mocha.omp.json`    | commented block      |
+| One Dark (navarasu) | One Dark (navarasu)     | `onedark.omp.json`             | commented block      |
+
+To switch:
+
+- **Windows Terminal:** the linker installs each scheme in
+  `config\windows-terminal` as a JSON fragment. Select it under **Settings >
+  Defaults > Appearance > Color scheme**. Profile-level color scheme overrides
+  need the same selection. The fragments leave the user-owned `settings.json`
+  intact; a same-named scheme there takes precedence over a fragment.
+- **Oh My Posh:** change `$ompTheme` in the PowerShell profile.
+- **LazyGit and LazyDocker:** uncomment exactly one `gui:` block in
+  `config\lazygit\config.yml` or `config\lazydocker\config.yml`.
+
+Sources:
+
+- Dark 2026 is transcribed from `dark-2026.jsonc`: `terminal.background`,
+  `terminal.foreground`, `terminalCursor.foreground`, and VS Code's registry
+  ANSI defaults. Windows Terminal schemes do not support alpha, so
+  `selectionBackground` uses the opaque `editor.selectionBackground` base
+  (`#276782`) instead of the translucent `terminal.selectionBackground`.
+- Catppuccin Mocha follows
+  [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal)
+  and the `mocha/blue` flavor of
+  [catppuccin/lazygit](https://github.com/catppuccin/lazygit).
+- One Dark uses the `dark` variant of
+  [navarasu/onedark.nvim](https://github.com/navarasu/onedark.nvim): its
+  [palette](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/palette.lua)
+  and
+  [terminal mapping](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/terminal.lua).
 
 ## Dark Modern theme
 
 `config\windows-terminal\dark-modern.json` adds **Dark Modern (VS Code)**, a
-Windows Terminal port of VS Code's default dark theme. Select it the same way as
-One Dark. Colors are transcribed from upstream
+Windows Terminal port of VS Code's default dark theme. Colors are transcribed
+from upstream
 [`dark_modern.json`](https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json),
 which `include`s `dark_plus.json` and `dark_vs.json`. A key absent from all
 three falls back to VS Code's color registry default, as it does in the
@@ -245,7 +268,7 @@ Apply or check the managed theme links with:
 
 ## LazyDocker
 
-LazyDocker is installed through Scoop. Its One Dark configuration is tracked at
+LazyDocker is installed through Scoop. Its themed configuration is tracked at
 `config\lazydocker\config.yml` and linked to its native Windows config
 directory:
 
@@ -290,11 +313,10 @@ and linked into `%USERPROFILE%\Documents\PowerShell`:
 .\scripts\link-dotfiles.ps1 powershell
 ```
 
-Oh My Posh keeps the Catppuccin prompt layout with One Dark colors from
-`powershell\oh-my-posh\onedark.omp.json`. The original
-`catppuccin-mocha.omp.json` and Nerd Font Symbols preset remain available. Oh My
-Posh is declared in `manifests/packages.json`. One dependency is not a Scoop
-package and is installed separately:
+Oh My Posh uses `powershell\oh-my-posh\default-dark-modern.omp.json`; see
+[Themes](#themes) for the alternatives. The Nerd Font Symbols preset also
+remains available. Oh My Posh is declared in `manifests/packages.json`. One
+dependency is not a Scoop package and is installed separately:
 
 - `Terminal-Icons` comes from the PowerShell Gallery:
   `Install-Module Terminal-Icons -Scope CurrentUser`. The profile imports it

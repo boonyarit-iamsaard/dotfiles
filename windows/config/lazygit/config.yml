@@ -3,90 +3,9 @@ git:
     showWholeGraph: true
   overrideGpg: true
 
-# dark 2026
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#3994bc"
-#       - bold
-#     inactiveBorderColor:
-#       - "#8c8c8c"
-#     optionsTextColor:
-#       - "#48a0c7"
-#     selectedLineBgColor:
-#       - "#276782"
-#     cherryPickedCommitBgColor:
-#       - "#37373d"
-#     cherryPickedCommitFgColor:
-#       - "#e5ba7d"
-#     unstagedChangesColor:
-#       - "#f48771"
-#     defaultFgColor:
-#       - "#cccccc"
-#     searchingActiveBorderColor:
-#       - "#e5ba7d"
+# Themes: exactly one `gui:` block may be uncommented.
 
-#   authorColors:
-#     "*": "#57a3f8"
-
-# common
-# gui:
-#   theme:
-#     selectedLineBgColor:
-#       - "#6e6a86"
-
-# catppuccin macchiato
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#eed49f"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a5adcb"
-#     optionsTextColor:
-#       - "#8aadf4"
-#     selectedLineBgColor:
-#       - "#363a4f"
-#     cherryPickedCommitBgColor:
-#       - "#494d64"
-#     cherryPickedCommitFgColor:
-#       - "#eed49f"
-#     unstagedChangesColor:
-#       - "#ed8796"
-#     defaultFgColor:
-#       - "#cad3f5"
-#     searchingActiveBorderColor:
-#       - "#eed49f"
-#
-#   authorColors:
-#     "*": "#b7bdf8"
-
-# catppuccin mocha
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#f9e2af"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a6adc8"
-#     optionsTextColor:
-#       - "#89b4fa"
-#     selectedLineBgColor:
-#       - "#313244"
-#     cherryPickedCommitBgColor:
-#       - "#45475a"
-#     cherryPickedCommitFgColor:
-#       - "#f9e2af"
-#     unstagedChangesColor:
-#       - "#f38ba8"
-#     defaultFgColor:
-#       - "#cdd6f4"
-#     searchingActiveBorderColor:
-#       - "#f9e2af"
-#     authorColors:
-#       "*": "#b4befe"
-
-# Default Dark Modern (VS Code), palette from the wsl branch tmux theme.
+# Default Dark Modern (VS Code). Active.
 gui:
   theme:
     activeBorderColor:
@@ -94,23 +13,91 @@ gui:
       - bold
     inactiveBorderColor:
       - "#6e7681"
+    searchingActiveBorderColor:
+      - "#D7BA7D"
     optionsTextColor:
       - "#569CD6"
     selectedLineBgColor:
       - "#37373d"
-    cherryPickedCommitBgColor:
+    inactiveViewSelectedLineBgColor:
       - "#2b2b2b"
     cherryPickedCommitFgColor:
+      - "#D7BA7D"
+    cherryPickedCommitBgColor:
+      - "#2b2b2b"
+    markedBaseCommitFgColor:
+      - "#569CD6"
+    markedBaseCommitBgColor:
       - "#D7BA7D"
     unstagedChangesColor:
       - "#f85149"
     defaultFgColor:
       - "#cccccc"
-    searchingActiveBorderColor:
-      - "#D7BA7D"
     authorColors:
       "*": "#9CDCFE"
-#
+
+# Dark 2026 (VS Code), from dark-2026.jsonc.
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#3994bc"
+#       - bold
+#     inactiveBorderColor:
+#       - "#8c8c8c"
+#     searchingActiveBorderColor:
+#       - "#e5ba7d"
+#     optionsTextColor:
+#       - "#48a0c7"
+#     selectedLineBgColor:
+#       - "#276782"
+#     inactiveViewSelectedLineBgColor:
+#       - "#37373d"
+#     cherryPickedCommitFgColor:
+#       - "#e5ba7d"
+#     cherryPickedCommitBgColor:
+#       - "#37373d"
+#     markedBaseCommitFgColor:
+#       - "#48a0c7"
+#     markedBaseCommitBgColor:
+#       - "#e5ba7d"
+#     unstagedChangesColor:
+#       - "#f48771"
+#     defaultFgColor:
+#       - "#cccccc"
+#     authorColors:
+#       "*": "#57a3f8"
+
+# Catppuccin Mocha, from catppuccin/lazygit themes-mergable/mocha/blue.yml.
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#89b4fa"
+#       - bold
+#     inactiveBorderColor:
+#       - "#a6adc8"
+#     searchingActiveBorderColor:
+#       - "#f9e2af"
+#     optionsTextColor:
+#       - "#89b4fa"
+#     selectedLineBgColor:
+#       - "#313244"
+#     inactiveViewSelectedLineBgColor:
+#       - "#6c7086"
+#     cherryPickedCommitFgColor:
+#       - "#89b4fa"
+#     cherryPickedCommitBgColor:
+#       - "#45475a"
+#     markedBaseCommitFgColor:
+#       - "#89b4fa"
+#     markedBaseCommitBgColor:
+#       - "#f9e2af"
+#     unstagedChangesColor:
+#       - "#f38ba8"
+#     defaultFgColor:
+#       - "#cdd6f4"
+#     authorColors:
+#       "*": "#b4befe"
+
 # One Dark (navarasu/onedark.nvim, dark variant).
 # gui:
 #   theme:
@@ -119,19 +106,19 @@ gui:
 #       - bold
 #     inactiveBorderColor:
 #       - "#5c6370"
+#     searchingActiveBorderColor:
+#       - "#e5c07b"
 #     optionsTextColor:
 #       - "#56b6c2"
 #     selectedLineBgColor:
 #       - "#393f4a"
-#     cherryPickedCommitBgColor:
-#       - "#31353f"
 #     cherryPickedCommitFgColor:
 #       - "#e5c07b"
+#     cherryPickedCommitBgColor:
+#       - "#31353f"
 #     unstagedChangesColor:
 #       - "#e86671"
 #     defaultFgColor:
 #       - "#abb2bf"
-#     searchingActiveBorderColor:
-#       - "#e5c07b"
 #     authorColors:
 #       "*": "#c678dd"

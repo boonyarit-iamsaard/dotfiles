@@ -35,6 +35,14 @@
     {
       "source": "config/windows-terminal/dark-modern.json",
       "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\dark-modern.json"
+    },
+    {
+      "source": "config/windows-terminal/dark-2026.json",
+      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\dark-2026.json"
+    },
+    {
+      "source": "config/windows-terminal/catppuccin-mocha.json",
+      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\catppuccin-mocha.json"
     }
   ],
   "powershell": [
