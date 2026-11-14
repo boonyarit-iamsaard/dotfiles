@@ -2,7 +2,7 @@
 
 ## Maintenance
 
-`~/dotfiles/update-system/update-system.sh` updates installed package managers
+`~/dotfiles/macos/update-system/update-system.sh` updates installed package managers
 and shared skills. It leaves pinned Homebrew formulas unchanged. The
 `update-system` alias is available in new shells.
 
@@ -37,9 +37,9 @@ Catppuccin remains active. Shared settings and theme variants are separate:
 | lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments. |
 | Neovim | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern. |
 
-`~/.tmux/themes` links to `~/dotfiles/.tmux/themes`. The existing root tmux
-configuration paths continue to work. macOS Application Support paths and the
-transparent Neovim floating window are retained.
+`~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the tmux
+configurations include them without naming the checkout. macOS Application
+Support paths and the transparent Neovim floating window are retained.
 
 Dark 2026 extras are vendored byte-for-byte from the plugin revision pinned in
 `.config/nvim/lazy-lock.json`. To update them, copy the four upstream extras at
@@ -49,7 +49,7 @@ files work without depending on Neovim's plugin directory at runtime.
 ## Agent gh wrapper
 
 `gh` is installed only so agents can handle pull requests; it is never logged
-in. `~/.local/bin/gh` (symlink to `~/dotfiles/.local/bin/gh`) reads a
+in. `~/.local/bin/gh` (symlink to `~/dotfiles/macos/.local/bin/gh`) reads a
 fine-grained token from `~/.config/gh-agent/token` for each call and runs
 `/opt/homebrew/bin/gh`, so the token never enters the environment of other
 processes. Three files put `~/.local/bin` ahead of Homebrew so the wrapper wins
@@ -68,7 +68,7 @@ Set up on a new Mac, or when the token expires:
 ```bash
 brew install gh
 mkdir -p ~/.config/gh-agent
-~/dotfiles/scripts/check-links --create       # links ~/.local/bin/gh, ~/.zshenv and the rest
+~/dotfiles/macos/scripts/check-links --create # links ~/.local/bin/gh, ~/.zshenv and the rest
 # ~/.zprofile is not tracked here (Docker, Homebrew and nvm edit it); append once:
 printf '\npath=("$HOME/.local/bin" ${path:#$HOME/.local/bin})\n' >> ~/.zprofile
 (umask 077; cat > ~/.config/gh-agent/token)   # paste token, Enter, Ctrl-D
@@ -107,7 +107,7 @@ demand to fast-forward that checkout from its existing tracked remote and
 reconcile both Agent Skills consumers:
 
 ```bash
-~/dotfiles/scripts/update-skills
+~/dotfiles/macos/scripts/update-skills
 ```
 
 The command never commits or pushes. It checks both the skills and Humanizer
@@ -118,8 +118,8 @@ the package README points there instead of keeping a stale copied catalog.
 Preview or diagnose reconciliation with:
 
 ```bash
-~/dotfiles/scripts/update-skills --dry-run
-~/dotfiles/scripts/update-skills --check
+~/dotfiles/macos/scripts/update-skills --dry-run
+~/dotfiles/macos/scripts/update-skills --check
 ```
 
 ### One-time migration
@@ -127,8 +127,8 @@ Preview or diagnose reconciliation with:
 The first conversion from copied skills must be previewed before it is run:
 
 ```bash
-~/dotfiles/scripts/update-skills --dry-run --migrate
-~/dotfiles/scripts/update-skills --migrate
+~/dotfiles/macos/scripts/update-skills --dry-run --migrate
+~/dotfiles/macos/scripts/update-skills --migrate
 ```
 
 Migration accepts only files whose Git blobs can be traced to the skills
@@ -145,8 +145,8 @@ upstream links, including broken ones, and refuses unexpected package copies.
 `--migrate` can archive retired skills verified against upstream Git history;
 it checks every file and restores moved package copies if migration fails.
 
-Run the maintenance, synchronization, and theme checks with:
+Run the maintenance, synchronization, link, and theme checks from `macos/` with:
 
 ```bash
-python3 -m unittest scripts/test_update_skills.py scripts/test_step_runner.py scripts/test_theme_extras.py
+python3 -m unittest discover -s scripts -p 'test_*.py'
 ```

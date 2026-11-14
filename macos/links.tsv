@@ -57,6 +57,7 @@
 .tmux.conf	.tmux.conf
 .tmux.default-dark-modern.conf	.tmux.default-dark-modern.conf
 .tmux.dracula.conf	.tmux.dracula.conf
+.tmux/base.conf	.tmux/base.conf
 .tmux/themes	.tmux/themes
 .zshenv	.zshenv
 .zshrc	.zshrc

@@ -111,7 +111,8 @@ alias nv="nvim"
 alias lzd='lazydocker'
 alias lzg="lazygit"
 alias docker-cleanup="~/docker-cleanup.sh"
-alias update-system="~/dotfiles/update-system/update-system.sh"
+# This file's directory after resolving the ~/.zshrc link.
+alias update-system="${${(%):-%x}:A:h}/update-system/update-system.sh"
 
 # Keep shell lazygit on the same theme as the terminal; variants share a base.
 export LG_CONFIG_FILE="$HOME/Library/Application Support/lazygit/config.yml,$HOME/Library/Application Support/lazygit/themes/catppuccin-mocha.yml"

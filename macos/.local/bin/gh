@@ -2,7 +2,7 @@
 # Agent-only gh wrapper (macOS). gh is never logged in; each call reads a
 # fine-grained token from a file so it stays out of every other process's
 # environment. Falls back to gh's own login when the file is missing.
-# See "Agent gh wrapper" in ~/dotfiles/README.md.
+# See "Agent gh wrapper" in ~/dotfiles/macos/README.md.
 token_file="$HOME/.config/gh-agent/token"
 if [ "${1-}" = project ]; then
   token_file="$HOME/.config/gh-agent/project-token"
