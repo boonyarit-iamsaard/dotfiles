@@ -18,6 +18,10 @@ branches.
   Corepack.
 - `scripts/link-dotfiles.ps1` creates Stow-like symbolic links from Windows
   configuration locations into this repository.
+- `gh-agent/bin` wraps `gh` for agents in Git Bash (`gh`) and PowerShell
+  (`gh.ps1`): `gh` is never logged in, and each call reads a fine-grained token
+  from `%USERPROFILE%\.config\gh-agent\token` (or `project-token` for
+  `gh project`). The wrapper header documents the token setup.
 - `scripts/update-skills.ps1` maintains shared Codex CLI and Claude Code skills
   from a separate, read-only checkout.
 

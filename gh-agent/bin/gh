@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# gh is installed only for agents to handle PRs; it is never logged in. Each
+# call reads a fine-grained token from a file, so the token stays out of the
+# environment of every other process. This copy serves Git Bash, which agent
+# Bash tools run; gh.ps1 beside it serves PowerShell. The directory sits first
+# on the user PATH (manifests/environment.json), ahead of Scoop's gh shim.
+# cmd.exe does not run either wrapper and reaches the unauthenticated gh.
+#
+# Setting up on a new machine, or when the token expires:
+#   1. Install gh from manifests/packages.json (scoop install gh).
+#   2. GitHub → Settings → Developer settings → Fine-grained tokens:
+#      only the bookkeeping and foundry repositories; Contents, Issues and
+#      Pull requests read and write, Actions and Commit statuses read-only,
+#      everything else none.
+#   3. Save it to %USERPROFILE%\.config\gh-agent\token, readable only by you.
+#   4. Run scripts/set-environment.ps1 so this directory leads the PATH.
+#   5. Verify: gh api user --jq .login
+#
+# Fine-grained tokens cannot reach Projects owned by a user account, so
+# `gh project ...` uses a separate classic token with only the project,
+# read:org and read:discussion scopes, saved to
+# %USERPROFILE%\.config\gh-agent\project-token.
+# Verify: gh project list --owner @me
+#
+# The token files are intentionally outside this dotfiles repo; gh falls back
+# to its own (absent) login when a file is missing.
+set -euo pipefail
+
+self=$(readlink -f "${BASH_SOURCE[0]}")
+real=
+while IFS= read -r candidate; do
+  if [[ $(readlink -f "$candidate") != "$self" ]]; then
+    real=$candidate
+    break
+  fi
+done < <(type -ap gh)
+
+if [[ -z $real ]]; then
+  echo "gh wrapper: no gh binary found on PATH (scoop install gh)" >&2
+  exit 127
+fi
+
+token_file=~/.config/gh-agent/token
+if [[ ${1-} == project ]]; then
+  token_file=~/.config/gh-agent/project-token
+fi
+if [[ -r $token_file ]]; then
+  GH_TOKEN=$(<"$token_file") exec "$real" "$@"
+fi
+exec "$real" "$@"
