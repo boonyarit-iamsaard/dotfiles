@@ -16,19 +16,19 @@ write directly to `$HOME\.agents\skills` or `$HOME\.claude\skills`.
 - `manifests\links.json` links each Claude subagent file into the existing
   `$HOME\.claude\agents` directory.
 
-The vendored payload was generated on 2026-09-09 with:
+The vendored payload was generated on 2026-11-14 with:
 
 ```powershell
-npx --yes impeccable@4.0.4 install -y `
+npx --yes impeccable@4.9.1 install -y `
   --providers=claude,codex `
   --scope=project `
   --no-hooks
 ```
 
-The resulting skill metadata reports Impeccable 4.3.0 and its launcher pins
-engine 0.1.5. The platform binary and runtime cache are intentionally omitted:
-the checked-in launcher downloads the pinned, checksum-verified engine into
-`$HOME\.impeccable\bin` on first use.
+The resulting skill metadata reports Impeccable 4.9.0 and its launcher pins
+engine 0.1.23. The platform binary and runtime cache are intentionally omitted:
+the checked-in launcher downloads the pinned engine on first use and verifies it
+against the vendored `scripts\engine-checksums.txt`.
 
 Impeccable is redistributed under Apache 2.0. Keep
 `skills\vendor\impeccable\LICENSE` with every vendored refresh.
