@@ -1,171 +1,89 @@
-# Windows dotfiles handoff
+# Platform consolidation handoff
 
-Read `AGENTS.md` before making changes. This handoff describes the state at the
-end of the initial native Windows setup session.
+Read the root [AGENTS.md](AGENTS.md) before making changes. This replaces the
+original Windows setup handoff, whose "independent branches that are never
+merged" decision no longer holds.
 
-## Goal and decisions
+## Goal
 
-- This repository uses permanent, independent platform branches that are never
-  merged:
-  - `main` is macOS.
-  - `wsl` is WSL.
-  - `windows` is native Windows.
-- The Windows branch is intended for native mobile and general development.
-- Scoop is the only package manager used by automated setup and updates. Do not
-  add Winget fallback.
-- PowerShell is the stage-zero bootstrap language because it is present on a
-  reset Windows machine. Python may be installed and used later, but bootstrap
-  must not depend on it.
-- `scripts/update-system.ps1` is developer-scoped. It must not automate Windows
-  Update, Store updates, drivers, firmware, services, registry tuning, or
-  reboots.
-- Windows dotfiles use explicit source-to-destination mappings and symbolic
-  links as the native equivalent of GNU Stow.
+Combine the three platform branches into one tree with one folder per platform,
+then extract what they share (theme tokens first) into `shared/`.
 
-## Git and checkout state
+| Branch    | Platform       | Status                                      |
+| --------- | -------------- | ------------------------------------------- |
+| `windows` | Native Windows | Moved into `windows/`                       |
+| `wsl`     | WSL (Linux)    | To move into `wsl/`, on the WSL machine     |
+| `main`    | macOS          | To move into `macos/`, on the macOS machine |
 
-- Checkout: `C:\Users\boony\dotfiles`
-- Current branch: `windows`
-- Upstream: `origin/windows`
-- The local fetch refspec was corrected from the original single-branch `wsl`
-  rule to `windows`.
-- Remote `origin/windows` exists at the same base commit as `wsl` (`0c5ebe7`)
-  before the work in this handoff.
-- Git identity is configured globally as:
-  - `Boonyarit Iamsa-ard`
-  - `boonyarit.iamsaard@gmail.com`
-- Git Credential Manager is configured by the system Git installation.
+`main` has history unrelated to the other two; `windows` forked from `wsl` at
+`0c5ebe7`.
+
+## Decisions
+
+- **One folder per platform:** `windows/`, `wsl/`, `macos/`. Repository tooling
+  (`package.json`, Prettier config, `.gitattributes`, `.gitignore`) and the
+  agent skill docs (`docs/agents/`) stay at the root.
+- **Move on each platform's own machine.** Each move must relink that machine's
+  live config, so it is done and verified where the links live.
+- **Preserve history.** On each branch, `git mv` everything into its platform
+  folder and commit. Then merge the branches with
+  `git merge --allow-unrelated-histories`. The trees are disjoint, so only root
+  files (`README.md`, `AGENTS.md`, `.gitignore`) conflict, and
+  `git log --follow` keeps working.
+- **Extract shared pieces after the merge, not before.** Moving a file twice is
+  noise; once every platform is in one tree, the duplicates are visible side by
+  side.
+- **`CLAUDE.md` is a symlink to the `AGENTS.md` beside it.** `core.symlinks` is
+  enabled globally (the Git for Windows system config still says `false`).
+- **`.scratch/` is ignored.** Tracking anything there is opt-in with
+  `git add -f`.
+
+## Windows move (done on `restructure/platform-folders`)
+
+- Everything Windows-specific moved into `windows/`; the root keeps tooling,
+  `docs/agents/`, and the root guides.
+- `windows/scripts/link-dotfiles.ps1` now replaces a link only when its target
+  no longer exists and lies inside the checkout. That is how the moved sources
+  were relinked; links that resolve, or point elsewhere, are still refused.
+- The skill reconciler re-pointed skill links from its recorded state without
+  changes.
+- `gh-agent\bin` moved to `windows\gh-agent\bin` in the environment manifest and
+  the PowerShell profile.
+- `set-node-toolchain.ps1` reads the root `package.json`.
+- `verify-system.ps1` checks the `windows` folder instead of the branch name.
+
+## Next steps
+
+1. **WSL machine:** on `wsl`, `git mv` everything into `wsl/`, keep repository
+   tooling at the root, fix paths the Stow packages and scripts assume, restow,
+   and verify. Commit there.
+2. **macOS machine:** the same on `main`, into `macos/`.
+3. **Merge:** on one branch, merge the other two with
+   `--allow-unrelated-histories`. Resolve the root `README.md`, `AGENTS.md`, and
+   `.gitignore` by hand. Decide which branch name survives as the default.
+4. **Extract theme tokens** into `shared/themes/`:
+   - `tokens/<theme>.json`, one per theme (Default Dark Modern, Dark 2026,
+     Catppuccin Mocha, One Dark): background, foreground, cursor, selection, the
+     16 ANSI colors, and UI roles (active/inactive border, selected line,
+     accents, git added/removed/modified).
+   - `sources/` for upstream references such as `dark-2026.jsonc`.
+   - `build.mjs` (Node, already required for Prettier) renders each tool's file:
+     Windows Terminal, Oh My Posh, LazyGit, LazyDocker, tmux, Ghostty, and
+     Starship. Outputs are committed so no platform builds at install time;
+     `--check` fails when an output is stale.
+   - LazyGit can layer configs through `LG_CONFIG_FILE`
+     (`config.yml,theme.yml`), so one base config plus a theme file can replace
+     the commented theme blocks. LazyDocker cannot; it stays fully generated.
+5. **Extract other shared config** into `shared/`: identical files such as the
+   LazyGit base config, btop, and `.ideavimrc`; the agent global instructions;
+   and the vendored and shared skills with one manifest.
+6. **Consider managing `~/.gitconfig`** (for example `core.symlinks`) through
+   each platform's links.
+
+## Machine notes still true on Windows
+
 - This checkout uses local `http.sslBackend=openssl` because Schannel failed in
   the automation environment.
-- Git is currently installed system-wide under `C:\Program Files\Git`, not by
-  Scoop. Fresh-machine documentation installs Git through Scoop. Decide later
-  whether to migrate this existing machine; do not install a second Git copy
-  without reviewing PATH precedence.
-
-## Machine state
-
-- PowerShell execution policy is `RemoteSigned` for the current user.
-- Windows Developer Mode is enabled.
-- Scoop is installed and working.
-- Configured Scoop buckets observed during setup: `main`, `extras`, and
-  `nerd-fonts`.
-- Lazygit `0.64.1` is installed from Scoop `extras`.
-- Lazygit config link:
-  - Destination: `C:\Users\boony\AppData\Local\lazygit\config.yml`
-  - Source: `C:\Users\boony\dotfiles\config\lazygit\config.yml`
-- The temporary user-level `LG_CONFIG_FILE` environment variable was removed;
-  lazygit now uses its normal Windows config directory and follows the link.
-
-## Repository work completed but not committed
-
-- Replaced the WSL-oriented `README.md` with a Windows setup, prerequisite,
-  verification, and troubleshooting guide.
-- Added `AGENTS.md` with Windows-only scope and agent verification rules.
-- Added `bootstrap.ps1` as the fresh-machine entrypoint.
-- Added `manifests/packages.json`; it currently declares only the `extras`
-  bucket and `lazygit` package.
-- Added `manifests/links.json`; it currently maps only lazygit.
-- Added `scripts/install-packages.ps1`.
-- Added `scripts/link-dotfiles.ps1`.
-- Added `scripts/update-system.ps1`.
-- Added `scripts/verify-system.ps1`.
-- Added this `HANDOFF.md`.
-
-Run `git status --short` before continuing. All work above is intentionally
-uncommitted so it can be reviewed together.
-
-## Behavior implemented
-
-### Bootstrap
-
-`bootstrap.ps1`:
-
-1. Requires native Windows and PowerShell 7.0 or newer.
-2. Ensures a script-compatible execution policy.
-3. Requires Developer Mode before attempting managed links.
-4. Installs Scoop only when it is absent.
-5. Installs manifest-declared packages.
-6. Creates manifest-declared links.
-7. Runs the verifier.
-
-### Package updates
-
-`scripts/update-system.ps1` refreshes Scoop metadata, then updates and cleans
-only packages listed in `manifests/packages.json`. It deliberately does not run
-`scoop update *` or `scoop cleanup *`. It finishes by running
-`scripts/set-environment.ps1`, because Scoop upgrades of `nvm` and the Temurin
-JDKs prepend their own `PATH` entries and reset `JAVA_HOME`, which otherwise
-fails `verify-system` until the manifest is reapplied.
-
-### Links
-
-`scripts/link-dotfiles.ps1`:
-
-- Is idempotent.
-- Refuses to overwrite or delete an unmanaged target.
-- Supports unlinking with `-Delete`.
-- Uses the Windows `CreateSymbolicLinkW` API with the unprivileged-creation flag
-  for consistent standard-user symbolic link creation.
-
-The existing lazygit link was initially created with native `mklink` after
-Developer Mode was enabled. The updated linker has been tested against that
-existing link for idempotency. Its fresh-link API path has not been tested by
-removing the working lazygit link; do not destroy the working link merely to
-test it. Prefer adding a disposable test fixture or injectable manifest path.
-
-## Verification already performed
-
-- `scripts/update-system.ps1` completed successfully and touched only Scoop
-  metadata plus the manifest-declared lazygit package.
-- A complete second run of `bootstrap.ps1` succeeded:
-
-  ```text
-  Already installed: lazygit
-  Already linked lazygit: C:\Users\boony\AppData\Local\lazygit\config.yml
-  Developer environment verification passed.
-  Windows developer environment bootstrap complete.
-  ```
-
-- `scripts/verify-system.ps1` passed in the real Windows user environment.
-- All PowerShell files parsed successfully with PowerShell's language parser.
-- Both JSON manifests parsed successfully with `ConvertFrom-Json`.
-- `git diff --check` passed.
-
-Repeat the documented validation after further changes:
-
-```powershell
-.\scripts\verify-system.ps1
-git diff --check
-git status --short --branch
-```
-
-## Known remaining work
-
-1. Review the complete uncommitted diff before committing.
-2. Consider adding a disposable test path for fresh symlink creation without
-   disturbing the live lazygit link.
-3. Add developer packages gradually through `manifests/packages.json`; preserve
-   the Scoop-only policy.
-4. Add config mappings through `manifests/links.json` and keep the linker safe
-   around pre-existing files.
-5. Decide whether this machine's system Git should eventually be replaced by
-   Scoop Git.
-6. Continue reviewing inherited WSL-only files outside agent skill management.
-   The obsolete Stow skill packages and POSIX skills updater were replaced with
-   a native Windows implementation after comparison with the macOS branch.
-7. Commit and push only after review. No commit was created in this session.
-
-## Agent skill maintenance added
-
-- The user's fork is cloned beside dotfiles at `C:\Users\boony\skills`.
-- `manifests/skills.json` declares the fork, promoted categories, Codex and
-  Claude destinations, and locally owned skills.
-- `scripts/update-skills.ps1` performs clean fast-forward pulls and safe,
-  per-skill reconciliation without GNU Stow.
-- Migration verifies copied upstream files against Git history, snapshots and
-  archives accepted copies, refuses modified collisions, and rolls back failed
-  link creation.
-- `scripts/test-update-skills.ps1` exercises migration, idempotency, collision
-  refusal, and stale-link cleanup in a disposable fixture.
-- The personal `commit-message` and `typescript-house-style` skills are stored
-  once under `skills\shared` and linked into both consumers.
+- Git is installed system-wide under `C:\Program Files\Git`, not by Scoop.
+  Decide before migrating; do not install a second Git without reviewing `PATH`
+  precedence.
