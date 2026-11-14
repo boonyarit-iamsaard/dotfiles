@@ -11,7 +11,10 @@ skills so the dotfiles manifests stay the only owners of user-wide agent files.
 - `manifests\skills.json` links each skill into both user-wide skill roots.
 
 The payload was copied on 2026-11-14 from upstream commit `96608e0` (plugin
-version 5.3.3), taking only the `skills\<name>` folders.
+version 5.3.3), taking only the `skills\<name>` folders. The full commit is
+recorded as `vendor.ponytail.commit` in `manifests\skills.json`;
+`scripts\check-manual-updates.ps1` (run at the end of `update-system`) reports
+when upstream `main` has moved.
 
 The upstream plugin's hooks, status line, and task board ("band") are
 intentionally omitted. They write a per-turn CSV ledger under
@@ -25,7 +28,8 @@ those plugin-only features; they do nothing here.
    `skills\<name>`, and refresh `LICENSE`.
 3. Review the complete diff, including any new skill or tool permission. Add a
    new upstream skill to `manifests\skills.json` deliberately.
-4. Update the commit and version above, then run:
+4. Update `vendor.ponytail.commit` in `manifests\skills.json` and the commit and
+   version above, then run:
 
 ```powershell
 .\scripts\update-skills.ps1 -NoPull

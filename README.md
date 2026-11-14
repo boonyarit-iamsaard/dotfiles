@@ -10,7 +10,9 @@ branches.
 - `bootstrap.ps1` performs fresh-machine setup.
 - `scripts/update-system.ps1` updates only developer packages declared in
   `manifests/packages.json`, then reapplies `manifests/environment.json` because
-  Scoop package upgrades can rewrite the user `PATH` and `JAVA_HOME`.
+  Scoop package upgrades can rewrite the user `PATH` and `JAVA_HOME`. It ends by
+  running `scripts/check-manual-updates.ps1`, which only reports skill and
+  vendored-payload updates that need a manual, reviewed step.
 - `scripts/set-environment.ps1` persists declared user environment variables and
   `PATH` entries from `manifests/environment.json`.
 - `scripts/set-node-toolchain.ps1` installs and activates the Node.js release in
@@ -338,10 +340,11 @@ The profile also provides:
   other development.
 - History-based command prediction in list view.
 - `lzg` for lazygit and `lzd` for lazydocker.
-- `docker-cleanup`, `link-dotfiles`, `set-environment`, `update-skills`,
-  `update-system` and `verify-system` as aliases for the matching scripts in
-  `scripts`, so they run from any directory. The profile finds the checkout
-  through its own symlink target rather than a hard-coded path.
+- `check-manual-updates`, `docker-cleanup`, `link-dotfiles`, `set-environment`,
+  `update-skills`, `update-system` and `verify-system` as aliases for the
+  matching scripts in `scripts`, so they run from any directory. The profile
+  finds the checkout through its own symlink target rather than a hard-coded
+  path.
 
 A nerd font is required for the prompt glyphs. The `nerd-fonts` bucket provides
 them.
@@ -364,6 +367,19 @@ Update the declared developer environment:
 ```powershell
 .\scripts\update-system.ps1
 ```
+
+It finishes with a **Manual follow-up** summary. Nothing listed there is applied
+automatically:
+
+- `skills`: the upstream skills checkout is behind; run `update-skills`.
+- `impeccable` or `ponytail`: a newer upstream release than the version pinned
+  under `vendor` in `manifests/skills.json`; refresh it with
+  [docs/impeccable.md](docs/impeccable.md) or
+  [docs/ponytail.md](docs/ponytail.md).
+
+Run `check-manual-updates` alone for the same report without updating packages.
+A source that cannot be reached shows `couldn't check` and does not fail the
+update.
 
 Remove all Docker containers, then prune unused volumes, networks, and builder
 cache. Use `-WhatIf` to preview the destructive operations:
