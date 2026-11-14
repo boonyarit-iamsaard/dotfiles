@@ -1,0 +1,66 @@
+# Hand-made macOS links: target under $HOME<TAB>source under this checkout.
+# Check with scripts/check-links; scripts/check-links --create adds missing ones.
+# Links into agents/ and claude/ are owned by scripts/update-skills (Stow).
+.config/ghostty/config	.config/ghostty/config
+.config/ghostty/themes/atom-one-dark	.config/ghostty/themes/atom-one-dark
+.config/ghostty/themes/atom-one-light	.config/ghostty/themes/atom-one-light
+.config/ghostty/themes/ayu-mirage	.config/ghostty/themes/ayu-mirage
+.config/ghostty/themes/catppuccin-macchiato	.config/ghostty/themes/catppuccin-macchiato
+.config/ghostty/themes/catppuccin-mocha	.config/ghostty/themes/catppuccin-mocha
+.config/ghostty/themes/dark-2026	.config/ghostty/themes/dark-2026
+.config/ghostty/themes/default-dark-modern	.config/ghostty/themes/default-dark-modern
+.config/ghostty/themes/default-light-modern	.config/ghostty/themes/default-light-modern
+.config/ghostty/themes/dracula	.config/ghostty/themes/dracula
+.config/ghostty/themes/edge-dark	.config/ghostty/themes/edge-dark
+.config/ghostty/themes/edge-dark-neon	.config/ghostty/themes/edge-dark-neon
+.config/ghostty/themes/edge-light	.config/ghostty/themes/edge-light
+.config/ghostty/themes/github-dark	.config/ghostty/themes/github-dark
+.config/ghostty/themes/github-dark-default	.config/ghostty/themes/github-dark-default
+.config/ghostty/themes/github-dark-dimmed	.config/ghostty/themes/github-dark-dimmed
+.config/ghostty/themes/github-light-default	.config/ghostty/themes/github-light-default
+.config/ghostty/themes/gruvbox-material-dark-hard	.config/ghostty/themes/gruvbox-material-dark-hard
+.config/ghostty/themes/night-owl	.config/ghostty/themes/night-owl
+.config/ghostty/themes/onedarkpro-onedark	.config/ghostty/themes/onedarkpro-onedark
+.config/ghostty/themes/onedarkpro-onelight	.config/ghostty/themes/onedarkpro-onelight
+.config/ghostty/themes/sonokai	.config/ghostty/themes/sonokai
+.config/ghostty/themes/tokyonight-day	.config/ghostty/themes/tokyonight-day
+.config/ghostty/themes/tokyonight-moon	.config/ghostty/themes/tokyonight-moon
+.config/ghostty/themes/tokyonight-night	.config/ghostty/themes/tokyonight-night
+.config/ghostty/themes/tokyonight-storm	.config/ghostty/themes/tokyonight-storm
+.config/nvim/.neoconf.json	.config/nvim/.neoconf.json
+.config/nvim/LICENSE	.config/nvim/LICENSE
+.config/nvim/README.md	.config/nvim/README.md
+.config/nvim/init.lua	.config/nvim/init.lua
+.config/nvim/lazy-lock.json	.config/nvim/lazy-lock.json
+.config/nvim/lazyvim.json	.config/nvim/lazyvim.json
+.config/nvim/lua/config/autocmds.lua	.config/nvim/lua/config/autocmds.lua
+.config/nvim/lua/config/keymaps.lua	.config/nvim/lua/config/keymaps.lua
+.config/nvim/lua/config/lazy.lua	.config/nvim/lua/config/lazy.lua
+.config/nvim/lua/config/options.lua	.config/nvim/lua/config/options.lua
+.config/nvim/lua/helpers.lua	.config/nvim/lua/helpers.lua
+.config/nvim/lua/plugins/better-escape.lua	.config/nvim/lua/plugins/better-escape.lua
+.config/nvim/lua/plugins/colorscheme.lua	.config/nvim/lua/plugins/colorscheme.lua
+.config/nvim/lua/plugins/conform.lua	.config/nvim/lua/plugins/conform.lua
+.config/nvim/lua/plugins/copilot.lua	.config/nvim/lua/plugins/copilot.lua
+.config/nvim/lua/plugins/example.lua	.config/nvim/lua/plugins/example.lua
+.config/nvim/lua/plugins/indent-blankline.lua	.config/nvim/lua/plugins/indent-blankline.lua
+.config/nvim/lua/plugins/lsp.lua	.config/nvim/lua/plugins/lsp.lua
+.config/nvim/lua/plugins/neo-tree.lua	.config/nvim/lua/plugins/neo-tree.lua
+.config/nvim/lua/plugins/obsidian.lua	.config/nvim/lua/plugins/obsidian.lua
+.config/nvim/lua/plugins/snacks.lua	.config/nvim/lua/plugins/snacks.lua
+.config/nvim/lua/themes	.config/nvim/lua/themes
+.config/nvim/stylua.toml	.config/nvim/stylua.toml
+.config/starship.catppuccin-mocha.toml	.config/starship.catppuccin-mocha.toml
+.ideavimrc	.ideavimrc
+.local/bin/gh	.local/bin/gh
+.tmux.catppuccin.conf	.tmux.catppuccin.conf
+.tmux.conf	.tmux.conf
+.tmux.default-dark-modern.conf	.tmux.default-dark-modern.conf
+.tmux.dracula.conf	.tmux.dracula.conf
+.tmux/themes	.tmux/themes
+.zshenv	.zshenv
+.zshrc	.zshrc
+Library/Application Support/lazydocker	Library/Application Support/lazydocker
+Library/Application Support/lazygit	Library/Application Support/lazygit
+Library/Application Support/superfile	Library/Application Support/superfile
+docker-cleanup.sh	docker-cleanup/docker-cleanup.sh

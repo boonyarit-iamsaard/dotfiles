@@ -12,6 +12,20 @@ failures leave the exit status successful. Docker cleanup removes containers
 and unused volumes, networks, and build cache. Its tests use fake executables
 and never contact a real Docker daemon or run package updates.
 
+## Links
+
+`links.tsv` declares every hand-made link from `$HOME` into this checkout,
+one `target<TAB>source` line each. Links into `agents/` and `claude/` are not
+listed: `scripts/update-skills` manages them with Stow. `scripts/check-links`
+exits 1 when a declared link is missing, points elsewhere, is a real file, or
+its source is gone. It also fails on an undeclared link into the checkout in
+`$HOME` itself or in any directory that holds a declared link; other
+directories are not searched. `--create` adds missing links as relative
+symlinks and never replaces an existing file or link.
+
+Tool-written runtime state (LazyGit `state.yml`, superfile's version stamps) is
+ignored by `.gitignore`.
+
 ## Themes
 
 Catppuccin remains active. Shared settings and theme variants are separate:
@@ -53,9 +67,8 @@ Set up on a new Mac, or when the token expires:
 
 ```bash
 brew install gh
-mkdir -p ~/.local/bin ~/.config/gh-agent
-ln -s ../../dotfiles/.local/bin/gh ~/.local/bin/gh
-ln -s dotfiles/.zshenv ~/.zshenv
+mkdir -p ~/.config/gh-agent
+~/dotfiles/scripts/check-links --create       # links ~/.local/bin/gh, ~/.zshenv and the rest
 # ~/.zprofile is not tracked here (Docker, Homebrew and nvm edit it); append once:
 printf '\npath=("$HOME/.local/bin" ${path:#$HOME/.local/bin})\n' >> ~/.zprofile
 (umask 077; cat > ~/.config/gh-agent/token)   # paste token, Enter, Ctrl-D

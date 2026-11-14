@@ -8,3 +8,9 @@ __pycache__/
 # Installer-owned skills are updated in place.
 agents/.agents/skills/impeccable/
 claude/.claude/skills/impeccable/
+
+# Tool-written runtime state.
+Library/Application Support/lazygit/state.yml
+Library/Application Support/superfile/firstUseCheck
+Library/Application Support/superfile/lastCheckVersion
+Library/Application Support/superfile/themeFileVersion
