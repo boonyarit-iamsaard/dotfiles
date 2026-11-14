@@ -1,16 +1,16 @@
-# Local reconciliation state for scripts/update-skills.
-.skill-sync/
+# Local reconciliation state for macos/scripts/update-skills.
+macos/.skill-sync/
 
 # Test bytecode and runtime state are generated locally.
 __pycache__/
 *.log
 
 # Installer-owned skills are updated in place.
-agents/.agents/skills/impeccable/
-claude/.claude/skills/impeccable/
+macos/agents/.agents/skills/impeccable/
+macos/claude/.claude/skills/impeccable/
 
 # Tool-written runtime state.
-Library/Application Support/lazygit/state.yml
-Library/Application Support/superfile/firstUseCheck
-Library/Application Support/superfile/lastCheckVersion
-Library/Application Support/superfile/themeFileVersion
+macos/Library/Application Support/lazygit/state.yml
+macos/Library/Application Support/superfile/firstUseCheck
+macos/Library/Application Support/superfile/lastCheckVersion
+macos/Library/Application Support/superfile/themeFileVersion
