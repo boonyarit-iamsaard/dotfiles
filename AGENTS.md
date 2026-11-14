@@ -7,11 +7,17 @@ folder for the platform you are changing and follow its guide:
 | ---------- | -------------- | -------------------------------------- |
 | `windows/` | Native Windows | [windows/AGENTS.md](windows/AGENTS.md) |
 
-`wsl/` and `macos/` are planned; their setup still lives on the `wsl` and `main`
-branches until each is moved on its own machine. See [HANDOFF.md](HANDOFF.md).
+`macos/` and `wsl/` are being brought in; until then their setup lives on the
+`main` and `wsl` branches. The migration plan is the spec in
+`.scratch/platform-consolidation/`.
 
 ## Repository-wide rules
 
+- **Platform work runs on its own machine.** Change a platform folder only on
+  that platform's machine, where its live links and tools can be verified. A
+  problem seen in another platform's folder becomes a ticket in the issue
+  tracker, not an edit. This is a hard rule.
+- **Root files belong to every platform** and may be fixed from any machine.
 - Keep platform-specific setup inside its platform folder. Never add one
   platform's setup to another's folder.
 - Repository tooling lives at the root: `package.json` (Prettier and the pinned
@@ -23,7 +29,8 @@ branches until each is moved on its own machine. See [HANDOFF.md](HANDOFF.md).
   `.prettierignore` exempt them.
 - `CLAUDE.md` files are symlinks to the `AGENTS.md` beside them. Edit
   `AGENTS.md`.
-- `.scratch/` is ignored. Track a file there only deliberately, with
+- `.scratch/` is ignored. Track a file there only for research, issues and
+  tickets, or when the owner says so or agrees when asked; add it with
   `git add -f`.
 
 ## Agent skills

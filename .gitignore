@@ -1,5 +1,5 @@
 # Fonts are never committed. Consolas is proprietary and its Nerd Font patch
-# (scripts/patch-consolas-nerd-font) is a derivative work; this repo is public.
+# (windows/scripts/patch-consolas-nerd-font) is a derivative work; this repo is public.
 *.ttf
 *.otf
 *.ttc
