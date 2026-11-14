@@ -6,7 +6,7 @@
     "PNPM_CONFIG_STORE_DIR": "%LOCALAPPDATA%\\pnpm\\store"
   },
   "pathEntries": [
-    "%USERPROFILE%\\dotfiles\\gh-agent\\bin",
+    "%USERPROFILE%\\dotfiles\\windows\\gh-agent\\bin",
     "%USERPROFILE%\\scoop\\apps\\temurin25-jdk\\current\\bin",
     "%LOCALAPPDATA%\\Android\\Sdk\\platform-tools",
     "%LOCALAPPDATA%\\Android\\Sdk\\emulator",

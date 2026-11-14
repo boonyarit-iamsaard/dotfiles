@@ -16,6 +16,9 @@ if ($PSVersionTable.PSEdition -ne 'Core' -or $PSVersionTable.PSVersion -lt [Vers
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedWindowsLinks.psm1') -Force
 
 $dotfilesRoot = Split-Path -Parent $PSScriptRoot
+# The platform folder sits inside the shared checkout; links into the checkout
+# whose target vanished were left by a move and may be replaced.
+$checkoutRoot = Split-Path -Parent $dotfilesRoot
 $manifestPath = Join-Path $dotfilesRoot 'manifests\links.json'
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 $availablePackages = @($manifest.PSObject.Properties.Name)
@@ -56,7 +59,12 @@ foreach ($packageName in $Package) {
             continue
         }
 
-        if (Get-Item -Force -LiteralPath $target -ErrorAction SilentlyContinue) {
+        if (Test-StaleCheckoutLink -Path $target -CheckoutRoot $checkoutRoot) {
+            $staleSource = Get-ManagedLinkTarget -Path $target
+            Remove-ManagedLink -Path $target
+            Write-Host "Removed stale link $packageName`: $target -> $staleSource"
+        }
+        elseif (Get-Item -Force -LiteralPath $target -ErrorAction SilentlyContinue) {
             throw "Refusing to overwrite existing path: $target"
         }
 

@@ -42,12 +42,13 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     $failures.Add('Git is not available.')
 }
 else {
-    $branch = git -C $dotfilesRoot branch --show-current
+    # Platforms share one checkout; this script lives in its windows folder.
+    $null = git -C $dotfilesRoot rev-parse --show-toplevel 2>$null
     if ($LASTEXITCODE -ne 0) {
         $failures.Add('The dotfiles directory is not a valid Git checkout.')
     }
-    elseif ($branch -ne 'windows') {
-        $failures.Add("Expected the windows branch; found '$branch'.")
+    elseif ((Split-Path -Leaf $dotfilesRoot) -ne 'windows') {
+        $failures.Add("Expected the Windows platform folder; found '$dotfilesRoot'.")
     }
 }
 

@@ -8,7 +8,10 @@ $ErrorActionPreference = 'Stop'
 
 $dotfilesRoot = Split-Path -Parent $PSScriptRoot
 $manifestPath = Join-Path $dotfilesRoot 'manifests\node-toolchain.json'
-$packagePath = Join-Path $dotfilesRoot 'package.json'
+# Repository tooling (package.json, pnpm) lives at the checkout root, one level
+# above this platform folder.
+$repositoryRoot = Split-Path -Parent $dotfilesRoot
+$packagePath = Join-Path $repositoryRoot 'package.json'
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 $package = Get-Content -Raw -LiteralPath $packagePath | ConvertFrom-Json
 $nodeRelease = [string] $manifest.nodeRelease
@@ -78,7 +81,7 @@ if ($actualNodeVersion -notmatch "^v$([regex]::Escape($nodeRelease))\.") {
 }
 
 $null = Get-CommandOutput -Command 'corepack' -Arguments @('--version')
-Push-Location $dotfilesRoot
+Push-Location $repositoryRoot
 try {
     $actualPnpmVersion = Get-CommandOutput -Command 'pnpm' -Arguments @('--version')
 }
