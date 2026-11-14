@@ -65,8 +65,8 @@ adjust-cursor-thickness = 2
 # ">" sitting low beside them (tmux tree "├─>"); nudge the text baseline up to meet the line.
 adjust-font-baseline    = 2
 macos-titlebar-style    = "hidden"
-theme                   = "catppuccin-mocha"
-# theme                   = "default-dark-modern"
+# theme                   = "catppuccin-mocha"
+theme                   = "default-dark-modern"
 # theme                   = "dark-2026"
 window-colorspace       = "display-p3"
 # The hidden titlebar puts the first row against the rounded window edge; give the top extra room.

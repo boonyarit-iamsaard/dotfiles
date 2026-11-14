@@ -28,18 +28,25 @@ ignored by `.gitignore`.
 
 ## Themes
 
-Catppuccin remains active. Shared settings and theme variants are separate:
+Default Dark Modern is active; Catppuccin and Dark 2026 stay available. Shared
+settings and theme variants are separate:
 
 | Tool | Switch |
 | --- | --- |
+| Ghostty | Uncomment one `theme` line in `.config/ghostty/config`; variants live under `.config/ghostty/themes/`. |
 | tmux | Change `@theme` in `.tmux.conf` to `catppuccin`, `dark-2026`, or `default-dark-modern`; restart the server for a clean switch. |
 | lazygit | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `Library/Application Support/lazygit/themes/`. |
 | lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments. |
 | Neovim | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern. |
+| superfile | Change `theme` in `Library/Application Support/superfile/config.toml` to a file name under its `theme/` folder. |
+| btop | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed. |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the tmux
 configurations include them without naming the checkout. macOS Application
 Support paths and the transparent Neovim floating window are retained.
+
+btop saves its settings on exit, so changing options inside btop edits the
+tracked `btop.conf`.
 
 Dark 2026 extras are vendored byte-for-byte from the plugin revision pinned in
 `.config/nvim/lazy-lock.json`. To update them, copy the four upstream extras at

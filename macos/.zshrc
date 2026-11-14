@@ -115,7 +115,7 @@ alias docker-cleanup="~/docker-cleanup.sh"
 alias update-system="${${(%):-%x}:A:h}/update-system/update-system.sh"
 
 # Keep shell lazygit on the same theme as the terminal; variants share a base.
-export LG_CONFIG_FILE="$HOME/Library/Application Support/lazygit/config.yml,$HOME/Library/Application Support/lazygit/themes/catppuccin-mocha.yml"
+export LG_CONFIG_FILE="$HOME/Library/Application Support/lazygit/config.yml,$HOME/Library/Application Support/lazygit/themes/default-dark-modern.yml"
 
 # bind keys for vi mode
 bindkey jj vi-cmd-mode

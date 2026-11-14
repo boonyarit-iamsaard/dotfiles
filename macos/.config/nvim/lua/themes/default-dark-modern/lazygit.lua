@@ -17,10 +17,10 @@ return {
             unstagedChangesColor = { "#c74e39" }, -- gitDecoration.deletedResourceForeground
             defaultFgColor = { "#cccccc" }, -- terminal.foreground
             searchingActiveBorderColor = { "#e2c08d" }, -- gitDecoration.modifiedResourceForeground
+            -- The key has to carry its own quotes: snacks writes mapping keys to
+            -- YAML verbatim, and a bare `*:` is an alias anchor, not a string.
+            authorColors = { ['"*"'] = "#3794ff" }, -- charts.blue
           },
-          -- The key has to carry its own quotes: snacks writes mapping keys to
-          -- YAML verbatim, and a bare `*:` is an alias anchor, not a string.
-          authorColors = { ['"*"'] = "#3794ff" }, -- charts.blue
         },
       },
     },

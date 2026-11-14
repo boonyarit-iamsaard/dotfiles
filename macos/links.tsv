@@ -1,6 +1,9 @@
 # Hand-made macOS links: target under $HOME<TAB>source under this checkout.
 # Check with scripts/check-links; scripts/check-links --create adds missing ones.
 # Links into agents/ and claude/ are owned by scripts/update-skills (Stow).
+.config/btop/btop.conf	.config/btop/btop.conf
+.config/btop/themes/catppuccin-mocha.theme	.config/btop/themes/catppuccin-mocha.theme
+.config/btop/themes/default-dark-modern.theme	.config/btop/themes/default-dark-modern.theme
 .config/ghostty/config	.config/ghostty/config
 .config/ghostty/themes/atom-one-dark	.config/ghostty/themes/atom-one-dark
 .config/ghostty/themes/atom-one-light	.config/ghostty/themes/atom-one-light

@@ -1,0 +1,88 @@
+# Default Dark Modern for btop.
+# Colours from VS Code's Dark Modern theme:
+# https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json
+# Graph gradients use VS Code's default terminal ANSI colours.
+
+# Main background
+theme[main_bg]="#1f1f1f" # editor.background
+
+# Main text color
+theme[main_fg]="#cccccc" # foreground
+
+# Title color for boxes
+theme[title]="#cccccc" # foreground
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="#4daafc" # textLink.foreground
+
+# Background color of selected item in processes box
+theme[selected_bg]="#264f78" # editor.selectionBackground
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="#ffffff" # button.foreground
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#6e7681" # editorLineNumber.foreground
+
+# Color of text appearing on top of graphs, i.e uptime and current network graph scaling
+theme[graph_text]="#9d9d9d" # descriptionForeground
+
+# Background color of the percentage meters
+theme[meter_bg]="#313131" # widget.border
+
+# Misc colors for processes box including mini cpu graphs, details memory graph and details status text
+theme[proc_misc]="#3794ff" # charts.blue
+
+# CPU, Memory, Network, Proc box outline colors
+theme[cpu_box]="#b180d7"  # charts.purple
+theme[mem_box]="#81b88b"  # gitDecoration.addedResourceForeground
+theme[net_box]="#d18616"  # charts.orange
+theme[proc_box]="#3794ff" # charts.blue
+
+# Box divider line and small boxes line color
+theme[div_line]="#2b2b2b" # panel.border
+
+# Temperature graph color (bright green -> bright yellow -> bright red)
+theme[temp_start]="#23d18b"
+theme[temp_mid]="#f5f543"
+theme[temp_end]="#f14c4c"
+
+# CPU graph colors (bright cyan -> bright blue -> purple)
+theme[cpu_start]="#29b8db"
+theme[cpu_mid]="#3b8eea"
+theme[cpu_end]="#b180d7"
+
+# Mem/Disk free meter (purple -> bright blue -> blue)
+theme[free_start]="#b180d7"
+theme[free_mid]="#3b8eea"
+theme[free_end]="#3794ff"
+
+# Mem/Disk cached meter (bright cyan -> bright blue -> blue)
+theme[cached_start]="#29b8db"
+theme[cached_mid]="#3b8eea"
+theme[cached_end]="#3794ff"
+
+# Mem/Disk available meter (orange -> modified -> bright red)
+theme[available_start]="#d18616"
+theme[available_mid]="#e2c08d"
+theme[available_end]="#f14c4c"
+
+# Mem/Disk used meter (added -> bright green -> bright cyan)
+theme[used_start]="#81b88b"
+theme[used_mid]="#23d18b"
+theme[used_end]="#29b8db"
+
+# Download graph colors (orange -> modified -> bright red)
+theme[download_start]="#d18616"
+theme[download_mid]="#e2c08d"
+theme[download_end]="#f14c4c"
+
+# Upload graph colors (added -> bright green -> bright cyan)
+theme[upload_start]="#81b88b"
+theme[upload_mid]="#23d18b"
+theme[upload_end]="#29b8db"
+
+# Process box color gradient for threads, mem and cpu usage (bright cyan -> bright blue -> purple)
+theme[process_start]="#29b8db"
+theme[process_mid]="#3b8eea"
+theme[process_end]="#b180d7"

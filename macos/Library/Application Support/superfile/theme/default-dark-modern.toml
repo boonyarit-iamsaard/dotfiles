@@ -1,0 +1,60 @@
+# Default Dark Modern for superfile.
+# Colours from VS Code's Dark Modern theme:
+# https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json
+# Keys follow https://superfile.dev/configure/custom-theme/
+
+# Chroma has no Dark Modern style; github-dark is the closest dark match.
+code_syntax_highlight = "github-dark"
+
+#-- Full Screen
+full_screen_fg = "#cccccc" # foreground
+full_screen_bg = "#1f1f1f" # editor.background
+
+#-- Gradient
+gradient_color = ["#0078d4", "#4daafc"] # focusBorder, textLink.foreground
+
+#-- File Panel
+file_panel_fg = "#cccccc"                 # foreground
+file_panel_bg = "#1f1f1f"                 # editor.background
+file_panel_border = "#2b2b2b"             # panel.border
+file_panel_border_active = "#0078d4"      # focusBorder
+file_panel_top_directory_icon = "#81b88b" # gitDecoration.addedResourceForeground
+file_panel_top_path = "#4daafc"           # textLink.foreground
+file_panel_item_selected_fg = "#cccccc"   # foreground
+file_panel_item_selected_bg = "#37373d"   # list.inactiveSelectionBackground
+
+#-- Footer
+footer_fg = "#cccccc"            # foreground
+footer_bg = "#181818"            # panel.background
+footer_border = "#2b2b2b"        # panel.border
+footer_border_active = "#0078d4" # focusBorder
+
+#-- Sidebar
+sidebar_fg = "#cccccc"               # foreground
+sidebar_bg = "#181818"               # sideBar.background
+sidebar_title = "#9d9d9d"            # descriptionForeground
+sidebar_border = "#181818"           # sideBar.background
+sidebar_border_active = "#0078d4"    # focusBorder
+sidebar_item_selected_fg = "#cccccc" # foreground
+sidebar_item_selected_bg = "#37373d" # list.inactiveSelectionBackground
+sidebar_divider = "#2b2b2b"          # panel.border
+
+#-- Modals
+modal_fg = "#cccccc"            # foreground
+modal_bg = "#222222"            # quickInput.background
+modal_border_active = "#313131" # widget.border
+modal_cancel_fg = "#ffffff"     # button.foreground
+modal_cancel_bg = "#c74e39"     # gitDecoration.deletedResourceForeground
+modal_confirm_fg = "#ffffff"    # button.foreground
+modal_confirm_bg = "#0078d4"    # button.background
+
+#-- Help Menu
+help_menu_hotkey = "#4daafc" # textLink.foreground
+help_menu_title = "#e2c08d"  # gitDecoration.modifiedResourceForeground
+
+#-- Special
+cursor = "#aeafad"  # editorCursor.foreground
+correct = "#81b88b" # gitDecoration.addedResourceForeground
+error = "#f85149"   # errorForeground
+hint = "#4daafc"    # textLink.foreground
+cancel = "#c74e39"  # gitDecoration.deletedResourceForeground
