@@ -10,7 +10,8 @@
 # ---------------------------------------------------------------------------
 # NVM places the active Node directory before Scoop's shims. Prefer Scoop for
 # declared standalone tools; pnpm is intentionally provided by Node's Corepack
-# shim so projects can select their package-manager version.
+# shim so projects can select their package-manager version. The gh-agent
+# wrappers must stay ahead of Scoop's gh shim, so they lead.
 $scoopRoot = if ($env:SCOOP) {
     $env:SCOOP
 }
@@ -18,10 +19,13 @@ else {
     Join-Path ([Environment]::GetFolderPath('UserProfile')) 'scoop'
 }
 $scoopShims = Join-Path $scoopRoot 'shims'
+$ghAgentBin = Join-Path ([Environment]::GetFolderPath('UserProfile')) 'dotfiles\gh-agent\bin'
 
 $preferredPathEntries = @(
-    if (Test-Path -LiteralPath $scoopShims -PathType Container) {
-        $scoopShims
+    foreach ($entry in $ghAgentBin, $scoopShims) {
+        if (Test-Path -LiteralPath $entry -PathType Container) {
+            $entry
+        }
     }
 )
 

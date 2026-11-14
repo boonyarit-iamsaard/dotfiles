@@ -3,6 +3,7 @@
     "buckets": ["extras", "java"],
     "packages": [
       "btop",
+      "gh",
       "lazydocker",
       "lazygit",
       "nvm",
