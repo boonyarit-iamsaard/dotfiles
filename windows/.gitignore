@@ -8,3 +8,6 @@
 
 # Repository-local formatting dependencies.
 /node_modules/
+
+# Local agent scratch space (issues, specs). Opt in to tracking with git add -f.
+/.scratch/
