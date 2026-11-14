@@ -1,0 +1,3 @@
+# Third-party vendored payloads keep their upstream bytes, including CRLF
+# launchers, and are exempt from whitespace checks.
+skills/vendor/** -text -whitespace

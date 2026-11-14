@@ -33,6 +33,36 @@
       "name": "impeccable",
       "source": "skills\\vendor\\impeccable\\claude",
       "consumers": ["claude"]
+    },
+    {
+      "name": "ponytail",
+      "source": "skills\\vendor\\ponytail\\ponytail",
+      "consumers": ["codex", "claude"]
+    },
+    {
+      "name": "ponytail-audit",
+      "source": "skills\\vendor\\ponytail\\ponytail-audit",
+      "consumers": ["codex", "claude"]
+    },
+    {
+      "name": "ponytail-debt",
+      "source": "skills\\vendor\\ponytail\\ponytail-debt",
+      "consumers": ["codex", "claude"]
+    },
+    {
+      "name": "ponytail-gain",
+      "source": "skills\\vendor\\ponytail\\ponytail-gain",
+      "consumers": ["codex", "claude"]
+    },
+    {
+      "name": "ponytail-help",
+      "source": "skills\\vendor\\ponytail\\ponytail-help",
+      "consumers": ["codex", "claude"]
+    },
+    {
+      "name": "ponytail-review",
+      "source": "skills\\vendor\\ponytail\\ponytail-review",
+      "consumers": ["codex", "claude"]
     }
   ]
 }

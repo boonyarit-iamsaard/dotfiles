@@ -17,6 +17,8 @@ Linux, or WSL setup to this branch.
   skills.
 - Impeccable is a vendored, provider-specific skill. Before installing,
   refreshing, or repairing it, read [docs/impeccable.md](docs/impeccable.md).
+- Ponytail is a vendored skill set without its upstream hooks. Before refreshing
+  it, read [docs/ponytail.md](docs/ponytail.md).
 - `scripts/update-system.ps1` updates only developer packages declared in the
   manifest, then reapplies the environment manifest so Scoop-driven `PATH` and
   `JAVA_HOME` changes do not persist.
