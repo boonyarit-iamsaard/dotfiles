@@ -7,9 +7,9 @@ manifest paths. Each platform keeps its own base config and chooses its own
 active theme; there is no shared switch.
 
 WSL uses these shared files. Windows uses the LazyGit variants through
-`LG_CONFIG_FILE`, links the Dark 2026 btop theme through its manifest, and
-copies the active shared LazyDocker variant into its platform config's marker
-block. The remaining Windows and macOS adoption is tracked in
+`LG_CONFIG_FILE`, links the btop themes through its manifest, and copies the
+active shared LazyDocker variant into its platform config's marker block.
+macOS adoption is tracked in
 [issue #9](https://github.com/boonyarit-iamsaard/dotfiles/issues/9).
 
 | Folder        | Tool                                                    |
@@ -38,9 +38,7 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
   [`catppuccin.json`](catppuccin.json). Catppuccin ships no lazydocker theme, so
   `lazydocker/catppuccin-mocha.yml` is a hand port of the lazygit keys.
   `tmux/catppuccin.conf` configures the `catppuccin/tmux` plugin, and the
-  starship file is a hand-written prompt in Catppuccin colours. It is WSL's
-  copy; Windows' `starship.catppuccin-mocha.toml` differs and is reconciled when
-  Windows links this one.
+  starship file is a hand-written prompt in Catppuccin colours.
 - **Default Dark Modern**: hand ports of VS Code's
   [`dark_modern.json`](https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json)
   and its registered dark defaults, each colour commented with its VS Code key.

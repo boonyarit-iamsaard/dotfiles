@@ -263,11 +263,13 @@ To switch:
   `../shared/themes/lazydocker/`, removing only its leading comment lines and
   blank lines. Update the opening marker's theme name too. LazyDocker has no
   include mechanism; the active block must match that shared variant.
-- **btop:** the `btop` link package installs the shared Dark 2026 theme in
-  `%USERPROFILE%\scoop\persist\btop\themes`. Select `dark-2026` in btop's
-  options, or set `color_theme = "dark-2026"` in that persistent directory's
-  `btop.conf` while btop is closed. This native btop4win config remains
-  runtime-owned; the older `config/btop/btop.conf` is not linked over it.
+- **btop:** the `btop` link package installs the shared Dark 2026, Default Dark
+  Modern and Catppuccin Mocha themes in
+  `%USERPROFILE%\scoop\persist\btop\themes`. Select one in btop's options, or
+  set `color_theme` to `dark-2026`, `default-dark-modern` or `catppuccin-mocha`
+  in that persistent directory's `btop.conf` while btop is closed. This native
+  btop4win config remains runtime-owned; the older `config/btop/btop.conf` is
+  not linked over it.
 
 Sources:
 
@@ -282,10 +284,11 @@ Sources:
   (requires Internet access). It also checks LazyDocker's active marker block.
   The upstream Terminal background is `#121314`; the prompt's PHP segment uses
   `symbol_field` (`#75beff`).
-- Catppuccin Mocha follows
-  [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal)
-  and the `mocha/blue` flavor of
-  [catppuccin/lazygit](https://github.com/catppuccin/lazygit).
+- Catppuccin Mocha's Windows Terminal scheme follows
+  [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal).
+  Its shared btop and LazyGit files are vendored from the official ports at the
+  commits in `shared/themes/catppuccin.json`; `scripts/test-theme-extras.ps1`
+  checks them too.
 
 ## Dark Modern theme
 

@@ -29,8 +29,16 @@
   ],
   "btop": [
     {
+      "source": "../shared/themes/btop/catppuccin-mocha.theme",
+      "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\catppuccin-mocha.theme"
+    },
+    {
       "source": "../shared/themes/btop/dark-2026.theme",
       "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\dark-2026.theme"
+    },
+    {
+      "source": "../shared/themes/btop/default-dark-modern.theme",
+      "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\default-dark-modern.theme"
     }
   ],
   "lazydocker": [

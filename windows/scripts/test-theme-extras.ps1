@@ -23,6 +23,18 @@ foreach ($extra in $extras.GetEnumerator()) {
     }
 }
 
+$catppuccin = Get-Content -Raw (Join-Path $checkoutRoot 'shared/themes/catppuccin.json') | ConvertFrom-Json
+foreach ($port in $catppuccin.PSObject.Properties) {
+    foreach ($file in $port.Value.files.PSObject.Properties) {
+        $url = "https://raw.githubusercontent.com/catppuccin/$($port.Name)/$($port.Value.commit)/$($file.Value)"
+        $upstream = Invoke-WebRequest -Uri $url
+        $actual = [IO.File]::ReadAllBytes((Join-Path $checkoutRoot "shared/themes/$($file.Name)"))
+        if ([Convert]::ToBase64String($actual) -cne [Convert]::ToBase64String($upstream.RawContentStream.ToArray())) {
+            throw "Catppuccin drift: shared/themes/$($file.Name); re-download from $url."
+        }
+    }
+}
+
 $config = [IO.File]::ReadAllText((Join-Path $checkoutRoot 'windows/config/lazydocker/config.yml')) -replace '\r\n', "`n"
 $activeBlocks = [regex]::Matches($config, '(?ms)^# >>> theme: ([a-z0-9-]+)\n(.*?)^# <<< theme$')
 if ($activeBlocks.Count -ne 1) {
@@ -36,4 +48,4 @@ if ($activeBlock.Groups[2].Value.TrimEnd("`n") -cne $expectedBlock) {
     throw "LazyDocker active block differs from the shared $themeName variant."
 }
 
-Write-Host 'Theme extras and LazyDocker active block match the upstream pin.'
+Write-Host 'Theme extras, Catppuccin files and LazyDocker active block match their upstream pins.'
