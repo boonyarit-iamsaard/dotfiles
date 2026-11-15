@@ -11,10 +11,9 @@ each prints a step summary and exits 1 when any error-severity step failed
 ## Themes
 
 Three themes are maintained: default dark modern, catppuccin mocha and
-dark 2026. Dark 2026 is active in Neovim, tmux, lazygit and lazydocker; default
-dark modern in btop; starship runs its built-in default. Each tool keeps a
-shared base config plus one theme variant per theme; switching is a one-line
-edit per tool:
+dark 2026. Dark 2026 is active in Neovim, tmux, lazygit, lazydocker and btop;
+starship runs its built-in default. Each tool keeps a shared base config plus
+one theme variant per theme; switching is a one-line edit per tool:
 
 | Tool       | Switch                                                                                                                                                            |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -23,7 +22,7 @@ edit per tool:
 | lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `config/lazydocker/themes/<name>.yml`                      |
 | Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
 | starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only); unset for the built-in default                  |
-| btop       | `color_theme` in `config/btop/btop.conf` (variants in `config/btop/themes/`; catppuccin mocha and default dark modern only)                                       |
+| btop       | `color_theme` in `config/btop/btop.conf` (variants in `config/btop/themes/`)                                                                                      |
 
 The dark 2026 palette is owned by
 [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim); its

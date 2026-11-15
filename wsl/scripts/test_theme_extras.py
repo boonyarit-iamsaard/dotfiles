@@ -17,6 +17,7 @@ THEME_EXTRAS = (
     ("config/lazygit/themes/dark-2026.yml", "extras/lazygit/dark-2026.yml"),
     ("config/lazydocker/themes/dark-2026.yml", "extras/lazydocker/dark-2026.yml"),
     ("config/nvim/lua/themes/dark-2026/lazygit.lua", "extras/lazyvim/lazygit.lua"),
+    ("config/btop/themes/dark-2026.theme", "extras/btop/dark-2026.theme"),
 )
 
 
