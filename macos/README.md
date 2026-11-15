@@ -72,8 +72,10 @@ see the merged settings.
 
 ## Themes
 
-Default Dark Modern is active; Catppuccin and Dark 2026 stay available. Shared
-settings and theme variants are separate:
+Default Dark Modern is active; Catppuccin and Dark 2026 stay available. The
+btop, lazydocker, lazygit, Neovim and tmux theme folders here are links into
+[`shared/themes/`](../shared/themes/README.md); Ghostty and superfile keep their
+themes in this folder. Settings and theme variants are separate:
 
 | Tool       | Switch                                                                                                                         |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -92,10 +94,12 @@ floating window is retained.
 btop saves its settings on exit, so changing options inside btop edits the
 tracked `btop.conf`.
 
-Dark 2026 extras are vendored byte-for-byte from the plugin revision pinned in
-`.config/nvim/lazy-lock.json`. To update them, copy the four upstream extras at
-the new pin and run `python3 -m unittest scripts/test_theme_extras.py`. These
-files work without depending on Neovim's plugin directory at runtime.
+Dark 2026 extras in `shared/themes/` are vendored byte-for-byte from the plugin
+revision pinned in `.config/nvim/lazy-lock.json`, which must match the WSL pin.
+To update them, follow
+[Refresh a vendored file](../shared/themes/README.md#refresh-a-vendored-file)
+and run `python3 -m unittest scripts/test_theme_extras.py`. These files work
+without depending on Neovim's plugin directory at runtime.
 
 ## Agent gh wrapper
 

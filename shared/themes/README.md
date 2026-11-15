@@ -6,11 +6,10 @@ and WSL through relative symlinks in their Stow packages, Windows through its
 manifest paths. Each platform keeps its own base config and chooses its own
 active theme; there is no shared switch.
 
-WSL uses these shared files. Windows uses the LazyGit variants through
-`LG_CONFIG_FILE`, links the btop themes through its manifest, and copies the
-active shared LazyDocker variant into its platform config's marker block. macOS
-adoption is tracked in
-[issue #9](https://github.com/boonyarit-iamsaard/dotfiles/issues/9).
+macOS and WSL link the btop, lazydocker, lazygit, Neovim and tmux folders here.
+Windows uses the LazyGit variants through `LG_CONFIG_FILE`, links the btop
+themes through its manifest, and copies the active shared LazyDocker variant
+into its platform config's marker block. The Mac tracks no starship config.
 
 | Folder        | Tool                                                    |
 | ------------- | ------------------------------------------------------- |
@@ -43,9 +42,9 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
   [`dark_modern.json`](https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json)
   and its registered dark defaults, each colour commented with its VS Code key.
 
-`wsl/scripts/test_theme_extras.py` checks the vendored files against their pins
-(macOS gets its copy when it links these files). The Catppuccin check downloads
-from GitHub and skips when offline.
+`macos/scripts/test_theme_extras.py` and `wsl/scripts/test_theme_extras.py`
+check the vendored files against their pins. The Catppuccin check downloads from
+GitHub and skips when offline.
 
 ## Refresh a vendored file
 

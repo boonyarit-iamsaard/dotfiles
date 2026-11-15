@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check pinned Theme extras and the lazydocker Theme variant contract."""
+"""Check pinned Theme extras, the shared theme links and the lazydocker contract."""
 
 from __future__ import annotations
 
@@ -8,15 +8,28 @@ import os
 import re
 import subprocess
 import unittest
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+SHARED_THEMES = REPO_ROOT.parent / "shared/themes"
+# Paths are relative to SHARED_THEMES.
 THEME_EXTRAS = (
-    (".tmux/themes/extras/dark-2026.conf", "extras/tmux/dark-2026.conf"),
-    (".config/lazygit/themes/dark-2026.yml", "extras/lazygit/dark-2026.yml"),
-    (".config/lazydocker/themes/dark-2026.yml", "extras/lazydocker/dark-2026.yml"),
-    (".config/nvim/lua/themes/dark-2026/lazygit.lua", "extras/lazyvim/lazygit.lua"),
+    ("tmux/extras/dark-2026.conf", "extras/tmux/dark-2026.conf"),
+    ("lazygit/dark-2026.yml", "extras/lazygit/dark-2026.yml"),
+    ("lazydocker/dark-2026.yml", "extras/lazydocker/dark-2026.yml"),
+    ("nvim/dark-2026/lazygit.lua", "extras/lazyvim/lazygit.lua"),
+    ("btop/dark-2026.theme", "extras/btop/dark-2026.theme"),
+)
+# Each macOS theme path and the shared/themes path it must link to.
+SHARED_THEME_LINKS = (
+    (".config/btop/themes", "btop"),
+    (".config/lazydocker/themes", "lazydocker"),
+    (".config/lazygit/themes", "lazygit"),
+    (".config/nvim/lua/themes", "nvim"),
+    (".tmux/themes", "tmux"),
 )
 
 
@@ -47,14 +60,49 @@ class ThemeExtrasTest(unittest.TestCase):
                 fix = (
                     f"{relative_path}: re-copy from pin {self.pin} with "
                     f"git -C {self.plugin} show {self.pin}:{upstream_path} "
-                    f"> {relative_path}"
+                    f"> shared/themes/{relative_path}"
                 )
                 upstream = subprocess.check_output(
                     ["git", "-C", str(self.plugin), "show", f"{self.pin}:{upstream_path}"]
                 )
-                vendored = REPO_ROOT / relative_path
+                vendored = SHARED_THEMES / relative_path
                 self.assertTrue(vendored.is_file(), fix)
                 self.assertEqual(upstream, vendored.read_bytes(), fix)
+
+
+class CatppuccinThemesTest(unittest.TestCase):
+    def test_vendored_catppuccin_files_match_pin(self) -> None:
+        pins = json.loads((SHARED_THEMES / "catppuccin.json").read_text(encoding="utf-8"))
+        for port, pin in pins.items():
+            for relative_path, upstream_path in pin["files"].items():
+                with self.subTest(file=relative_path):
+                    url = (
+                        f"https://raw.githubusercontent.com/catppuccin/{port}/"
+                        f"{pin['commit']}/{upstream_path}"
+                    )
+                    try:
+                        with urllib.request.urlopen(url, timeout=20) as response:
+                            upstream = response.read()
+                    except (urllib.error.URLError, TimeoutError) as error:
+                        self.skipTest(f"cannot fetch {url}: {error}")
+                    vendored = SHARED_THEMES / relative_path
+                    fix = f"shared/themes/{relative_path}: re-download from {url}"
+                    self.assertTrue(vendored.is_file(), fix)
+                    self.assertEqual(upstream, vendored.read_bytes(), fix)
+
+
+class SharedThemeLinksTest(unittest.TestCase):
+    def test_theme_paths_link_into_shared_themes(self) -> None:
+        for relative_path, shared_path in SHARED_THEME_LINKS:
+            with self.subTest(path=relative_path):
+                path = REPO_ROOT / relative_path
+                self.assertTrue(path.is_symlink(), f"{relative_path} must be a symlink")
+                self.assertFalse(
+                    Path(os.readlink(path)).is_absolute(),
+                    f"{relative_path} must be a relative symlink",
+                )
+                self.assertEqual((SHARED_THEMES / shared_path).resolve(), path.resolve())
+                self.assertTrue(path.exists(), f"{relative_path} is a broken link")
 
 
 class LazyDockerThemeVariantTest(unittest.TestCase):
