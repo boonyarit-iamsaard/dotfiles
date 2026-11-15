@@ -8,8 +8,8 @@ active theme; there is no shared switch.
 
 WSL uses these shared files. Windows uses the LazyGit variants through
 `LG_CONFIG_FILE`, links the btop themes through its manifest, and copies the
-active shared LazyDocker variant into its platform config's marker block.
-macOS adoption is tracked in
+active shared LazyDocker variant into its platform config's marker block. macOS
+adoption is tracked in
 [issue #9](https://github.com/boonyarit-iamsaard/dotfiles/issues/9).
 
 | Folder        | Tool                                                    |
