@@ -11,6 +11,9 @@ Personal developer environment setup, one folder per platform.
 Start with the README of your platform's folder. Each machine links its setup
 from its own folder in this one checkout.
 
+Shared non-theme config and the items kept per platform are described in
+[`shared/README.md`](shared/README.md).
+
 Agent skills are kept once in [`shared/skills/`](shared/skills/) and listed in
 one manifest, `shared/skills/skills.json`, that every platform's skill sync
 reads (see [shared/skills/README.md](shared/skills/README.md)).

@@ -2,6 +2,22 @@
 
 Personal shell and tooling configuration managed with GNU Stow.
 
+## Shared config
+
+`config/lazygit/config.yml` and `ideavimrc/.ideavimrc` are relative symlinks to
+`shared/config/lazygit/config.yml` and `shared/.ideavimrc`. LazyGit's base has
+no theme; `LG_CONFIG_FILE` in `zsh/.zshrc` layers the active theme over it.
+btop's settings stay here because each platform keeps its own theme and
+preferences. See [shared/README.md](../shared/README.md) for the extraction
+status.
+
+Restow these packages from `wsl/`:
+
+```bash
+stow --restow --target="$HOME/.config" config
+stow --restow --target="$HOME" ideavimrc
+```
+
 ## Maintenance scripts
 
 `update-system.sh` and `docker-cleanup.sh` share `scripts/lib/step-runner.zsh`:
@@ -12,8 +28,8 @@ each prints a step summary and exits 1 when any error-severity step failed
 
 Three themes are maintained: default dark modern, catppuccin mocha and
 dark 2026. Dark 2026 is active in Neovim, tmux, lazygit, lazydocker and btop;
-starship runs its built-in default. Each tool keeps a base config here plus one
-theme variant per theme in [`../shared/themes/`](../shared/themes/), which every
+starship runs its built-in default. Each tool has a base config plus one theme
+variant per theme in [`../shared/themes/`](../shared/themes/), which every
 platform shares. The theme folders and starship files here are relative symlinks
 into it (`config/lazygit/themes -> ../../../shared/themes/lazygit`). Switching
 is a one-line edit per tool:
