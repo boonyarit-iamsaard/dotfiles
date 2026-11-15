@@ -24,10 +24,7 @@ macos/agents/.agents/skills/impeccable/
 macos/claude/.claude/skills/impeccable/
 
 # Tool-written runtime state.
-macos/Library/Application Support/lazygit/state.yml
-macos/Library/Application Support/superfile/firstUseCheck
-macos/Library/Application Support/superfile/lastCheckVersion
-macos/Library/Application Support/superfile/themeFileVersion
+macos/.config/lazygit/state.yml
 # superfile writes its bundled themes here; only the one we made is tracked.
-macos/Library/Application Support/superfile/theme/*
-!macos/Library/Application Support/superfile/theme/default-dark-modern.toml
+macos/.config/superfile/theme/*
+!macos/.config/superfile/theme/default-dark-modern.toml

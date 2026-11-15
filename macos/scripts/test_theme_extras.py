@@ -14,8 +14,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 THEME_EXTRAS = (
     (".tmux/themes/extras/dark-2026.conf", "extras/tmux/dark-2026.conf"),
-    ("Library/Application Support/lazygit/themes/dark-2026.yml", "extras/lazygit/dark-2026.yml"),
-    ("Library/Application Support/lazydocker/themes/dark-2026.yml", "extras/lazydocker/dark-2026.yml"),
+    (".config/lazygit/themes/dark-2026.yml", "extras/lazygit/dark-2026.yml"),
+    (".config/lazydocker/themes/dark-2026.yml", "extras/lazydocker/dark-2026.yml"),
     (".config/nvim/lua/themes/dark-2026/lazygit.lua", "extras/lazyvim/lazygit.lua"),
 )
 
@@ -59,7 +59,7 @@ class ThemeExtrasTest(unittest.TestCase):
 
 class LazyDockerThemeVariantTest(unittest.TestCase):
     def test_active_theme_matches_named_variant_body(self) -> None:
-        directory = REPO_ROOT / "Library/Application Support/lazydocker"
+        directory = REPO_ROOT / ".config/lazydocker"
         lines = (directory / "config.yml").read_text(encoding="utf-8").splitlines(
             keepends=True
         )
@@ -91,7 +91,7 @@ class LazyDockerThemeVariantTest(unittest.TestCase):
         self.assertEqual(
             body,
             "".join(lines[start + 1 : end]),
-            f"Library/Application Support/lazydocker/config.yml: replace text between markers with {theme} "
+            f".config/lazydocker/config.yml: replace text between markers with {theme} "
             "after removing only its leading comment lines and blank lines",
         )
 

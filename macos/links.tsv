@@ -8,6 +8,8 @@
 .config/ghostty/themes/catppuccin-mocha	.config/ghostty/themes/catppuccin-mocha
 .config/ghostty/themes/dark-2026	.config/ghostty/themes/dark-2026
 .config/ghostty/themes/default-dark-modern	.config/ghostty/themes/default-dark-modern
+.config/lazydocker	.config/lazydocker
+.config/lazygit	.config/lazygit
 .config/nvim/init.lua	.config/nvim/init.lua
 .config/nvim/lazy-lock.json	.config/nvim/lazy-lock.json
 .config/nvim/lazyvim.json	.config/nvim/lazyvim.json
@@ -25,6 +27,7 @@
 .config/nvim/lua/plugins/snacks.lua	.config/nvim/lua/plugins/snacks.lua
 .config/nvim/lua/themes	.config/nvim/lua/themes
 .config/nvim/stylua.toml	.config/nvim/stylua.toml
+.config/superfile	.config/superfile
 .ideavimrc	.ideavimrc
 .local/bin/gh	.local/bin/gh
 .tmux.conf	.tmux.conf
@@ -32,7 +35,4 @@
 .tmux/themes	.tmux/themes
 .zshenv	.zshenv
 .zshrc	.zshrc
-Library/Application Support/lazydocker	Library/Application Support/lazydocker
-Library/Application Support/lazygit	Library/Application Support/lazygit
-Library/Application Support/superfile	Library/Application Support/superfile
 docker-cleanup.sh	docker-cleanup/docker-cleanup.sh

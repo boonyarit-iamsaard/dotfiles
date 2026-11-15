@@ -23,9 +23,15 @@ its source is gone. It also fails on an undeclared link into the checkout in
 are not searched. `--create` adds missing links as relative symlinks and never
 replaces an existing file or link.
 
-Tool-written runtime state (LazyGit `state.yml`, superfile's version stamps) is
-ignored by `.gitignore`, as are the themes superfile writes into its `theme/`
-folder; only `default-dark-modern.toml` there is tracked.
+`.zshenv` sets `XDG_CONFIG_HOME` to `~/.config`, so lazygit, lazydocker and
+superfile read their config there, as on WSL, instead of
+`~/Library/Application Support`. superfile keeps its state (pinned folders,
+toggles, version stamps, log) in `~/Library/Application Support/superfile`,
+outside the repo.
+
+LazyGit's `state.yml` is ignored by `.gitignore`, as are the themes superfile
+writes into its `theme/` folder; only `default-dark-modern.toml` there is
+tracked.
 
 ## Themes
 
@@ -36,15 +42,15 @@ settings and theme variants are separate:
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | Ghostty    | Uncomment one `theme` line in `.config/ghostty/config`; variants live under `.config/ghostty/themes/`.                         |
 | tmux       | Change `@theme` in `.tmux.conf` to `catppuccin`, `dark-2026`, or `default-dark-modern`; restart the server for a clean switch. |
-| lazygit    | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `Library/Application Support/lazygit/themes/`.     |
+| lazygit    | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `.config/lazygit/themes/`.                         |
 | lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments.                         |
 | Neovim     | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern.     |
-| superfile  | Change `theme` in `Library/Application Support/superfile/config.toml` to a file name under its `theme/` folder.                |
+| superfile  | Change `theme` in `.config/superfile/config.toml` to a file name under its `theme/` folder.                                    |
 | btop       | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed.                |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the tmux
-configurations include them without naming the checkout. macOS Application
-Support paths and the transparent Neovim floating window are retained.
+configurations include them without naming the checkout. The transparent Neovim
+floating window is retained.
 
 btop saves its settings on exit, so changing options inside btop edits the
 tracked `btop.conf`.
