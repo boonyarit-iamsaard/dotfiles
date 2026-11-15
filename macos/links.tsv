@@ -30,9 +30,6 @@
 .config/ghostty/themes/tokyonight-moon	.config/ghostty/themes/tokyonight-moon
 .config/ghostty/themes/tokyonight-night	.config/ghostty/themes/tokyonight-night
 .config/ghostty/themes/tokyonight-storm	.config/ghostty/themes/tokyonight-storm
-.config/nvim/.neoconf.json	.config/nvim/.neoconf.json
-.config/nvim/LICENSE	.config/nvim/LICENSE
-.config/nvim/README.md	.config/nvim/README.md
 .config/nvim/init.lua	.config/nvim/init.lua
 .config/nvim/lazy-lock.json	.config/nvim/lazy-lock.json
 .config/nvim/lazyvim.json	.config/nvim/lazyvim.json
@@ -40,16 +37,13 @@
 .config/nvim/lua/config/keymaps.lua	.config/nvim/lua/config/keymaps.lua
 .config/nvim/lua/config/lazy.lua	.config/nvim/lua/config/lazy.lua
 .config/nvim/lua/config/options.lua	.config/nvim/lua/config/options.lua
-.config/nvim/lua/helpers.lua	.config/nvim/lua/helpers.lua
 .config/nvim/lua/plugins/better-escape.lua	.config/nvim/lua/plugins/better-escape.lua
 .config/nvim/lua/plugins/colorscheme.lua	.config/nvim/lua/plugins/colorscheme.lua
 .config/nvim/lua/plugins/conform.lua	.config/nvim/lua/plugins/conform.lua
 .config/nvim/lua/plugins/copilot.lua	.config/nvim/lua/plugins/copilot.lua
-.config/nvim/lua/plugins/example.lua	.config/nvim/lua/plugins/example.lua
 .config/nvim/lua/plugins/indent-blankline.lua	.config/nvim/lua/plugins/indent-blankline.lua
 .config/nvim/lua/plugins/lsp.lua	.config/nvim/lua/plugins/lsp.lua
 .config/nvim/lua/plugins/neo-tree.lua	.config/nvim/lua/plugins/neo-tree.lua
-.config/nvim/lua/plugins/obsidian.lua	.config/nvim/lua/plugins/obsidian.lua
 .config/nvim/lua/plugins/snacks.lua	.config/nvim/lua/plugins/snacks.lua
 .config/nvim/lua/themes	.config/nvim/lua/themes
 .config/nvim/stylua.toml	.config/nvim/stylua.toml

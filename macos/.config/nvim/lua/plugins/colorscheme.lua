@@ -1,5 +1,3 @@
--- local helpers = require("helpers")
-
 return {
   -- Uncomment the matching theme import when selecting a different colorscheme.
   -- { import = "themes.dark-2026" },
@@ -13,87 +11,6 @@ return {
     end,
   },
 
-  -- {
-  --   "folke/tokyonight.nvim",
-  --   opts = {
-  --     -- transparent = true,
-  --     style = "moon",
-  --     -- styles = {
-  --     --   sidebars = "transparent",
-  --     --   floats = "transparent",
-  --     -- },
-  --   },
-  -- },
-
-  -- {
-  --   "sainnhe/edge",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     -- Optionally configure and load the colorscheme
-  --     -- directly inside the plugin declaration.
-  --     -- vim.g.edge_style = "neon"
-  --     vim.g.edge_enable_italic = true
-  --     vim.cmd.colorscheme("edge")
-  --   end,
-  -- },
-
-  -- {
-  --   "projekt0n/github-nvim-theme",
-  --   name = "github-theme",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require("github-theme").setup({
-  --       --
-  --     })
-  --
-  --     -- local appearance = helpers.get_macos_appearance()
-  --     -- local theme = appearance == "light" and "github_light_default" or "github_dark_dimmed"
-  --     -- vim.cmd("colorscheme " .. theme)
-  --     vim.cmd("colorscheme github_dark_dimmed")
-  --   end,
-  -- },
-
-  -- {
-  --   "Mofiqul/dracula.nvim",
-  --   opts = {
-  --     transparent_bg = false,
-  --   },
-  -- },
-
-  -- {
-  --   "navarasu/onedark.nvim",
-  --   priority = 1000, -- make sure to load this before all the other start plugins
-  --   config = function()
-  --     require("onedark").setup({
-  --       style = "dark",
-  --     })
-  --     -- Enable theme
-  --     require("onedark").load()
-  --   end,
-  -- },
-
-  -- {
-  --   "olimorris/onedarkpro.nvim",
-  --   priority = 1000, -- Ensure it loads first
-  --   config = function()
-  --     require("onedarkpro").setup({
-  --       --
-  --     })
-  --
-  --     vim.cmd("colorscheme onedark")
-  --     -- local appearance = helpers.get_macos_appearance()
-  --     -- local theme = appearance == "light" and "github_light" or "github_dark_dimmed"
-  --     -- vim.cmd("colorscheme " .. theme)
-  --     -- if vim.o.background == "dark" then
-  --     --   vim.cmd("colorscheme onelight")
-  --     -- else
-  --     --   vim.cmd("colorscheme onedark")
-  --     -- end
-  --   end,
-  -- },
-
   {
     -- vscode.nvim mixes Dark+ and Dark Modern; these pull its surfaces onto
     -- Dark Modern. Hexes from microsoft/vscode theme-defaults/themes/dark_modern.json,
@@ -102,7 +19,6 @@ return {
     priority = 1000,
     config = function()
       require("vscode").setup({
-        -- transparent = true,
         color_overrides = {
           vscFront = "#cccccc", -- editor.foreground
           vscLineNumber = "#6e7681", -- editorLineNumber.foreground
@@ -127,10 +43,6 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
         flavour = "mocha", -- latte, frappe, macchiato, mocha
         transparent_background = true, -- let Ghostty's background-opacity/blur show through
         float = {
