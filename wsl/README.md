@@ -22,6 +22,7 @@ one-line edit per tool:
 | lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `config/lazydocker/themes/<name>.yml` |
 | Neovim | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
 | starship | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only) |
+| btop | `color_theme` in `config/btop/btop.conf` (variants in `config/btop/themes/`; catppuccin mocha and default dark modern only) |
 
 The dark 2026 palette is owned by
 [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim); its
