@@ -2,6 +2,7 @@ pnpm-lock.yaml
 
 # Third-party generated payload; preserve upstream formatting for reviewable refreshes.
 windows/skills/vendor/
+shared/skills/vendor/
 
 # Written by lazy.nvim and LazyVim; formatting them would churn on every sync.
 macos/.config/nvim/lazy-lock.json

@@ -15,6 +15,3 @@ _darcs
 ^/README.*
 ^/LICENSE.*
 ^/COPYING
-
-# Installed and updated directly by Impeccable.
-^/\.claude/skills/impeccable

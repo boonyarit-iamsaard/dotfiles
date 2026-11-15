@@ -1,12 +1,12 @@
 # Agent skills
 
-Skills in this directory have three owners:
+Every skill in this directory is a relative symlink managed by
+`scripts/update-skills`:
 
-- Matt Pocock skills are relative symlinks managed by `scripts/update-skills`.
-- Personal skills are tracked directly in this dotfiles repository and declared
-  per consumer in `CONSUMERS` (`scripts/update_skills.py`); the sync rejects any
-  other real entry as a stale upstream copy.
-- Installer-owned skills, such as `impeccable`, are ignored by Git.
+- Upstream skills link into the checkout of the owner's skills fork.
+- Personal and vendored skills link into `shared/skills/`, as declared in
+  [`shared/skills/skills.json`](../../../../shared/skills/skills.json).
 
-The upstream category catalogs are preserved as
-[ENGINEERING.md](./ENGINEERING.md) and [PRODUCTIVITY.md](./PRODUCTIVITY.md).
+The sync rejects any other real entry as a stale copy. The upstream category
+catalogs are preserved as [ENGINEERING.md](./ENGINEERING.md) and
+[PRODUCTIVITY.md](./PRODUCTIVITY.md).

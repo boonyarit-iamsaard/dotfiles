@@ -1,39 +1,42 @@
 #!/bin/zsh
 
-# Install and update agent plugins at user scope for every client on PATH.
-# Each command is safe to re-run: adding an existing marketplace or installing an
-# installed plugin succeeds without changes, so first runs and updates share one path.
+# Install and update the Claude Code plugins pinned in shared/skills/skills.json.
+# Each command is safe to re-run, so first runs and updates share one path.
+# Codex gets Ponytail's skills from the vendored copy in ~/.agents/skills instead.
 source "${0:A:h}/lib/step-runner.zsh"
 
-# Each entry is "<plugin>@<marketplace> <GitHub owner/repo of the marketplace>".
-plugins=(
-    "ponytail@ponytail DietrichGebert/ponytail"
-)
+manifest=${0:A:h:h:h}/shared/skills/skills.json
 
-for entry in $plugins; do
-    plugin=${entry%% *} source_repo=${entry#* }
+# Each line is "<plugin>@<marketplace> <owner/repo>#<ref>".
+if ! entries=$(python3 -c '
+import json, sys
+for p in json.load(open(sys.argv[1]))["plugins"]["claude"]:
+    print(p["plugin"], p["marketplace"] + "#" + p["ref"])
+' "$manifest"); then
+    log_error "Cannot read the Claude plugins from $manifest."
+    exit 1
+fi
+
+# Adding a marketplace from a different source fails, so a new pin re-adds it.
+pin_marketplace() {
+    local name=$1 source=$2
+    claude plugin marketplace add "$source" && return 0
+    claude plugin marketplace remove "$name" && claude plugin marketplace add "$source"
+}
+
+for entry in ${(f)entries}; do
+    plugin=${entry%% *} source=${entry#* }
     marketplace=${plugin#*@}
 
     if command -v claude &> /dev/null; then
         group_begin "Claude Code: $plugin"
-        step error "Adding Claude marketplace $marketplace" claude plugin marketplace add "$source_repo"
+        step error "Pinning Claude marketplace $marketplace to $source" pin_marketplace "$marketplace" "$source"
         step error "Refreshing Claude marketplace $marketplace" claude plugin marketplace update "$marketplace"
         step error "Installing Claude plugin $plugin" claude plugin install "$plugin" --scope user
         step error "Updating Claude plugin $plugin" claude plugin update "$plugin"
         group_end
     else
         step_skip "Claude Code: $plugin" "'claude' command not found. Skipping Claude plugin $plugin."
-    fi
-
-    # Codex has no per-plugin update: add reinstalls from the refreshed snapshot.
-    if command -v codex &> /dev/null; then
-        group_begin "Codex: $plugin"
-        step error "Adding Codex marketplace $marketplace" codex plugin marketplace add "$source_repo"
-        step error "Refreshing Codex marketplace $marketplace" codex plugin marketplace upgrade "$marketplace"
-        step error "Installing Codex plugin $plugin" codex plugin add "$plugin"
-        group_end
-    else
-        step_skip "Codex: $plugin" "'codex' command not found. Skipping Codex plugin $plugin."
     fi
 done
 

@@ -23,14 +23,10 @@ from typing import Iterable, Protocol, TypedDict
 
 @dataclass(frozen=True)
 class Consumer:
-    """One agent tool's skill layout, personal skills, and installer-owned skills."""
+    """One agent tool's Stow package and skill layout."""
 
     name: str
     skills_dir: Path
-    installer_owned: frozenset[str]
-    # Personal skills are real directories tracked in dotfiles. Any other real
-    # entry is a stale copy the sync cannot retire, so planning rejects it.
-    personal: frozenset[str] = frozenset()
 
     def package_root(self, dotfiles_root: Path) -> Path:
         return dotfiles_root / self.name / self.skills_dir
@@ -39,21 +35,13 @@ class Consumer:
         return home / self.skills_dir
 
 
-CATEGORIES = ("engineering", "productivity")
+# The Stow packages; shared/skills/skills.json must declare the same consumers and targets.
 CONSUMERS: tuple[Consumer, ...] = (
-    Consumer(
-        "agents",
-        Path(".agents/skills"),
-        frozenset({"impeccable"}),
-        frozenset({"commit-message", "typescript-house-style"}),
-    ),
-    Consumer(
-        "claude",
-        Path(".claude/skills"),
-        frozenset({"impeccable"}),
-        frozenset({"commit-message", "edit-prose", "runbook", "typescript-house-style"}),
-    ),
+    Consumer("agents", Path(".agents/skills")),
+    Consumer("claude", Path(".claude/skills")),
 )
+SHARED_MANIFEST_FILENAME = "skills.json"
+SHARED_MANIFEST_VERSION = 2
 README_FILENAME = "README.md"
 LEGACY_ENTRIES = frozenset(
     {
@@ -97,6 +85,7 @@ class Config:
     state_root: Path
     backup_root: Path
     extra_checkouts: dict[Path, str]
+    shared_root: Path
 
     @property
     def skills_root(self) -> Path:
@@ -169,7 +158,18 @@ class DiskSnapshot:
 
     skills: tuple[SourceSkill, ...]
     catalogs: tuple[SourceSkill, ...]
+    # Skills from shared/skills/skills.json, each paired with its consumer.
+    manifest_skills: tuple[tuple[str, SourceSkill], ...]
+    categories: tuple[str, ...]
     resolved_skills_root: Path
+    resolved_shared_root: Path
+
+    def is_managed_target(self, target: Path | None) -> bool:
+        """A link into the skills checkout or shared/skills/ is the sync's to replace."""
+        return target is not None and (
+            is_within(target, self.resolved_skills_root)
+            or is_within(target, self.resolved_shared_root)
+        )
     consumer_roots: tuple[tuple[str, Path], ...]
     manifest_entries: frozenset[tuple[str, str]]
     inferred_managed_links: frozenset[tuple[str, str]]
@@ -178,14 +178,63 @@ class DiskSnapshot:
     grouped_entries: tuple[tuple[str, tuple[Path, ...]], ...]
 
 
+def read_shared_manifest(
+    shared_root: Path,
+) -> tuple[tuple[str, ...], tuple[tuple[str, SourceSkill], ...]]:
+    """Return the categories and per-consumer skills shared/skills/skills.json declares.
+
+    A skill's source is one path for every consumer or a map of consumer to
+    path; a map that skips a consumer must say why in "reason".
+    """
+    manifest = shared_root / SHARED_MANIFEST_FILENAME
+    consumers = [consumer.name for consumer in CONSUMERS]
+    try:
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        if payload.get("version") != SHARED_MANIFEST_VERSION:
+            raise ValueError("unsupported manifest version")
+        categories = tuple(payload["repository"]["categories"])
+        declared = {
+            name: Path(consumer["target"]) for name, consumer in payload["consumers"].items()
+        }
+        expected = {consumer.name: consumer.skills_dir for consumer in CONSUMERS}
+        if declared != expected:
+            raise ValueError(f"consumers {declared} do not match {expected}")
+        entries = payload["skills"]
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise SyncError(f"invalid shared manifest {manifest}: {error}") from error
+
+    shared: list[tuple[str, SourceSkill]] = []
+    for entry in entries:
+        name = entry["name"]
+        source = entry["source"]
+        sources = (
+            {consumer: source for consumer in consumers}
+            if isinstance(source, str)
+            else dict(source)
+        )
+        for consumer in sources:
+            if consumer not in consumers:
+                raise SyncError(f"skill {name!r} names unknown consumer {consumer!r}")
+        for consumer in consumers:
+            if consumer not in sources and not entry.get("reason"):
+                raise SyncError(f"skill {name!r} skips {consumer} without a reason")
+        for consumer, relative in sorted(sources.items()):
+            path = shared_root / relative
+            if not (path / "SKILL.md").is_file():
+                raise SyncError(f"skill {name!r} has no SKILL.md in {path}")
+            shared.append((consumer, SourceSkill(name, path, path.resolve())))
+    return categories, tuple(shared)
+
+
 def read_snapshot(config: Config) -> DiskSnapshot:
     """Read source skills, Managed links, and corroborated migration copies once."""
     if not config.skills_root.is_dir():
         raise SyncError(f"skills checkout not found at {config.skills_repo}")
+    categories, manifest_skills = read_shared_manifest(config.shared_root)
 
     skills: dict[str, SourceSkill] = {}
     catalogs: list[SourceSkill] = []
-    for category in CATEGORIES:
+    for category in categories:
         category_root = config.skills_root / category
         catalog = category_root / README_FILENAME
         if not catalog.is_file():
@@ -201,12 +250,17 @@ def read_snapshot(config: Config) -> DiskSnapshot:
                     f"duplicate skill name {name!r}: {previous.path} and {skill_md.parent}"
                 )
             skills[name] = SourceSkill(name, skill_md.parent, skill_md.parent.resolve())
+    for _, source in manifest_skills:
+        if source.name in skills:
+            raise SyncError(
+                f"manifest skill {source.name!r} collides with an upstream skill"
+            )
 
-    manifest = config.state_root / "managed-links.json"
+    links_manifest = config.state_root / "managed-links.json"
     manifest_entries: set[tuple[str, str]] = set()
-    if manifest.exists():
+    if links_manifest.exists():
         try:
-            payload = json.loads(manifest.read_text(encoding="utf-8"))
+            payload = json.loads(links_manifest.read_text(encoding="utf-8"))
             if payload.get("version") != MANIFEST_VERSION:
                 raise ValueError("unsupported manifest version")
             manifest_entries = {
@@ -214,7 +268,7 @@ def read_snapshot(config: Config) -> DiskSnapshot:
                 for entry in payload.get("links", [])
             }
         except (OSError, ValueError, KeyError, TypeError) as error:
-            raise SyncError(f"invalid sync manifest {manifest}: {error}") from error
+            raise SyncError(f"invalid sync manifest {links_manifest}: {error}") from error
 
     paths: dict[Path, ConsumerPath] = {}
 
@@ -231,6 +285,7 @@ def read_snapshot(config: Config) -> DiskSnapshot:
         return paths[path]
 
     resolved_skills_root = config.skills_root.resolve(strict=False)
+    resolved_shared_root = config.shared_root.resolve(strict=False)
     consumer_roots = tuple(
         (consumer.name, consumer.package_root(config.dotfiles_root))
         for consumer in CONSUMERS
@@ -241,12 +296,15 @@ def read_snapshot(config: Config) -> DiskSnapshot:
         if inspect(root).is_dir:
             for entry in root.iterdir():
                 state = inspect(entry)
-                if state.is_symlink and is_within(
-                    state.resolved_target, resolved_skills_root
+                if state.is_symlink and any(
+                    is_within(state.resolved_target, managed)
+                    for managed in (resolved_skills_root, resolved_shared_root)
                 ):
                     inferred.add((consumer, entry.name))
         for source in (*skills.values(), *catalogs):
             inspect(root / source.name)
+    for consumer, source in manifest_skills:
+        inspect(roots[consumer] / source.name)
 
     for consumer, name in manifest_entries | LEGACY_ENTRIES:
         inspect(roots[consumer] / name)
@@ -255,7 +313,7 @@ def read_snapshot(config: Config) -> DiskSnapshot:
     migratable_copies: set[tuple[str, str]] = set()
     agents_root = roots["agents"]
     claude_root = roots["claude"]
-    for category in CATEGORIES:
+    for category in categories:
         group = agents_root / category
         state = inspect(group)
         if not state.is_dir or state.is_symlink:
@@ -278,7 +336,10 @@ def read_snapshot(config: Config) -> DiskSnapshot:
     return DiskSnapshot(
         skills=tuple(skills.values()),
         catalogs=tuple(catalogs),
+        manifest_skills=manifest_skills,
+        categories=categories,
         resolved_skills_root=resolved_skills_root,
+        resolved_shared_root=resolved_shared_root,
         consumer_roots=consumer_roots,
         manifest_entries=frozenset(manifest_entries),
         inferred_managed_links=frozenset(inferred),
@@ -298,13 +359,14 @@ def plan(snapshot: DiskSnapshot, *, migrate: bool, backup_dir: Path) -> Plan:
         for consumer in roots
         for source in (*snapshot.skills, *snapshot.catalogs)
     }
+    desired.update(
+        ((consumer, source.name), source) for consumer, source in snapshot.manifest_skills
+    )
     previously_managed = snapshot.manifest_entries | snapshot.inferred_managed_links
     actions: list[Action] = []
 
     def source_managed(state: ConsumerPath) -> bool:
-        return state.is_symlink and is_within(
-            state.resolved_target, snapshot.resolved_skills_root
-        )
+        return state.is_symlink and snapshot.is_managed_target(state.resolved_target)
 
     if migrate:
         root = roots["agents"]
@@ -425,14 +487,13 @@ def plan(snapshot: DiskSnapshot, *, migrate: bool, backup_dir: Path) -> Plan:
 def reject_unknown_real_paths(
     snapshot: DiskSnapshot, owned: Iterable[tuple[str, str]]
 ) -> None:
-    """Reject real entries the sync cannot retire: stale copies of upstream skills.
+    """Reject real entries the sync cannot retire, such as stale skill copies.
 
-    Personal skills, installer-owned skills, the package README, and paths that
-    planning already handles (desired links, stale managed links, the grouped
-    Agents layout) are the only real entries a consumer package may hold.
+    The package README and paths that planning already handles (desired links,
+    stale managed links, the grouped Agents layout) are the only real entries a
+    consumer package may hold; every skill is a link.
     """
     owned = frozenset(owned)
-    consumers = {consumer.name: consumer for consumer in CONSUMERS}
     grouped = {entry.name for _, entries in snapshot.grouped_entries for entry in entries}
     roots = {root: consumer for consumer, root in snapshot.consumer_roots}
     for state in snapshot.consumer_paths:
@@ -444,16 +505,13 @@ def reject_unknown_real_paths(
             or not state.exists
             or (consumer, name) in owned
             or name == README_FILENAME
-            or name in CATEGORIES
+            or name in snapshot.categories
             or name in grouped
-            or name in consumers[consumer].personal
-            or name in consumers[consumer].installer_owned
         ):
             continue
         raise SyncError(
-            f"unknown real skill path: {state.path}; it is neither a personal "
-            "skill nor installer-owned, so remove it or declare it personal "
-            "in CONSUMERS"
+            f"unknown real skill path: {state.path}; declare the skill in "
+            "shared/skills/skills.json and remove this copy"
         )
 
 
@@ -740,7 +798,13 @@ def config_from_environment() -> Config:
             "EXTRA_CHECKOUTS_ROOT", Path.home() / "workspace" / "personal"
         )
     ).resolve()
+    shared_root = Path(
+        os.environ.get(
+            "SHARED_SKILLS_ROOT", dotfiles_root.parent / "shared" / "skills"
+        )
+    ).resolve()
     return Config(
+        shared_root=shared_root,
         dotfiles_root=dotfiles_root,
         skills_repo=skills_repo,
         state_root=state_root,

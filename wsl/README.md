@@ -163,10 +163,21 @@ ls -d ~/.sdkman/candidates/java/*/ | grep -v '/current/$'
 
 ## Agent skills
 
-Matt Pocock's engineering and productivity skills are maintained in a read-only
-checkout at `~/workspace/personal/skills`. The dotfiles packages contain
-flattened, relative symlinks to that checkout so Claude Code, Codex, and other
-Agent Skills clients see the same skill versions.
+Skills come from one manifest, `shared/skills/skills.json` (see
+[shared/skills/README.md](../shared/skills/README.md) and
+[ADR 0002](../docs/adr/0002-skills-shared-from-one-manifest.md)):
+
+- Upstream skills from the owner's fork of Matt Pocock's skills, in a read-only
+  checkout at `~/workspace/personal/skills`.
+- Personal skills (`commit-message`, `edit-prose`, `runbook`,
+  `typescript-house-style`), kept once under `shared/skills/`.
+- Vendored skills (`impeccable`, `ponytail`), kept under `shared/skills/vendor/`
+  at the pins the manifest records.
+
+The `agents` and `claude` Stow packages hold only flattened, relative symlinks:
+into the checkout for upstream skills and into `shared/skills/` for the rest.
+Claude Code, Codex, and other Agent Skills clients therefore see the same
+versions.
 
 Update the checkout and reconcile both consumers with:
 
@@ -178,74 +189,46 @@ Use `--dry-run` to preview changes, `--check` in diagnostics, and `--migrate`
 only for the initial conversion from copied skills. The updater requires Python
 3 and uses only its standard library. It refuses to pull when the skills
 checkout has local changes. Routine reconciliation refuses to replace any real
-directory or unmanaged symlink. The one-time `--migrate` mode is deliberately
-broader: it matches each Claude `SKILL.md` to its grouped Agents counterpart,
-snapshots both complete consumer trees, and then archives the verified copies.
+directory or unmanaged symlink, and rejects any real skill directory in a
+package: declare the skill in the manifest instead. The one-time `--migrate`
+mode is deliberately broader: it matches each Claude `SKILL.md` to its grouped
+Agents counterpart, snapshots both complete consumer trees, and then archives
+the verified copies.
 
 The engineering and productivity source catalogs remain separate and are linked
 into each consumer as `ENGINEERING.md` and `PRODUCTIVITY.md`.
 
 ### Stow layout
 
-The shared user-level skill directories remain real, while each managed skill
-folder is linked as a whole directory so Codex can discover it:
+The user-level skill directories `~/.agents/skills` and `~/.claude/skills` stay
+real. The updater creates them before the final Stow operation, so Stow cannot
+collapse either one into a single symlink, and lets Stow fold only the
+individual skill directories. The updater re-stows both consumers itself,
+including after a failed run that had already unlinked them.
 
-```bash
-~/dotfiles/wsl/scripts/update-skills
-```
-
-The updater creates `~/.agents/skills` and `~/.claude/skills` before the final
-Stow operation, preventing Stow from collapsing either shared directory into a
-single symlink. It removes the old file-by-file layout and lets Stow fold only
-the individual skill directories. Tools that install skills in place (e.g.
-`npx impeccable`, which writes to `~/.claude/skills/impeccable`) can therefore
-replace only their own leaf directory without taking every skill offline.
-
-`impeccable` is **not** version-controlled (see `.gitignore`) and is excluded
-from both Stow packages by their `.stow-local-ignore` files. It is installed and
-updated in place by its own tool, which rewrites its files on every update:
-
-```bash
-npx impeccable update   # manages ~/.claude/skills/impeccable and ~/.agents/skills/impeccable in place
-```
-
-It is freely re-installable, so it lives as plain files alongside the stowed
-skills rather than as tracked symlinks. Custom dotfiles skills stay tracked;
-routine reconciliation leaves both custom and installer-owned directories
-untouched. Migration preserves nonmatching directories and backs up every path
-it archives.
-
-### When to re-stow
-
-`npx impeccable update` does **not** require a re-stow — it only rewrites its
-own folder. The skills updater re-stows both consumers automatically, including
-after a failed run that had already unlinked them. Re-stow Claude manually only
-when:
-
-- You add (or rename) a custom skill under `claude/.claude/skills/` and need it
-  symlinked into `~/.claude/skills`.
-- An installer ever clobbers `~/.claude/skills` itself (the `--no-folding`
-  real-directory layout means a single re-stow restores every link).
+Impeccable's Claude Code subagents are tracked symlinks in
+`claude/.claude/agents/` that point into `shared/skills/vendor/impeccable/`.
+Never run `npx impeccable update` in the home directory: refresh the vendored
+payload as `shared/skills/README.md` describes.
 
 ### Agent plugins
 
-Plugins that ship hooks or commands (currently
-[Ponytail](https://github.com/DietrichGebert/ponytail)) are installed at user
-scope through each client's own plugin system, never copied into the skills
-packages. `scripts/sync-agent-plugins` declares them and installs or updates
-each one for Claude Code and Codex, skipping a client that is not on PATH. Every
+Claude Code plugins are pinned under `plugins.claude` in the manifest. Ponytail
+is the only one, installed for its session hook and slash commands.
+`scripts/sync-agent-plugins` pins each plugin's marketplace to its ref,
+re-adding the marketplace when the pin changes. It then installs and updates the
+plugin at user scope, and skips Claude Code when it is not on PATH. Every
 command it runs is safe to repeat, so the same script bootstraps a new machine
 and updates an existing one; `update-system.sh` runs it after the skills
-updater.
+updater. Claude Code applies plugin updates on its next restart.
 
 ```bash
 ~/dotfiles/wsl/scripts/sync-agent-plugins
 ```
 
-To add a plugin, append `<plugin>@<marketplace> <owner/repo>` to the `plugins`
-array in the script. After a first install, trust Ponytail's lifecycle hooks
-once in Codex with `/hooks`, then start a new thread. Claude Code applies plugin
-updates on its next restart.
+Codex gets Ponytail's skills from the vendored copy in `~/.agents/skills`, not
+from a plugin. A machine that installed the Codex plugin earlier sees each
+Ponytail skill twice until it runs `codex plugin remove ponytail@ponytail`.
 
 Ponytail keeps its board data in `~/.config/ponytail/`. Do not Stow that
 directory, since folding it into a link would write the data into this repo. Set

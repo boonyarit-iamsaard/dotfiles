@@ -11,6 +11,10 @@ Personal developer environment setup, one folder per platform.
 Start with the README of your platform's folder. Each machine links its setup
 from its own folder in this one checkout.
 
+Agent skills are kept once in [`shared/skills/`](shared/skills/) and listed in
+one manifest, `shared/skills/skills.json`, that every platform's skill sync
+reads (see [shared/skills/README.md](shared/skills/README.md)).
+
 Repository tooling lives at the root:
 
 ```sh

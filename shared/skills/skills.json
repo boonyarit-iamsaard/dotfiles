@@ -1,0 +1,80 @@
+{
+  "version": 2,
+  "repository": {
+    "url": "https://github.com/boonyarit-iamsaard/skills.git",
+    "categories": ["engineering", "productivity"]
+  },
+  "vendor": {
+    "impeccable": {
+      "npm": "impeccable",
+      "version": "4.9.1",
+      "doc": "shared/skills/README.md"
+    },
+    "ponytail": {
+      "git": "https://github.com/DietrichGebert/ponytail.git",
+      "branch": "main",
+      "commit": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "doc": "shared/skills/README.md"
+    }
+  },
+  "plugins": {
+    "claude": [
+      {
+        "plugin": "ponytail@ponytail",
+        "marketplace": "DietrichGebert/ponytail",
+        "ref": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+      }
+    ]
+  },
+  "consumers": {
+    "agents": {
+      "target": ".agents/skills"
+    },
+    "claude": {
+      "target": ".claude/skills"
+    }
+  },
+  "skills": [
+    { "name": "commit-message", "source": "commit-message" },
+    { "name": "edit-prose", "source": "edit-prose" },
+    { "name": "runbook", "source": "runbook" },
+    { "name": "typescript-house-style", "source": "typescript-house-style" },
+    {
+      "name": "impeccable",
+      "source": {
+        "agents": "vendor/impeccable/codex",
+        "claude": "vendor/impeccable/claude"
+      }
+    },
+    {
+      "name": "ponytail",
+      "source": { "agents": "vendor/ponytail/ponytail" },
+      "reason": "Claude gets Ponytail's skills, hook, and commands from its plugin."
+    },
+    {
+      "name": "ponytail-audit",
+      "source": { "agents": "vendor/ponytail/ponytail-audit" },
+      "reason": "Claude gets Ponytail's skills, hook, and commands from its plugin."
+    },
+    {
+      "name": "ponytail-debt",
+      "source": { "agents": "vendor/ponytail/ponytail-debt" },
+      "reason": "Claude gets Ponytail's skills, hook, and commands from its plugin."
+    },
+    {
+      "name": "ponytail-gain",
+      "source": { "agents": "vendor/ponytail/ponytail-gain" },
+      "reason": "Claude gets Ponytail's skills, hook, and commands from its plugin."
+    },
+    {
+      "name": "ponytail-help",
+      "source": { "agents": "vendor/ponytail/ponytail-help" },
+      "reason": "Claude gets Ponytail's skills, hook, and commands from its plugin."
+    },
+    {
+      "name": "ponytail-review",
+      "source": { "agents": "vendor/ponytail/ponytail-review" },
+      "reason": "Claude gets Ponytail's skills, hook, and commands from its plugin."
+    }
+  ]
+}

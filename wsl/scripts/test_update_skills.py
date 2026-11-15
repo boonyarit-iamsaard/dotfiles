@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import io
+import json
 import os
 import shutil
 import subprocess
@@ -27,31 +28,21 @@ CONSUMERS_BY_NAME = {consumer.name: consumer for consumer in update_skills.CONSU
 
 
 class ConsumerTest(unittest.TestCase):
-    def test_installer_owned_skills_match_repository_ignores(self) -> None:
-        gitignore = REPO_ROOT / ".gitignore"
-        gitignore_lines = gitignore.read_text(encoding="utf-8").splitlines()
-        for consumer in update_skills.CONSUMERS:
-            stow_ignore = REPO_ROOT / consumer.name / ".stow-local-ignore"
-            stow_lines = stow_ignore.read_text(encoding="utf-8").splitlines()
-            for skill in sorted(consumer.installer_owned):
-                with self.subTest(consumer=consumer.name, skill=skill):
-                    relative_skill = (consumer.skills_dir / skill).as_posix()
-                    stow_line = "^/" + relative_skill.replace(".", r"\.")
-                    self.assertIn(
-                        stow_line, stow_lines,
-                        f"{stow_ignore}: missing line {stow_line!r}",
-                    )
-                    gitignore_line = f"{consumer.name}/{relative_skill}/"
-                    self.assertIn(
-                        gitignore_line, gitignore_lines,
-                        f"{gitignore}: missing line {gitignore_line!r}",
-                    )
+    def test_repository_shared_manifest_is_valid(self) -> None:
+        shared_root = REPO_ROOT.parent / "shared" / "skills"
+        categories, skills = update_skills.read_shared_manifest(shared_root)
+        self.assertEqual(("engineering", "productivity"), categories)
+        names = {(consumer, source.name) for consumer, source in skills}
+        for consumer in ("agents", "claude"):
+            for name in ("commit-message", "edit-prose", "impeccable", "runbook"):
+                self.assertIn((consumer, name), names)
+        self.assertIn(("agents", "ponytail"), names)
 
     def test_stow_commands_and_output_preserve_consumer_names(self) -> None:
         dotfiles = Path("/dotfiles")
         home = Path("/home/test")
         config = update_skills.Config(
-            dotfiles, Path("/skills"), Path("/state"), Path("/backups"), {}
+            dotfiles, Path("/skills"), Path("/state"), Path("/backups"), {}, Path("/shared")
         )
         for operation, no_folding, action in (
             ("-D", True, "unstow"),
@@ -145,7 +136,10 @@ class PurePlannerTest(unittest.TestCase):
         return update_skills.DiskSnapshot(
             skills=(update_skills.SourceSkill("alpha", self.source, self.source),),
             catalogs=(),
+            manifest_skills=(),
+            categories=("engineering", "productivity"),
             resolved_skills_root=self.source_root,
+            resolved_shared_root=Path("/dotfiles/shared/skills"),
             consumer_roots=tuple(
                 (consumer.name, consumer.package_root(Path("/dotfiles")))
                 for consumer in update_skills.CONSUMERS
@@ -296,18 +290,15 @@ class PurePlannerTest(unittest.TestCase):
                         )
 
     def test_unknown_real_path_table(self) -> None:
-        claude = CONSUMERS_BY_NAME["claude"]
-        personal = sorted(claude.personal)[0]
-        installer = sorted(claude.installer_owned)[0]
-        error = (
-            f"unknown real skill path: {self.claude / 'retired'}; it is neither a "
-            "personal skill nor installer-owned, so remove it or declare it "
-            "personal in CONSUMERS"
-        )
+        def error(name: str) -> str:
+            return (
+                f"unknown real skill path: {self.claude / name}; declare the skill "
+                "in shared/skills/skills.json and remove this copy"
+            )
+
         cases = (
-            ("stale upstream copy", "retired", error),
-            ("personal skill", personal, None),
-            ("installer-owned skill", installer, None),
+            ("stale upstream copy", "retired", error("retired")),
+            ("former personal copy", "runbook", error("runbook")),
             ("package readme", update_skills.README_FILENAME, None),
         )
         for name, entry, expected in cases:
@@ -386,6 +377,7 @@ class UpdateSkillsTest(unittest.TestCase):
         self.backups = fixture / "backups"
         self.home = fixture / "home"
         self.extras = fixture / "extras"
+        self.shared = fixture / "shared" / "skills"
         self.agents = CONSUMERS_BY_NAME["agents"].package_root(self.dotfiles)
         self.claude = CONSUMERS_BY_NAME["claude"].package_root(self.dotfiles)
         self.home.mkdir()
@@ -399,6 +391,7 @@ class UpdateSkillsTest(unittest.TestCase):
         )
         self.agents.mkdir(parents=True)
         self.claude.mkdir(parents=True)
+        self.write_shared_manifest([])
         self.calls = MemoryCalls()
         self.git = MemoryGitAdapter(self.calls)
         self.stow = MemoryStowAdapter(self.calls)
@@ -412,6 +405,29 @@ class UpdateSkillsTest(unittest.TestCase):
             f"---\nname: {name}\ndescription: fixture\n---\n",
             encoding="utf-8",
         )
+        return directory
+
+    def write_shared_manifest(self, skills: list[dict[str, object]]) -> None:
+        self.shared.mkdir(parents=True, exist_ok=True)
+        (self.shared / "skills.json").write_text(
+            json.dumps(
+                {
+                    "version": 2,
+                    "repository": {"categories": ["engineering", "productivity"]},
+                    "consumers": {
+                        "agents": {"target": ".agents/skills"},
+                        "claude": {"target": ".claude/skills"},
+                    },
+                    "skills": skills,
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    def make_manifest_skill(self, source: str) -> Path:
+        directory = self.shared / source
+        directory.mkdir(parents=True)
+        (directory / "SKILL.md").write_text("shared\n", encoding="utf-8")
         return directory
 
     def make_copy(self, root: Path, name: str, content: str = "copy\n") -> Path:
@@ -451,6 +467,7 @@ class UpdateSkillsTest(unittest.TestCase):
                 "SKILL_SYNC_STATE_ROOT": str(self.state),
                 "SKILL_SYNC_BACKUP_ROOT": str(self.backups),
                 "EXTRA_CHECKOUTS_ROOT": str(self.extras),
+                "SHARED_SKILLS_ROOT": str(self.shared),
                 "HOME": str(self.home),
             }
         )
@@ -492,7 +509,6 @@ class UpdateSkillsTest(unittest.TestCase):
         self.make_copy(productivity, "local-flow", "local\n")
         self.make_copy(productivity, "teach copy", "accidental\n")
         self.make_copy(self.claude, "alpha")
-        self.make_copy(self.claude, "runbook", "local\n")
         self.make_copy(self.claude, "to-issues", "legacy\n")
         self.make_copy(self.claude, "to-prd", "legacy\n")
         return alpha, beta
@@ -543,7 +559,6 @@ class UpdateSkillsTest(unittest.TestCase):
 
         self.assertTrue((self.agents / "local-tool").is_dir())
         self.assertTrue((self.agents / "local-flow").is_dir())
-        self.assertTrue((self.claude / "runbook").is_dir())
         self.assertFalse((self.agents / "engineering").exists())
         self.assertFalse((self.agents / "productivity").exists())
         self.assertFalse((self.agents / "teach copy").exists())
@@ -599,6 +614,73 @@ class UpdateSkillsTest(unittest.TestCase):
         self.run_updater()
         self.assert_link_to(self.agents / "gamma", gamma)
         self.assert_link_to(self.claude / "gamma", gamma)
+
+    def test_manifest_skills_link_into_their_consumers(self) -> None:
+        shared = self.make_manifest_skill("commit-message")
+        codex = self.make_manifest_skill("vendor/tool/codex")
+        claude = self.make_manifest_skill("vendor/tool/claude")
+        self.write_shared_manifest(
+            [
+                {"name": "commit-message", "source": "commit-message"},
+                {
+                    "name": "tool",
+                    "source": {"agents": "vendor/tool/codex", "claude": "vendor/tool/claude"},
+                },
+            ]
+        )
+
+        self.run_updater()
+
+        for root in (self.agents, self.claude):
+            self.assert_link_to(root / "commit-message", shared)
+        self.assert_link_to(self.agents / "tool", codex)
+        self.assert_link_to(self.claude / "tool", claude)
+        self.run_updater("--check")
+
+    def test_removed_manifest_skill_is_unlinked(self) -> None:
+        self.make_manifest_skill("runbook")
+        self.write_shared_manifest([{"name": "runbook", "source": "runbook"}])
+        self.run_updater()
+
+        self.write_shared_manifest([])
+        self.run_updater()
+
+        self.assertFalse((self.agents / "runbook").is_symlink())
+        self.assertFalse((self.claude / "runbook").is_symlink())
+
+    def test_invalid_manifest_skills_are_rejected(self) -> None:
+        self.make_manifest_skill("alpha")
+        self.make_skill("engineering", "alpha")
+        cases = (
+            ("missing consumer without reason",
+             [{"name": "alpha", "source": {"agents": "alpha"}}],
+             "skill 'alpha' skips claude without a reason"),
+            ("unknown consumer",
+             [{"name": "alpha", "source": {"agents": "alpha", "claude": "alpha", "x": "alpha"}}],
+             "skill 'alpha' names unknown consumer 'x'"),
+            ("missing source",
+             [{"name": "gone", "source": "gone"}],
+             "skill 'gone' has no SKILL.md"),
+            ("upstream name collision",
+             [{"name": "alpha", "source": "alpha"}],
+             "manifest skill 'alpha' collides with an upstream skill"),
+        )
+        for name, skills, error in cases:
+            with self.subTest(name=name):
+                self.write_shared_manifest(skills)
+                result = self.run_updater("--dry-run", expected_returncode=2)
+                self.assertIn(error, result.stderr)
+
+    def test_manifest_consumer_target_must_match_its_package(self) -> None:
+        manifest = self.shared / "skills.json"
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        payload["consumers"]["claude"]["target"] = ".claude/other"
+        manifest.write_text(json.dumps(payload), encoding="utf-8")
+
+        result = self.run_updater("--dry-run", expected_returncode=2)
+
+        self.assertIn("invalid shared manifest", result.stderr)
+        self.assertIn(".claude/other", result.stderr)
 
     def test_unmanaged_real_directory_collision_is_rejected(self) -> None:
         self.make_skill("engineering", "conflict")
@@ -943,25 +1025,8 @@ class UpdateSkillsTest(unittest.TestCase):
     def test_restow_keeps_skill_roots_real_and_links_whole_skill_directories(
         self,
     ) -> None:
-        for root in (self.agents, self.claude):
-            self.make_copy(root, "commit-message")
-        for consumer in update_skills.CONSUMERS:
-            subprocess.run(
-                [
-                    "stow",
-                    f"--dir={self.dotfiles}",
-                    f"--target={self.home}",
-                    "-R",
-                    "--no-folding",
-                    consumer.name,
-                ],
-                check=True,
-            )
-        self.assertFalse(
-            (CONSUMERS_BY_NAME["agents"].live_root(self.home) / "commit-message")
-            .is_symlink()
-        )
-
+        self.make_manifest_skill("commit-message")
+        self.write_shared_manifest([{"name": "commit-message", "source": "commit-message"}])
         result = subprocess.run(
             [
                 sys.executable,
@@ -985,49 +1050,6 @@ class UpdateSkillsTest(unittest.TestCase):
             self.assertTrue(
                 (skills_root / "commit-message").is_symlink(),
                 f"expected whole-skill symlink: {skills_root / 'commit-message'}",
-            )
-
-    @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
-    def test_restow_preserves_installer_owned_impeccable(self) -> None:
-        for consumer in update_skills.CONSUMERS:
-            package = self.dotfiles / consumer.name
-            ignore_source = REPO_ROOT / consumer.name / ".stow-local-ignore"
-            (package / ".stow-local-ignore").write_text(
-                ignore_source.read_text(encoding="utf-8"),
-                encoding="utf-8",
-            )
-            skill_root = consumer.package_root(self.dotfiles)
-            self.make_copy(skill_root, "impeccable", "shadow copy\n")
-
-            live_skill = consumer.live_root(self.home) / "impeccable"
-            live_skill.mkdir(parents=True)
-            (live_skill / "SKILL.md").write_text(
-                "installer owned\n",
-                encoding="utf-8",
-            )
-
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(SCRIPT),
-                "--no-pull",
-            ],
-            text=True,
-            capture_output=True,
-            env=self.fixture_environment(),
-        )
-
-        self.assertEqual(
-            0,
-            result.returncode,
-            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
-        )
-        for consumer in update_skills.CONSUMERS:
-            skill_md = consumer.live_root(self.home) / "impeccable" / "SKILL.md"
-            self.assertFalse(skill_md.is_symlink())
-            self.assertEqual(
-                "installer owned\n",
-                skill_md.read_text(encoding="utf-8"),
             )
 
 
