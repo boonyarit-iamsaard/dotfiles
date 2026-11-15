@@ -6,10 +6,13 @@ folder for the platform you are changing and follow its guide:
 | Folder     | Platform       | Guide                                  |
 | ---------- | -------------- | -------------------------------------- |
 | `windows/` | Native Windows | [windows/AGENTS.md](windows/AGENTS.md) |
+| `macos/`   | macOS          | [macos/README.md](macos/README.md)     |
+| `wsl/`     | WSL            | [wsl/README.md](wsl/README.md)         |
 
-`macos/` and `wsl/` are being brought in; until then their setup lives on the
-`main` and `wsl` branches. The migration plan is the spec in
-`.scratch/platform-consolidation/`.
+`macos/` and `wsl/` have no agent guide of their own yet; follow their README.
+The WSL files are in `wsl/`, but the WSL machine still runs from the `wsl`
+branch until its setup is pointed at this folder. The migration plan is the spec
+in `.scratch/platform-consolidation/`.
 
 ## Repository-wide rules
 
