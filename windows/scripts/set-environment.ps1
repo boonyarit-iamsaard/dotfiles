@@ -4,8 +4,8 @@ param([switch] $Check)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$dotfilesRoot = Split-Path -Parent $PSScriptRoot
-$manifestPath = Join-Path $dotfilesRoot 'manifests\environment.json'
+$platformRoot = Split-Path -Parent $PSScriptRoot
+$manifestPath = Join-Path $platformRoot 'manifests\environment.json'
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedEnvironment.psm1') -Force
 
 if ($Check) {

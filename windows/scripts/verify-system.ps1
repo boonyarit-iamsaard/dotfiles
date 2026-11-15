@@ -4,16 +4,16 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$dotfilesRoot = Split-Path -Parent $PSScriptRoot
+$platformRoot = Split-Path -Parent $PSScriptRoot
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedWindowsLinks.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'modules\SkillInventory.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedEnvironment.psm1') -Force
 
-$packageManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\packages.json') | ConvertFrom-Json
-$environmentManifestPath = Join-Path $dotfilesRoot 'manifests\environment.json'
+$packageManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\packages.json') | ConvertFrom-Json
+$environmentManifestPath = Join-Path $platformRoot 'manifests\environment.json'
 $nodeToolchainScript = Join-Path $PSScriptRoot 'set-node-toolchain.ps1'
-$linkManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\links.json') | ConvertFrom-Json
-$skillManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\skills.json') | ConvertFrom-Json
+$linkManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\links.json') | ConvertFrom-Json
+$skillManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
 $failures = [Collections.Generic.List[string]]::new()
 
 $runningOnWindows = [Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT
@@ -43,12 +43,12 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 }
 else {
     # Platforms share one checkout; this script lives in its windows folder.
-    $null = git -C $dotfilesRoot rev-parse --show-toplevel 2>$null
+    $null = git -C $platformRoot rev-parse --show-toplevel 2>$null
     if ($LASTEXITCODE -ne 0) {
-        $failures.Add('The dotfiles directory is not a valid Git checkout.')
+        $failures.Add('The platform folder is not inside a valid Git checkout.')
     }
-    elseif ((Split-Path -Leaf $dotfilesRoot) -ne 'windows') {
-        $failures.Add("Expected the Windows platform folder; found '$dotfilesRoot'.")
+    elseif ((Split-Path -Leaf $platformRoot) -ne 'windows') {
+        $failures.Add("Expected the Windows platform folder; found '$platformRoot'.")
     }
 }
 
@@ -91,7 +91,7 @@ foreach ($failure in @(Test-ManagedEnvironment -ManifestPath $environmentManifes
 
 foreach ($packageName in $linkManifest.PSObject.Properties.Name) {
     foreach ($mapping in $linkManifest.$packageName) {
-        $source = [IO.Path]::GetFullPath((Join-Path $dotfilesRoot $mapping.source))
+        $source = [IO.Path]::GetFullPath((Join-Path $platformRoot $mapping.source))
         $target = [Environment]::ExpandEnvironmentVariables($mapping.target)
         if (-not (Get-ManagedLinkTarget -Path $target)) {
             $failures.Add("Missing managed symlink: $target")
@@ -111,7 +111,7 @@ if (-not (Test-Path -LiteralPath (Join-Path $skillsRepository '.git') -PathType 
 }
 else {
     try {
-        $inventory = Get-SkillInventory -Manifest $skillManifest -DotfilesRoot $dotfilesRoot `
+        $inventory = Get-SkillInventory -Manifest $skillManifest -PlatformRoot $platformRoot `
             -SkillsRepository $skillsRepository -UserHome $userHome
         foreach ($skill in $inventory.Skills.Values) {
             if (-not (Get-ManagedLinkTarget -Path $skill.Target)) {

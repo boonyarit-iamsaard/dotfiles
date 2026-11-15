@@ -12,8 +12,8 @@ if ($PSVersionTable.PSEdition -ne 'Core' -or $PSVersionTable.PSVersion -lt [Vers
     throw 'PowerShell 7.0 or newer is required. Run this script with pwsh.exe.'
 }
 
-$dotfilesRoot = Split-Path -Parent $PSScriptRoot
-$manifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\skills.json') | ConvertFrom-Json
+$platformRoot = Split-Path -Parent $PSScriptRoot
+$manifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
 $rows = [System.Collections.Generic.List[object]]::new()
 
 function Add-Row([string] $Name, [string] $Status, [string] $Action) {

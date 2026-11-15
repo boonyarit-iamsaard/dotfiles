@@ -13,13 +13,13 @@ if ($PSVersionTable.PSEdition -ne 'Core' -or $PSVersionTable.PSVersion -lt [Vers
     throw 'PowerShell 7.0 or newer is required. Run this script with pwsh.exe.'
 }
 
-$dotfilesRoot = if ($env:DOTFILES_ROOT) {
-    [IO.Path]::GetFullPath($env:DOTFILES_ROOT)
+$platformRoot = if ($env:DOTFILES_PLATFORM_ROOT) {
+    [IO.Path]::GetFullPath($env:DOTFILES_PLATFORM_ROOT)
 }
 else {
     Split-Path -Parent $PSScriptRoot
 }
-$manifest = Get-Content -Raw -LiteralPath (Join-Path $dotfilesRoot 'manifests\skills.json') | ConvertFrom-Json
+$manifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
 $userHome = if ($env:SKILL_SYNC_HOME) {
     [IO.Path]::GetFullPath($env:SKILL_SYNC_HOME)
 }
@@ -47,7 +47,7 @@ else {
 }
 
 $configuration = [pscustomobject]@{
-    DotfilesRoot = $dotfilesRoot
+    PlatformRoot = $platformRoot
     Manifest = $manifest
     UserHome = $userHome
     SkillsRepository = $skillsRepository

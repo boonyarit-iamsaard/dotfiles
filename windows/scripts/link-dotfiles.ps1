@@ -15,11 +15,11 @@ if ($PSVersionTable.PSEdition -ne 'Core' -or $PSVersionTable.PSVersion -lt [Vers
 
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedWindowsLinks.psm1') -Force
 
-$dotfilesRoot = Split-Path -Parent $PSScriptRoot
+$platformRoot = Split-Path -Parent $PSScriptRoot
 # The platform folder sits inside the shared checkout; links into the checkout
 # whose target vanished were left by a move and may be replaced.
-$checkoutRoot = Split-Path -Parent $dotfilesRoot
-$manifestPath = Join-Path $dotfilesRoot 'manifests\links.json'
+$checkoutRoot = Split-Path -Parent $platformRoot
+$manifestPath = Join-Path $platformRoot 'manifests\links.json'
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 $availablePackages = @($manifest.PSObject.Properties.Name)
 
@@ -33,7 +33,7 @@ foreach ($packageName in $Package) {
     }
 
     foreach ($mapping in $manifest.$packageName) {
-        $source = [IO.Path]::GetFullPath((Join-Path $dotfilesRoot $mapping.source))
+        $source = [IO.Path]::GetFullPath((Join-Path $platformRoot $mapping.source))
         $target = [Environment]::ExpandEnvironmentVariables($mapping.target)
 
         if ($Delete) {

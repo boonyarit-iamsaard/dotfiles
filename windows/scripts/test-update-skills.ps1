@@ -14,7 +14,7 @@ Import-Module (Join-Path $PSScriptRoot 'modules\ManagedWindowsLinks.psm1') -Forc
 Import-Module (Join-Path $PSScriptRoot 'modules\SkillInventory.psm1') -Force
 
 $testRoot = Join-Path ([IO.Path]::GetTempPath()) ("dotfiles-skill-test-" + [Guid]::NewGuid().ToString('N'))
-$dotfiles = Join-Path $testRoot 'dotfiles'
+$platformRoot = Join-Path $testRoot 'windows'
 $repository = Join-Path $testRoot 'skills'
 $testHome = Join-Path $testRoot 'home'
 $state = Join-Path $testRoot 'state'
@@ -76,9 +76,9 @@ function Invoke-Core {
         [switch] $Migrate
     )
 
-    $manifest = Get-Content -Raw -LiteralPath (Join-Path $dotfiles 'manifests\skills.json') | ConvertFrom-Json
+    $manifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
     $configuration = [pscustomobject]@{
-        DotfilesRoot = $dotfiles
+        PlatformRoot = $platformRoot
         Manifest = $manifest
         UserHome = $testHome
         SkillsRepository = $repository
@@ -100,8 +100,8 @@ function Assert-LinkTarget {
 }
 
 try {
-    New-Item -ItemType Directory -Force -Path (Join-Path $dotfiles 'manifests') | Out-Null
-    New-Item -ItemType Directory -Force -Path (Join-Path $dotfiles 'skills\shared\local-one') | Out-Null
+    New-Item -ItemType Directory -Force -Path (Join-Path $platformRoot 'manifests') | Out-Null
+    New-Item -ItemType Directory -Force -Path (Join-Path $platformRoot 'skills\shared\local-one') | Out-Null
     New-Item -ItemType Directory -Force -Path (Join-Path $repository 'skills\engineering\alpha') | Out-Null
     New-Item -ItemType Directory -Force -Path (Join-Path $repository 'skills\productivity') | Out-Null
     New-Item -ItemType Directory -Force -Path (Join-Path $testHome '.claude\skills') | Out-Null
@@ -127,7 +127,7 @@ description: Test local skill.
 ---
 
 Local.
-'@ | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $dotfiles 'skills\shared\local-one\SKILL.md')
+'@ | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $platformRoot 'skills\shared\local-one\SKILL.md')
 
     Invoke-TestGit @('-C', $repository, 'init')
     Invoke-TestGit @('-C', $repository, 'config', 'user.name', 'Skill Test')
@@ -155,18 +155,18 @@ Local.
     }
   ]
 }
-'@ | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $dotfiles 'manifests\skills.json')
+'@ | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $platformRoot 'manifests\skills.json')
 
     Copy-Item -Recurse -LiteralPath (Join-Path $repository 'skills\engineering\alpha') -Destination (Join-Path $testHome '.claude\skills\alpha')
 
-    $env:DOTFILES_ROOT = $dotfiles
+    $env:DOTFILES_PLATFORM_ROOT = $platformRoot
     $env:SKILLS_REPO = $repository
     $env:SKILL_SYNC_HOME = $testHome
     $env:SKILL_SYNC_STATE_ROOT = $state
     $env:SKILL_SYNC_BACKUP_ROOT = $backups
 
-    $manifest = Get-Content -Raw -LiteralPath (Join-Path $dotfiles 'manifests\skills.json') | ConvertFrom-Json
-    $inventory = Get-SkillInventory -Manifest $manifest -DotfilesRoot $dotfiles `
+    $manifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
+    $inventory = Get-SkillInventory -Manifest $manifest -PlatformRoot $platformRoot `
         -SkillsRepository $repository -UserHome $testHome
     Assert-True ($inventory.Skills.Count -eq 4) 'inventory did not produce every consumer/skill pair'
     Assert-True ($inventory.Skills['codex/local-one'].Provenance -eq 'local') 'inventory lost local skill provenance'
@@ -174,12 +174,12 @@ Local.
         (Test-PathEquivalent -Left $inventory.Skills['claude/alpha'].Target -Right (Join-Path $testHome '.claude\skills\alpha'))
     ) 'inventory resolved the wrong consumer target'
 
-    $duplicateManifest = Get-Content -Raw -LiteralPath (Join-Path $dotfiles 'manifests\skills.json') | ConvertFrom-Json
+    $duplicateManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
     $duplicateManifest.localSkills[0].name = 'alpha'
     $duplicateManifest.localSkills[0].consumers = @('codex')
     $duplicateFailure = $null
     try {
-        $null = Get-SkillInventory -Manifest $duplicateManifest -DotfilesRoot $dotfiles `
+        $null = Get-SkillInventory -Manifest $duplicateManifest -PlatformRoot $platformRoot `
             -SkillsRepository $repository -UserHome $testHome
     }
     catch {
@@ -190,8 +190,8 @@ Local.
     $null = Invoke-Core -Migrate -ExpectedExitCode 0
     Assert-LinkTarget (Join-Path $testHome '.claude\skills\alpha') (Join-Path $repository 'skills\engineering\alpha')
     Assert-LinkTarget (Join-Path $testHome '.agents\skills\alpha') (Join-Path $repository 'skills\engineering\alpha')
-    Assert-LinkTarget (Join-Path $testHome '.claude\skills\local-one') (Join-Path $dotfiles 'skills\shared\local-one')
-    Assert-LinkTarget (Join-Path $testHome '.agents\skills\local-one') (Join-Path $dotfiles 'skills\shared\local-one')
+    Assert-LinkTarget (Join-Path $testHome '.claude\skills\local-one') (Join-Path $platformRoot 'skills\shared\local-one')
+    Assert-LinkTarget (Join-Path $testHome '.agents\skills\local-one') (Join-Path $platformRoot 'skills\shared\local-one')
     Assert-True (@(Get-ChildItem -Directory -LiteralPath $backups).Count -eq 1) 'migration backup was not created'
 
     $null = Invoke-Core -Check -ExpectedExitCode 0
@@ -241,7 +241,7 @@ Beta.
     Write-Host 'Skills synchronizer tests passed.'
 }
 finally {
-    foreach ($name in 'DOTFILES_ROOT', 'SKILLS_REPO', 'SKILL_SYNC_HOME', 'SKILL_SYNC_STATE_ROOT', 'SKILL_SYNC_BACKUP_ROOT') {
+    foreach ($name in 'DOTFILES_PLATFORM_ROOT', 'SKILLS_REPO', 'SKILL_SYNC_HOME', 'SKILL_SYNC_STATE_ROOT', 'SKILL_SYNC_BACKUP_ROOT') {
         Remove-Item -LiteralPath "Env:$name" -ErrorAction SilentlyContinue
     }
     if (Test-Path -LiteralPath $testRoot) {
