@@ -6,6 +6,8 @@ windows/skills/vendor/
 # Written by lazy.nvim and LazyVim; formatting them would churn on every sync.
 macos/.config/nvim/lazy-lock.json
 macos/.config/nvim/lazyvim.json
+wsl/config/nvim/lazy-lock.json
+wsl/config/nvim/lazyvim.json
 
 # TPM plugins are third-party clones, tracked only as gitlinks.
 wsl/tmux/.tmux/plugins/

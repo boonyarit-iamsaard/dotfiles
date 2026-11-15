@@ -10,33 +10,34 @@ each prints a step summary and exits 1 when any error-severity step failed
 
 ## Themes
 
-Three themes are maintained: default dark modern (active), catppuccin mocha
-and dark 2026. Each tool
-keeps a shared base config plus one theme variant per theme; switching is a
-one-line edit per tool:
+Three themes are maintained: default dark modern (active), catppuccin mocha and
+dark 2026. Each tool keeps a shared base config plus one theme variant per
+theme; switching is a one-line edit per tool:
 
-| Tool | Switch |
-| --- | --- |
-| tmux | `set -g @theme …` in `tmux/.tmux.conf` (variants in `tmux/.tmux/themes/`); restart the server for a clean switch |
-| lazygit | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `config/lazygit/themes/`) |
-| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `config/lazydocker/themes/<name>.yml` |
-| Neovim | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
-| starship | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only) |
-| btop | `color_theme` in `config/btop/btop.conf` (variants in `config/btop/themes/`; catppuccin mocha and default dark modern only) |
+| Tool       | Switch                                                                                                                                                            |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tmux       | `set -g @theme …` in `tmux/.tmux.conf` (variants in `tmux/.tmux/themes/`); restart the server for a clean switch                                                  |
+| lazygit    | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `config/lazygit/themes/`)                                                                            |
+| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `config/lazydocker/themes/<name>.yml`                      |
+| Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
+| starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only)                                                  |
+| btop       | `color_theme` in `config/btop/btop.conf` (variants in `config/btop/themes/`; catppuccin mocha and default dark modern only)                                       |
 
 The dark 2026 palette is owned by
 [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim); its
 theme extras are vendored byte-for-byte at the commit pinned in
-`config/nvim/lazy-lock.json` (see [ADR 0001](../docs/adr/0001-palette-owned-upstream-extras-vendored.md)).
-After bumping the plugin, re-copy each extra from the new pin;
+`config/nvim/lazy-lock.json` (see
+[ADR 0001](../docs/adr/0001-palette-owned-upstream-extras-vendored.md)). After
+bumping the plugin, re-copy each extra from the new pin;
 `python3 -m unittest scripts/test_theme_extras.py` fails on any drift.
 
-Default dark modern has no upstream extras; its variants are hand-ported from
-VS Code's `theme-defaults/themes/dark_modern.json`.
+Default dark modern has no upstream extras; its variants are hand-ported from VS
+Code's `theme-defaults/themes/dark_modern.json`.
 
 ## Go toolchain
 
-Go is installed with Homebrew and pinned so routine `brew upgrade` runs do not change the local Go version unexpectedly.
+Go is installed with Homebrew and pinned so routine `brew upgrade` runs do not
+change the local Go version unexpectedly.
 
 Install Go:
 
@@ -101,7 +102,8 @@ staticcheck ./...
 Java is managed with SDKMAN. Eclipse Temurin (LTS) and Maven are installed
 through SDKMAN and pinned by version so they are not upgraded unexpectedly;
 upgrades are performed intentionally, mirroring the Go policy above. The SDKMAN
-tool itself is kept current by `update-system.sh`, which also flushes SDKMAN caches.
+tool itself is kept current by `update-system.sh`, which also flushes SDKMAN
+caches.
 
 Install SDKMAN (requires `zip`; `unzip` is already available via Homebrew):
 
@@ -160,10 +162,10 @@ ls -d ~/.sdkman/candidates/java/*/ | grep -v '/current/$'
 
 ## Agent skills
 
-Matt Pocock's engineering and productivity skills are maintained in a
-read-only checkout at `~/workspace/personal/skills`. The dotfiles packages
-contain flattened, relative symlinks to that checkout so Claude Code, Codex,
-and other Agent Skills clients see the same skill versions.
+Matt Pocock's engineering and productivity skills are maintained in a read-only
+checkout at `~/workspace/personal/skills`. The dotfiles packages contain
+flattened, relative symlinks to that checkout so Claude Code, Codex, and other
+Agent Skills clients see the same skill versions.
 
 Update the checkout and reconcile both consumers with:
 
@@ -172,15 +174,15 @@ Update the checkout and reconcile both consumers with:
 ```
 
 Use `--dry-run` to preview changes, `--check` in diagnostics, and `--migrate`
-only for the initial conversion from copied skills. The updater requires
-Python 3 and uses only its standard library. It refuses to pull when the skills
+only for the initial conversion from copied skills. The updater requires Python
+3 and uses only its standard library. It refuses to pull when the skills
 checkout has local changes. Routine reconciliation refuses to replace any real
 directory or unmanaged symlink. The one-time `--migrate` mode is deliberately
 broader: it matches each Claude `SKILL.md` to its grouped Agents counterpart,
 snapshots both complete consumer trees, and then archives the verified copies.
 
-The engineering and productivity source catalogs remain separate and are
-linked into each consumer as `ENGINEERING.md` and `PRODUCTIVITY.md`.
+The engineering and productivity source catalogs remain separate and are linked
+into each consumer as `ENGINEERING.md` and `PRODUCTIVITY.md`.
 
 ### Stow layout
 
@@ -199,8 +201,8 @@ the individual skill directories. Tools that install skills in place (e.g.
 replace only their own leaf directory without taking every skill offline.
 
 `impeccable` is **not** version-controlled (see `.gitignore`) and is excluded
-from both Stow packages by their `.stow-local-ignore` files. It is installed
-and updated in place by its own tool, which rewrites its files on every update:
+from both Stow packages by their `.stow-local-ignore` files. It is installed and
+updated in place by its own tool, which rewrites its files on every update:
 
 ```bash
 npx impeccable update   # manages ~/.claude/skills/impeccable and ~/.agents/skills/impeccable in place
@@ -216,8 +218,8 @@ it archives.
 
 `npx impeccable update` does **not** require a re-stow — it only rewrites its
 own folder. The skills updater re-stows both consumers automatically, including
-after a failed run that had already unlinked them. Re-stow
-Claude manually only when:
+after a failed run that had already unlinked them. Re-stow Claude manually only
+when:
 
 - You add (or rename) a custom skill under `claude/.claude/skills/` and need it
   symlinked into `~/.claude/skills`.
@@ -230,10 +232,10 @@ Plugins that ship hooks or commands (currently
 [Ponytail](https://github.com/DietrichGebert/ponytail)) are installed at user
 scope through each client's own plugin system, never copied into the skills
 packages. `scripts/sync-agent-plugins` declares them and installs or updates
-each one for Claude Code and Codex, skipping a client that is not on PATH.
-Every command it runs is safe to repeat, so the same script bootstraps a new
-machine and updates an existing one; `update-system.sh` runs it after the
-skills updater.
+each one for Claude Code and Codex, skipping a client that is not on PATH. Every
+command it runs is safe to repeat, so the same script bootstraps a new machine
+and updates an existing one; `update-system.sh` runs it after the skills
+updater.
 
 ```bash
 ~/dotfiles/wsl/scripts/sync-agent-plugins
@@ -241,10 +243,10 @@ skills updater.
 
 To add a plugin, append `<plugin>@<marketplace> <owner/repo>` to the `plugins`
 array in the script. After a first install, trust Ponytail's lifecycle hooks
-once in Codex with `/hooks`, then start a new thread. Claude Code applies
-plugin updates on its next restart.
+once in Codex with `/hooks`, then start a new thread. Claude Code applies plugin
+updates on its next restart.
 
 Ponytail keeps its board data in `~/.config/ponytail/`. Do not Stow that
-directory, since folding it into a link would write the data into this repo.
-Set a default level with `PONYTAIL_DEFAULT_MODE` in `zsh/.zshrc` if the
-default ever needs changing.
+directory, since folding it into a link would write the data into this repo. Set
+a default level with `PONYTAIL_DEFAULT_MODE` in `zsh/.zshrc` if the default ever
+needs changing.
