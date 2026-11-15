@@ -15,11 +15,11 @@ across the profile and scripts, distinct from the checkout root.
 
 **Where:** Windows machine only.
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] The three files are mode 755 in git
 - [x] The Windows README has no pre-move paths and no link to the handoff
 - [x] Both machine notes are in the Windows docs
 - [x] No Windows script uses one name for both the platform folder and the checkout root
 - [x] `verify-system.ps1` and every `test-*.ps1` pass
-- [ ] Pushed to the integration branch
+- [x] Pushed to the integration branch
