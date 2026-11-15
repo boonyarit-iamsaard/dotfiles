@@ -15,7 +15,7 @@ from the Mac.
 
 **Where:** This Mac (history only), in a worktree; then each machine.
 
-**Status:** in progress (rebuilt as `4be8872`; Windows reset pending)
+**Status:** done (rebuilt as `4be8872`)
 
 - [x] Before: Windows and WSL have pushed everything and stopped committing
 - [x] Archive tags `archive/windows`, `archive/wsl`, `archive/restructure` pushed at the old tips
