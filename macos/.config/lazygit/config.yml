@@ -1,4 +1,1 @@
-git:
-  log:
-    showWholeGraph: true
-  overrideGpg: true
+../../../shared/config/lazygit/config.yml

@@ -106,6 +106,32 @@ class LinksTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("no-source: .zshenv", result.stdout)
 
+    def test_source_linked_outside_checkout_passes(self) -> None:
+        outside = self.root.parent / "shared" / ".ideavimrc"
+        outside.parent.mkdir()
+        outside.write_text("fixture\n", encoding="utf-8")
+        source = self.root / ".ideavimrc"
+        source.symlink_to(os.path.relpath(outside, source.parent))
+        self.declare((".ideavimrc", ".ideavimrc"))
+        self.link(".ideavimrc", source)
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("links: 1 ok", result.stdout)
+
+    def test_source_linked_to_missing_file_fails(self) -> None:
+        missing = self.root.parent / "shared" / ".ideavimrc"
+        source = self.root / ".ideavimrc"
+        source.symlink_to(os.path.relpath(missing, source.parent))
+        self.declare((".ideavimrc", ".ideavimrc"))
+        self.link(".ideavimrc", source)
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("no-source: .ideavimrc", result.stdout)
+
     def test_unlisted_link_into_checkout_fails(self) -> None:
         declared = self.make_source(".config/ghostty/themes/nord")
         theme = self.make_source(".config/ghostty/themes/dracula")

@@ -3,17 +3,18 @@
 The non-theme config extraction is tracked in
 [issue #10](https://github.com/boonyarit-iamsaard/dotfiles/issues/10).
 
-| File                                                     | Consumers                                |
-| -------------------------------------------------------- | ---------------------------------------- |
-| [`config/lazygit/config.yml`](config/lazygit/config.yml) | WSL and Windows; macOS relinking pending |
-| [`.ideavimrc`](.ideavimrc)                               | WSL and Windows; macOS relinking pending |
+| File                                                     | Consumers              |
+| -------------------------------------------------------- | ---------------------- |
+| [`config/lazygit/config.yml`](config/lazygit/config.yml) | macOS, WSL and Windows |
+| [`.ideavimrc`](.ideavimrc)                               | macOS, WSL and Windows |
 
-WSL links these files through relative symlinks in its Stow packages. Windows
-links both files through its manifest and selects the shared Dark 2026 LazyGit
-variant through `LG_CONFIG_FILE` in its PowerShell profile. Both Windows links
-have been applied and verified. macOS still uses its platform copies until
-relinking and verification. LazyGit's shared base has no theme; each platform
-selects a theme variant when it adopts the base.
+macOS and WSL link these files through relative symlinks in their platform
+folders; macOS selects its Default Dark Modern LazyGit variant through
+`LG_CONFIG_FILE` in `macos/.zshrc`. Windows links both files through its
+manifest and selects the shared Dark 2026 LazyGit variant through
+`LG_CONFIG_FILE` in its PowerShell profile. All three platforms have applied and
+verified their links. LazyGit's shared base has no theme; each platform selects
+a theme variant over it.
 
 Two items from #10 stay per platform:
 

@@ -23,6 +23,11 @@ its source is gone. It also fails on an undeclared link into the checkout in
 are not searched. `--create` adds missing links as relative symlinks and never
 replaces an existing file or link.
 
+A source may itself be a symlink out of `macos/`: `.ideavimrc` and
+`.config/lazygit/config.yml` link to their copies in [`shared/`](../shared/).
+The check passes when the whole chain resolves and reports `no-source` when it
+does not.
+
 `.zshenv` sets `XDG_CONFIG_HOME` to `~/.config`, so lazygit, lazydocker and
 superfile read their config there, as on WSL, instead of
 `~/Library/Application Support`. superfile keeps its state (pinned folders,
