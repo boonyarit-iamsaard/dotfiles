@@ -1,54 +1,15 @@
-# LazyDocker supports only these four theme colors.
-# Themes: exactly one `gui:` block may be uncommented.
-
-# Default Dark Modern (VS Code). Active.
+# Theme variant contract: between markers, copy shared/themes/lazydocker/<name>.yml
+# exactly, removing only its leading comment lines and blank lines.
+# >>> theme: dark-2026
 gui:
   theme:
     activeBorderColor:
-      - "#C586C0"
+      - "#3994bc" # tab.activeBorderTop
       - bold
     inactiveBorderColor:
-      - "#6e7681"
+      - "#8c8c8c" # descriptionForeground
     optionsTextColor:
-      - "#569CD6"
+      - "#48a0c7" # textLink.foreground
     selectedLineBgColor:
-      - "#37373d"
-
-# Dark 2026 (VS Code), from dark-2026.jsonc.
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#3994bc"
-#       - bold
-#     inactiveBorderColor:
-#       - "#8c8c8c"
-#     optionsTextColor:
-#       - "#48a0c7"
-#     selectedLineBgColor:
-#       - "#276782"
-
-# Catppuccin Mocha, matching catppuccin/lazygit mocha/blue.
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#89b4fa"
-#       - bold
-#     inactiveBorderColor:
-#       - "#a6adc8"
-#     optionsTextColor:
-#       - "#89b4fa"
-#     selectedLineBgColor:
-#       - "#313244"
-
-# One Dark (navarasu/onedark.nvim, dark variant).
-# gui:
-#   theme:
-#     activeBorderColor:
-#       - "#61afef"
-#       - bold
-#     inactiveBorderColor:
-#       - "#5c6370"
-#     optionsTextColor:
-#       - "#56b6c2"
-#     selectedLineBgColor:
-#       - "#393f4a"
+      - "#276782" # editor.selectionBackground, opaque base
+# <<< theme

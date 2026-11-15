@@ -190,23 +190,39 @@ Expected results:
 - Scoop prints lazygit's installation directory.
 - Lazygit prints a version and `%LOCALAPPDATA%\lazygit` as its config directory.
 - `LinkType` is `SymbolicLink` and `Target` points into
-  `dotfiles\windows\config\lazygit\config.yml`.
+  `dotfiles\shared\config\lazygit\config.yml`.
+
+LazyGit layers the shared Dark 2026 theme over this base through
+`LG_CONFIG_FILE`, set by the PowerShell profile. Open a new PowerShell session
+after relinking, or reload the profile with `. $PROFILE`.
 
 Confirm idempotency by running bootstrap a second time. Existing packages and
 correct links should be reported without being replaced.
 
+## IdeaVim
+
+The `ideavimrc` link package installs `shared/.ideavimrc` at
+`%USERPROFILE%\.ideavimrc`, which the installed IntelliJ IdeaVim plugin reads:
+
+```powershell
+.\scripts\link-dotfiles.ps1 ideavimrc
+```
+
+An existing regular `.ideavimrc` must be preserved elsewhere before linking; the
+linker refuses to overwrite unmanaged files.
+
 ## Themes
 
-Windows Terminal, Oh My Posh, LazyGit and LazyDocker each ship the same four
-themes. **Default Dark Modern** is active everywhere; the others are
-alternatives.
+**Dark 2026** is active in Windows Terminal, Oh My Posh, LazyGit, LazyDocker and
+btop. LazyGit, LazyDocker and btop use the shared theme variants. Windows
+Terminal and Oh My Posh use vendored upstream extras in their Windows folders.
 
-| Theme               | Windows Terminal scheme | Oh My Posh                     | LazyGit / LazyDocker |
-| ------------------- | ----------------------- | ------------------------------ | -------------------- |
-| Default Dark Modern | Dark Modern (VS Code)   | `default-dark-modern.omp.json` | active block         |
-| Dark 2026           | Dark 2026 (VS Code)     | `dark-2026.omp.json`           | commented block      |
-| Catppuccin Mocha    | Catppuccin Mocha        | `catppuccin-mocha.omp.json`    | commented block      |
-| One Dark (navarasu) | One Dark (navarasu)     | `onedark.omp.json`             | commented block      |
+| Theme               | Windows Terminal scheme | Oh My Posh                     | LazyGit variant in `shared/themes/lazygit/` | LazyDocker     |
+| ------------------- | ----------------------- | ------------------------------ | ------------------------------------------- | -------------- |
+| Default Dark Modern | Dark Modern (VS Code)   | `default-dark-modern.omp.json` | `default-dark-modern.yml`                   | shared variant |
+| Dark 2026           | Dark 2026               | `dark-2026.omp.json`           | `dark-2026.yml` (active)                    | active block   |
+| Catppuccin Mocha    | Catppuccin Mocha        | `catppuccin-mocha.omp.json`    | `catppuccin-mocha.yml`                      | shared variant |
+| One Dark (navarasu) | One Dark (navarasu)     | `onedark.omp.json`             | not carried                                 | not carried    |
 
 To switch:
 
@@ -216,16 +232,35 @@ To switch:
   need the same selection. The fragments leave the user-owned `settings.json`
   intact; a same-named scheme there takes precedence over a fragment.
 - **Oh My Posh:** change `$ompTheme` in the PowerShell profile.
-- **LazyGit and LazyDocker:** uncomment exactly one `gui:` block in
-  `config\lazygit\config.yml` or `config\lazydocker\config.yml`.
+- **LazyGit:** change the theme variant filename in `LG_CONFIG_FILE` in the
+  PowerShell profile, then reload it with `. $PROFILE`. Keep the shared base as
+  the first file. The active Dark 2026 variant is vendored from the pinned
+  upstream theme extra; Default Dark Modern is also available as a shared hand
+  port with upstream-verified colors.
+- **LazyDocker:** replace the block between the theme markers in
+  `config\lazydocker\config.yml` with a variant from
+  `../shared/themes/lazydocker/`, removing only its leading comment lines and
+  blank lines. Update the opening marker's theme name too. LazyDocker has no
+  include mechanism; the active block must match that shared variant.
+- **btop:** the `btop` link package installs the shared Dark 2026 theme in
+  `%USERPROFILE%\scoop\persist\btop\themes`. Select `dark-2026` in btop's
+  options, or set `color_theme = "dark-2026"` in that persistent directory's
+  `btop.conf` while btop is closed. This native btop4win config remains
+  runtime-owned; the older `config/btop/btop.conf` is not linked over it.
 
 Sources:
 
-- Dark 2026 is transcribed from `dark-2026.jsonc`: `terminal.background`,
-  `terminal.foreground`, `terminalCursor.foreground`, and VS Code's registry
-  ANSI defaults. Windows Terminal schemes do not support alpha, so
-  `selectionBackground` uses the opaque `editor.selectionBackground` base
-  (`#276782`) instead of the translucent `terminal.selectionBackground`.
+- Dark 2026's five active tool themes match
+  [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim) at
+  `4d19b8f1c1af75ae67d58506fb144e6b09d68e1f`, the shared theme pin. Windows
+  Terminal's `extras/windows-terminal/dark-2026.json` and Oh My Posh's
+  `extras/oh-my-posh/dark-2026.omp.json` are vendored byte for byte and exempt
+  from formatting and line-ending conversion. Refresh them from that same pin
+  when refreshing the shared extras; update the pin in
+  `scripts/test-theme-extras.ps1` and run it to verify all five against upstream
+  (requires Internet access). It also checks LazyDocker's active marker block.
+  The upstream Terminal background is `#121314`; the prompt's PHP segment uses
+  `symbol_field` (`#75beff`).
 - Catppuccin Mocha follows
   [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal)
   and the `mocha/blue` flavor of
@@ -267,7 +302,7 @@ and
 Apply or check the managed theme links with:
 
 ```powershell
-.\scripts\link-dotfiles.ps1 windows-terminal,lazygit,lazydocker
+.\scripts\link-dotfiles.ps1 windows-terminal,lazygit,lazydocker,btop
 .\scripts\verify-system.ps1
 ```
 
@@ -318,7 +353,7 @@ and linked into `%USERPROFILE%\Documents\PowerShell`:
 .\scripts\link-dotfiles.ps1 powershell
 ```
 
-Oh My Posh uses `powershell\oh-my-posh\default-dark-modern.omp.json`; see
+Oh My Posh uses `powershell\oh-my-posh\dark-2026.omp.json`; see
 [Themes](#themes) for the alternatives. The Nerd Font Symbols preset also
 remains available. Oh My Posh is declared in `manifests/packages.json`. One
 dependency is not a Scoop package and is installed separately:

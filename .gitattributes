@@ -4,3 +4,5 @@ windows/skills/vendor/** -text -whitespace
 shared/skills/vendor/** -text -whitespace
 shared/themes/btop/catppuccin-mocha.theme -text -whitespace
 shared/themes/lazygit/catppuccin-mocha.yml -text -whitespace
+windows/config/windows-terminal/dark-2026.json -text -whitespace
+windows/powershell/oh-my-posh/dark-2026.omp.json -text -whitespace

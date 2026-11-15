@@ -4,6 +4,8 @@ pnpm-lock.yaml
 windows/skills/vendor/
 shared/skills/vendor/
 shared/themes/lazygit/catppuccin-mocha.yml
+windows/config/windows-terminal/dark-2026.json
+windows/powershell/oh-my-posh/dark-2026.omp.json
 
 # Written by lazy.nvim and LazyVim; formatting them would churn on every sync.
 macos/.config/nvim/lazy-lock.json

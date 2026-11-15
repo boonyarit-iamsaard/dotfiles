@@ -1,8 +1,8 @@
 {
   "schemes": [
     {
-      "name": "Dark 2026 (VS Code)",
-      "background": "#191a1b",
+      "name": "Dark 2026",
+      "background": "#121314",
       "foreground": "#cccccc",
       "cursorColor": "#bfbfbf",
       "selectionBackground": "#276782",

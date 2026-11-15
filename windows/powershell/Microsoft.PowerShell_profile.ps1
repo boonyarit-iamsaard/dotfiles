@@ -64,9 +64,9 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
-# Oh My Posh uses a plain Starship-style prompt with VS Code Dark Modern colors.
-# Alternatives in oh-my-posh\: dark-2026, catppuccin-mocha, onedark.
-$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\default-dark-modern.omp.json'
+# Oh My Posh uses the pinned upstream Dark 2026 prompt.
+# Alternatives in oh-my-posh\: default-dark-modern, catppuccin-mocha, onedark.
+$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\dark-2026.omp.json'
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 
 if ($ompCommand) {
@@ -119,6 +119,13 @@ $profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
 
 if ($profileTarget) {
     $platformRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
+
+    # LazyGit reads the shared base first, then the platform's selected theme.
+    $checkoutRoot = Split-Path $platformRoot -Parent
+    $env:LG_CONFIG_FILE = @(
+        Join-Path $checkoutRoot 'shared\config\lazygit\config.yml'
+        Join-Path $checkoutRoot 'shared\themes\lazygit\dark-2026.yml'
+    ) -join ','
 
     foreach ($script in 'check-manual-updates', 'docker-cleanup', 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
         $scriptPath = Join-Path $platformRoot "scripts\$script.ps1"

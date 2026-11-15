@@ -6,8 +6,11 @@ and WSL through relative symlinks in their Stow packages, Windows through its
 manifest paths. Each platform keeps its own base config and chooses its own
 active theme; there is no shared switch.
 
-Until [issue #9](https://github.com/boonyarit-iamsaard/dotfiles/issues/9) is
-done, only WSL links these files; macOS and Windows still read their own copies.
+WSL uses these shared files. Windows uses the LazyGit variants through
+`LG_CONFIG_FILE`, links the Dark 2026 btop theme through its manifest, and
+copies the active shared LazyDocker variant into its platform config's marker
+block. The remaining Windows and macOS adoption is tracked in
+[issue #9](https://github.com/boonyarit-iamsaard/dotfiles/issues/9).
 
 | Folder        | Tool                                                    |
 | ------------- | ------------------------------------------------------- |

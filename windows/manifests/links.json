@@ -17,8 +17,20 @@
   ],
   "lazygit": [
     {
-      "source": "config/lazygit/config.yml",
+      "source": "../shared/config/lazygit/config.yml",
       "target": "%LOCALAPPDATA%\\lazygit\\config.yml"
+    }
+  ],
+  "ideavimrc": [
+    {
+      "source": "../shared/.ideavimrc",
+      "target": "%USERPROFILE%\\.ideavimrc"
+    }
+  ],
+  "btop": [
+    {
+      "source": "../shared/themes/btop/dark-2026.theme",
+      "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\dark-2026.theme"
     }
   ],
   "lazydocker": [
