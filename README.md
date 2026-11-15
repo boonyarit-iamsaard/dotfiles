@@ -15,6 +15,10 @@ Agent skills are kept once in [`shared/skills/`](shared/skills/) and listed in
 one manifest, `shared/skills/skills.json`, that every platform's skill sync
 reads (see [shared/skills/README.md](shared/skills/README.md)).
 
+Theme files that more than one platform links are kept once in
+[`shared/themes/`](shared/themes/) (see
+[shared/themes/README.md](shared/themes/README.md)).
+
 Repository tooling lives at the root:
 
 ```sh

@@ -12,28 +12,28 @@ each prints a step summary and exits 1 when any error-severity step failed
 
 Three themes are maintained: default dark modern, catppuccin mocha and
 dark 2026. Dark 2026 is active in Neovim, tmux, lazygit, lazydocker and btop;
-starship runs its built-in default. Each tool keeps a shared base config plus
-one theme variant per theme; switching is a one-line edit per tool:
+starship runs its built-in default. Each tool keeps a base config here plus one
+theme variant per theme in [`../shared/themes/`](../shared/themes/), which every
+platform shares. The theme folders and starship files here are relative symlinks
+into it (`config/lazygit/themes -> ../../../shared/themes/lazygit`). Switching
+is a one-line edit per tool:
 
 | Tool       | Switch                                                                                                                                                            |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| tmux       | `set -g @theme …` in `tmux/.tmux.conf` (variants in `tmux/.tmux/themes/`); restart the server for a clean switch                                                  |
-| lazygit    | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `config/lazygit/themes/`)                                                                            |
-| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `config/lazydocker/themes/<name>.yml`                      |
+| tmux       | `set -g @theme …` in `tmux/.tmux.conf` (variants in `shared/themes/tmux/`); restart the server for a clean switch                                                 |
+| lazygit    | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `shared/themes/lazygit/`)                                                                            |
+| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `shared/themes/lazydocker/<name>.yml`                      |
 | Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
 | starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only); unset for the built-in default                  |
-| btop       | `color_theme` in `config/btop/btop.conf` (variants in `config/btop/themes/`)                                                                                      |
+| btop       | `color_theme` in `config/btop/btop.conf` (variants in `shared/themes/btop/`)                                                                                      |
 
-The dark 2026 palette is owned by
-[dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim); its
-theme extras are vendored byte-for-byte at the commit pinned in
-`config/nvim/lazy-lock.json` (see
-[ADR 0001](../docs/adr/0001-palette-owned-upstream-extras-vendored.md)). After
-bumping the plugin, re-copy each extra from the new pin;
-`python3 -m unittest scripts/test_theme_extras.py` fails on any drift.
-
-Default dark modern has no upstream extras; its variants are hand-ported from VS
-Code's `theme-defaults/themes/dark_modern.json`.
+Where each theme file comes from, its pin, and how to refresh it are in
+[shared/themes/README.md](../shared/themes/README.md). The dark 2026 extras are
+pinned to the plugin commit in `config/nvim/lazy-lock.json` (see
+[ADR 0001](../docs/adr/0001-palette-owned-upstream-extras-vendored.md)), the
+Catppuccin files to `shared/themes/catppuccin.json`;
+`python3 -m unittest scripts/test_theme_extras.py` fails on any drift and when a
+theme path here stops linking into `shared/themes/`.
 
 ## Go toolchain
 

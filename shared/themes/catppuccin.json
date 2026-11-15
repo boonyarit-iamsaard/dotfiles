@@ -1,0 +1,14 @@
+{
+  "btop": {
+    "commit": "f437574b600f1c6d932627050b15ff5153b58fa3",
+    "files": {
+      "btop/catppuccin-mocha.theme": "themes/catppuccin_mocha.theme"
+    }
+  },
+  "lazygit": {
+    "commit": "1a4b26cbc2b5be05cc5494d0d7f764120a2cf86d",
+    "files": {
+      "lazygit/catppuccin-mocha.yml": "themes-mergable/mocha/yellow.yml"
+    }
+  }
+}

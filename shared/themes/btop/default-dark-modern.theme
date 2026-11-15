@@ -31,13 +31,13 @@ theme[graph_text]="#9d9d9d" # descriptionForeground
 theme[meter_bg]="#313131" # widget.border
 
 # Misc colors for processes box including mini cpu graphs, details memory graph and details status text
-theme[proc_misc]="#3794ff" # charts.blue
+theme[proc_misc]="#59a4f9" # charts.blue
 
 # CPU, Memory, Network, Proc box outline colors
 theme[cpu_box]="#b180d7"  # charts.purple
 theme[mem_box]="#81b88b"  # gitDecoration.addedResourceForeground
 theme[net_box]="#d18616"  # charts.orange
-theme[proc_box]="#3794ff" # charts.blue
+theme[proc_box]="#59a4f9" # charts.blue
 
 # Box divider line and small boxes line color
 theme[div_line]="#2b2b2b" # panel.border
@@ -55,12 +55,12 @@ theme[cpu_end]="#b180d7"
 # Mem/Disk free meter (purple -> bright blue -> blue)
 theme[free_start]="#b180d7"
 theme[free_mid]="#3b8eea"
-theme[free_end]="#3794ff"
+theme[free_end]="#59a4f9" # charts.blue
 
 # Mem/Disk cached meter (bright cyan -> bright blue -> blue)
 theme[cached_start]="#29b8db"
 theme[cached_mid]="#3b8eea"
-theme[cached_end]="#3794ff"
+theme[cached_end]="#59a4f9" # charts.blue
 
 # Mem/Disk available meter (orange -> modified -> bright red)
 theme[available_start]="#d18616"

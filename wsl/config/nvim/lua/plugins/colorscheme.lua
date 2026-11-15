@@ -19,8 +19,8 @@ return {
   },
 
   {
-    -- Published from this config; dark-2026.jsonc at the dotfiles root stays as
-    -- the local porting reference. Upstream: github.com/boonyarit-iamsaard/dark-2026.nvim
+    -- Published from this config; shared/themes/vscode/dark-2026.jsonc is the
+    -- VS Code theme it started from. Upstream: github.com/boonyarit-iamsaard/dark-2026.nvim
     "boonyarit-iamsaard/dark-2026.nvim",
     lazy = false,
     priority = 1000,
