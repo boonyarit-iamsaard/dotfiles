@@ -11,3 +11,20 @@
 
 # Local agent scratch space (issues, specs). Opt in to tracking with git add -f.
 /.scratch/
+
+# Local reconciliation state for macos/scripts/update-skills.
+macos/.skill-sync/
+
+# Test bytecode and runtime state are generated locally.
+__pycache__/
+*.log
+
+# Installer-owned skills are updated in place.
+macos/agents/.agents/skills/impeccable/
+macos/claude/.claude/skills/impeccable/
+
+# Tool-written runtime state.
+macos/Library/Application Support/lazygit/state.yml
+macos/Library/Application Support/superfile/firstUseCheck
+macos/Library/Application Support/superfile/lastCheckVersion
+macos/Library/Application Support/superfile/themeFileVersion
