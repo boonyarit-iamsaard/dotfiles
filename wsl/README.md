@@ -18,6 +18,37 @@ stow --restow --target="$HOME/.config" config
 stow --restow --target="$HOME" ideavimrc
 ```
 
+## Git config
+
+The `git` Stow package manages `~/.gitconfig`. It includes
+`~/dotfiles/shared/gitconfig` for the shared essentials (`core.symlinks=true`),
+then `~/.gitconfig.local` for identity, signing, and machine-only settings. The
+checkout must live at `~/dotfiles`.
+
+On an existing machine, move the unmanaged config to `~/.gitconfig.local` before
+stowing. If that file already exists, merge the settings into it first; do not
+overwrite it. From `wsl/`:
+
+```bash
+# One-time migration, only when ~/.gitconfig.local does not already exist:
+mv -n ~/.gitconfig ~/.gitconfig.local
+stow --restow --target="$HOME" git
+git config --show-origin --get core.symlinks
+```
+
+On a fresh machine, run the Stow command without the migration. Keep personal
+settings out of the managed file:
+
+```bash
+git config --file ~/.gitconfig.local user.name "Your Name"
+git config --file ~/.gitconfig.local user.email "you@example.com"
+```
+
+Use `--file ~/.gitconfig.local` for local settings instead of `--global`, which
+writes to the managed `~/.gitconfig`. Local settings are loaded last and can
+override the shared defaults. Keep `core.symlinks=true` so `CLAUDE.md` checks
+out as a link.
+
 ## Maintenance scripts
 
 `update-system.sh` and `docker-cleanup.sh` share `scripts/lib/step-runner.zsh`:

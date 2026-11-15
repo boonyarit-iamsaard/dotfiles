@@ -29,3 +29,14 @@ Two items from #10 stay per platform:
 Agent skills and theme files have their own guides:
 [`skills/README.md`](skills/README.md) and
 [`themes/README.md`](themes/README.md).
+
+## Git essentials
+
+[`gitconfig`](gitconfig) declares `core.symlinks=true` once so Git checks out
+symlinked `CLAUDE.md` files as links. WSL's managed `~/.gitconfig` includes it,
+then loads identity, signing, and machine-only settings from the untracked
+`~/.gitconfig.local`. See [WSL setup](../wsl/README.md#git-config) for migration
+and Stow commands.
+
+macOS and Windows adoption and verification remain pending in
+[issue #11](https://github.com/boonyarit-iamsaard/dotfiles/issues/11).
