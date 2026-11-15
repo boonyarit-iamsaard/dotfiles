@@ -1,40 +1,28 @@
 # Ponytail maintenance
 
-[Ponytail](https://github.com/DietrichGebert/ponytail) is vendored as plain
-skills so the dotfiles manifests stay the only owners of user-wide agent files.
+[Ponytail](https://github.com/DietrichGebert/ponytail) is vendored for the
+`agents` consumer and installed as a pinned Claude plugin, following
+[ADR 0002](../../docs/adr/0002-skills-shared-from-one-manifest.md).
 
-## Layout and ownership
+The shared manifest at `../../shared/skills/skills.json` records both the
+vendored commit and Claude marketplace ref. Keep them equal when refreshing; the
+payload refresh procedure is in
+[the shared guide](../../shared/skills/README.md#refresh-a-vendored-payload).
 
-- `skills\vendor\ponytail` holds the six upstream skills (`ponytail`,
-  `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`,
-  `ponytail-review`) and the MIT `LICENSE`.
-- `manifests\skills.json` links each skill into both user-wide skill roots.
-
-The payload was copied on 2026-11-14 from upstream commit `96608e0` (plugin
-version 5.3.3), taking only the `skills\<name>` folders. The full commit is
-recorded as `vendor.ponytail.commit` in `manifests\skills.json`;
-`scripts\check-manual-updates.ps1` (run at the end of `update-system`) reports
-when upstream `main` has moved.
-
-The upstream plugin's hooks, status line, and task board ("band") are
-intentionally omitted. They write a per-turn CSV ledger under
-`~\.config\ponytail` and can post to a webhook. `/ponytail-help` still describes
-those plugin-only features; they do nothing here.
-
-## Refresh
-
-1. Clone upstream into an empty directory outside this repository.
-2. Replace each `skills\vendor\ponytail\<name>` folder with upstream
-   `skills\<name>`, and refresh `LICENSE`.
-3. Review the complete diff, including any new skill or tool permission. Add a
-   new upstream skill to `manifests\skills.json` deliberately.
-4. Update `vendor.ponytail.commit` in `manifests\skills.json` and the commit and
-   version above, then run:
+From `windows/`, reconcile skills and the plugin with:
 
 ```powershell
 .\scripts\update-skills.ps1 -NoPull
 .\scripts\update-skills.ps1 -Check -NoPull
-.\scripts\test-update-skills.ps1
-pnpm format:check
-git diff --check
+.\scripts\verify-system.ps1
 ```
+
+The sync replaces only recorded managed links, removing Claude's old vendored
+Ponytail links so the plugin supplies its skills, hook, and commands once.
+`agents` receives the six vendored skills. Plugin installation uses user scope;
+the marketplace must belong to the manifest's repository. An unrelated
+marketplace with the same name is a collision, not something to overwrite.
+
+Restart Claude Code after installation. Plugin options retain their upstream
+defaults unless configured by the owner; the webhook URL defaults to empty. The
+pinned plugin's hooks use Node.js and support native Windows.

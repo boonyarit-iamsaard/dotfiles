@@ -1,102 +1,47 @@
 # Impeccable maintenance
 
-Impeccable is vendored in this repository so the dotfiles manifests remain the
-only owners of user-wide agent files. The upstream global installer must not
-write directly to `$HOME\.agents\skills` or `$HOME\.claude\skills`.
+Impeccable's provider builds live in `../../shared/skills/vendor/impeccable`,
+with the npm pin in `../../shared/skills/skills.json`. Windows reads that
+manifest for skills and `manifests/links.json` for the four Claude agent files.
+The skill roots and `$HOME\.claude\agents` stay real directories; individual
+skills and agent files are linked into them.
 
-## Layout and ownership
-
-- `skills\vendor\impeccable\codex` contains the Codex skill, including its
-  nested Codex agent definitions.
-- `skills\vendor\impeccable\claude` contains the Claude Code skill.
-- `skills\vendor\impeccable\claude-agents` contains Claude Code's separate
-  subagent definitions.
-- `manifests\skills.json` links the provider-specific skill folders into the two
-  user-wide skill roots.
-- `manifests\links.json` links each Claude subagent file into the existing
-  `$HOME\.claude\agents` directory.
-
-The vendored payload was generated on 2026-11-14 with:
-
-```powershell
-npx --yes impeccable@4.9.1 install -y `
-  --providers=claude,codex `
-  --scope=project `
-  --no-hooks
-```
-
-The installed npm version is recorded as `vendor.impeccable.version` in
-`manifests\skills.json`; `scripts\check-manual-updates.ps1` (run at the end of
-`update-system`) reports when npm has a newer release. The resulting skill
-metadata reports Impeccable 4.9.0 and its launcher pins engine 0.1.23. The
-platform binary and runtime cache are intentionally omitted: the checked-in
-launcher downloads the pinned engine on first use and verifies it against the
-vendored `scripts\engine-checksums.txt`.
-
-Impeccable is redistributed under Apache 2.0. Keep
-`skills\vendor\impeccable\LICENSE` with every vendored refresh.
+See [the shared guide](../../shared/skills/README.md#refresh-a-vendored-payload)
+for payload refreshes, licensing, executable permissions, and engine
+provisioning. A refresh affects every platform and needs verification on each.
+Keep upstream bytes and omit runtime caches and platform binaries. Never run the
+upstream global installer over managed links.
 
 ## Install and verify
 
-Run the normal reconcilers from the dotfiles root:
+Run from `windows/`:
 
 ```powershell
 .\scripts\update-skills.ps1 -NoPull
 .\scripts\link-dotfiles.ps1 impeccable
+.\scripts\link-dotfiles.ps1 impeccable
+.\scripts\test-update-skills.ps1
+.\scripts\update-skills.ps1 -Check -NoPull
+.\scripts\verify-system.ps1
 ```
 
-Restart Codex and Claude Code after the first install. In Codex, invoke the
-skill as `$impeccable`; in Claude Code, invoke it as `/impeccable`.
+The second link command reports each Claude agent as already linked. A collision
+requires inspecting ownership; the linker preserves unmanaged files.
 
-## Refresh the vendored payload
+On native Windows, provision and check both engines from the repository root:
 
-Treat a refresh as a reviewed dependency update:
+```powershell
+.\shared\skills\vendor\impeccable\codex\scripts\impeccable.cmd engine-probe
+.\shared\skills\vendor\impeccable\claude\scripts\impeccable.cmd engine-probe
+```
 
-1. Start from a clean dotfiles worktree and create an empty staging directory
-   outside it.
-2. Run the installer command above from the staging directory, changing the npm
-   version only when intentionally upgrading.
-3. Replace the three owned vendor payloads from `.agents\skills\impeccable`,
-   `.claude\skills\impeccable`, and `.claude\agents\impeccable-*.md`.
-4. Omit `scripts\bin` and `scripts\.impeccable`; they contain a platform binary
-   and runtime state rather than portable skill source.
-5. Review the complete diff, including `SKILL.md`, scripts, references, agent
-   permissions, and reported versions.
-6. Preserve upstream formatting under `skills\vendor`; `.prettierignore` keeps
-   dependency refreshes reviewable.
-7. Update `vendor.impeccable.version` in `manifests\skills.json` and the
-   generation details above.
-8. Run the verification sequence below before committing.
-
-Use the dotfiles reconcilers after the vendor copy. Running
-`npx impeccable update` from a home directory would bypass manifest ownership
-and can collide with the managed links.
+The launchers download their pinned engine on first use and verify its checksum.
+Restart Codex and Claude Code after installation, then invoke `$impeccable` in
+Codex or `/impeccable` in Claude Code.
 
 ## Hooks and project state
 
-The user-wide skill does not install Impeccable's automatic design hook. The
-upstream Codex hook invokes a project-relative `.agents\skills\impeccable`
-launcher, while this repository provides a user-wide skill. Keep hooks an
-explicit project decision; review and approve a project's hook separately.
-
-Impeccable may create product-owned `PRODUCT.md`, `DESIGN.md`, and selected
-`.impeccable` files inside a project. Those belong to that project, not this
-dotfiles repository. Follow Impeccable's generated ignore guidance for runtime
-caches and screenshots.
-
-## Verification
-
-```powershell
-.\scripts\test-update-skills.ps1
-.\scripts\update-skills.ps1 -Check -NoPull
-.\scripts\link-dotfiles.ps1 impeccable
-.\scripts\link-dotfiles.ps1 impeccable
-.\scripts\verify-system.ps1
-pnpm install --frozen-lockfile
-pnpm format:check
-git diff --check
-```
-
-The second link command must report every Claude agent as already linked. A
-collision is an ownership question: inspect it and migrate it deliberately;
-never force the installer over an existing path.
+The sync installs the skill without changing Impeccable hooks. Automatic design
+hooks remain an explicit project decision. Impeccable's project-owned
+`PRODUCT.md`, `DESIGN.md`, and `.impeccable` state belong to that project;
+follow its generated ignore guidance for caches and screenshots.

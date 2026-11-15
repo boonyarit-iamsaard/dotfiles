@@ -11,8 +11,9 @@ platform's skill sync reads it and links every listed skill into each consumer:
 | `claude` | `~/.claude/skills` | Claude Code                          |
 
 Until [issue #16](https://github.com/boonyarit-iamsaard/dotfiles/issues/16) is
-done, only WSL reads this manifest; macOS and Windows still install from their
-own copies.
+done, WSL and Windows read this manifest; macOS still installs from its own
+copies. Windows also reconciles the pinned Claude plugins during `update-skills`
+and checks them in `verify-system.ps1`.
 
 ## What lives here
 

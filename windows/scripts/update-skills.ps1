@@ -19,7 +19,7 @@ $platformRoot = if ($env:DOTFILES_PLATFORM_ROOT) {
 else {
     Split-Path -Parent $PSScriptRoot
 }
-$manifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
+$manifest = Get-Content -Raw -LiteralPath (Join-Path (Split-Path -Parent $platformRoot) 'shared\skills\skills.json') | ConvertFrom-Json
 $userHome = if ($env:SKILL_SYNC_HOME) {
     [IO.Path]::GetFullPath($env:SKILL_SYNC_HOME)
 }
@@ -30,8 +30,7 @@ $skillsRepository = if ($env:SKILLS_REPO) {
     [IO.Path]::GetFullPath($env:SKILLS_REPO)
 }
 else {
-    $checkout = ([string] $manifest.repository.checkout).Replace('{home}', $userHome)
-    [IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($checkout))
+    Join-Path $userHome 'skills'
 }
 $stateRoot = if ($env:SKILL_SYNC_STATE_ROOT) {
     [IO.Path]::GetFullPath($env:SKILL_SYNC_STATE_ROOT)

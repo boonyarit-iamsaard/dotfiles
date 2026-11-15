@@ -15,12 +15,13 @@ repository-wide rules live in the root [AGENTS.md](../AGENTS.md).
   release line and NVM operating mode; the root `package.json` pins pnpm for
   Corepack.
 - `manifests/links.json` is the source of truth for managed config links.
-- `manifests/skills.json` is the source of truth for shared and local agent
-  skills.
+- `../shared/skills/skills.json` is the source of truth for agent skills and
+  pinned Claude plugins.
 - Impeccable is a vendored, provider-specific skill. Before installing,
   refreshing, or repairing it, read [docs/impeccable.md](docs/impeccable.md).
-- Ponytail is a vendored skill set without its upstream hooks. Before refreshing
-  it, read [docs/ponytail.md](docs/ponytail.md).
+- Ponytail is vendored for the `agents` consumer and installed as a pinned
+  Claude plugin. Before refreshing it, read
+  [docs/ponytail.md](docs/ponytail.md).
 - `scripts/update-system.ps1` updates only developer packages declared in the
   manifest, then reapplies the environment manifest so Scoop-driven `PATH` and
   `JAVA_HOME` changes do not persist.

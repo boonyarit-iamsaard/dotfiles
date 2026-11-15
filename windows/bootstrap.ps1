@@ -12,6 +12,10 @@ if ($PSVersionTable.PSEdition -ne 'Core' -or $PSVersionTable.PSVersion -lt [Vers
     throw 'PowerShell 7.0 or newer is required. Run bootstrap.ps1 with pwsh.exe.'
 }
 
+if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
+    throw 'Claude Code must be installed and available as claude before bootstrap, for the pinned Claude plugins. See windows/README.md prerequisites.'
+}
+
 $currentPolicy = Get-ExecutionPolicy -Scope CurrentUser
 if ($currentPolicy -notin @('RemoteSigned', 'Unrestricted', 'Bypass')) {
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force

@@ -15,8 +15,10 @@ Shared non-theme config and the items kept per platform are described in
 [`shared/README.md`](shared/README.md).
 
 Agent skills are kept once in [`shared/skills/`](shared/skills/) and listed in
-one manifest, `shared/skills/skills.json`, that every platform's skill sync
-reads (see [shared/skills/README.md](shared/skills/README.md)).
+one manifest, `shared/skills/skills.json`. WSL and Windows read it; macOS
+adoption remains in
+[#16](https://github.com/boonyarit-iamsaard/dotfiles/issues/16) (see
+[shared/skills/README.md](shared/skills/README.md)).
 
 Theme files that more than one platform links are kept once in
 [`shared/themes/`](shared/themes/) (see

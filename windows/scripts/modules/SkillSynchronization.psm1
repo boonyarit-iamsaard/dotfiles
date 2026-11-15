@@ -3,6 +3,7 @@ $ErrorActionPreference = 'Stop'
 
 Import-Module (Join-Path $PSScriptRoot 'ManagedWindowsLinks.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'SkillInventory.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'SkillPlugins.psm1') -Force
 
 function Invoke-SkillGit {
     param(
@@ -52,6 +53,21 @@ function Initialize-SkillsCheckout {
         )
     }
 
+    if (@($Configuration.Manifest.skills | Where-Object name -eq 'edit-prose').Count -gt 0) {
+        $rules = Join-Path (Split-Path -Parent $Configuration.PlatformRoot) 'shared\skills\edit-prose\rules.md'
+        $rulesTarget = Get-ManagedLinkTarget -Path $rules
+        if (-not $rulesTarget) { throw "Expected the shared edit-prose rules symlink: $rules" }
+        if (-not (Test-Path -LiteralPath $rulesTarget -PathType Leaf)) {
+            $humanizer = Split-Path -Parent $rulesTarget
+            if ($ReadOnly -or $NoPull -or (Test-Path -LiteralPath $humanizer)) {
+                throw "Missing edit-prose rules. Clone https://github.com/blader/humanizer.git into $humanizer."
+            }
+            $null = Invoke-SkillGit -Configuration $Configuration -Arguments @(
+                'clone', 'https://github.com/blader/humanizer.git', $humanizer
+            )
+        }
+    }
+
     if ($NoPull -or $ReadOnly) {
         return
     }
@@ -79,8 +95,10 @@ function Read-ManagedSkillState {
             throw 'unsupported version'
         }
         foreach ($entry in @($payload.links)) {
-            $managed["$($entry.consumer)/$($entry.name)"] = [pscustomobject]@{
-                Consumer = [string] $entry.consumer
+            # The old consumer used the same ~/.agents/skills directory.
+            $consumer = if ($entry.consumer -eq 'codex') { 'agents' } else { [string] $entry.consumer }
+            $managed["$consumer/$($entry.name)"] = [pscustomobject]@{
+                Consumer = $consumer
                 Name = [string] $entry.name
                 Source = [string] $entry.source
             }
@@ -384,7 +402,7 @@ function Invoke-SkillSynchronization {
     if ($DryRun -and $Check) {
         throw '-DryRun and -Check are mutually exclusive.'
     }
-    if ($Configuration.Manifest.version -ne 1) {
+    if ($Configuration.Manifest.version -ne 2) {
         throw "Unsupported skills manifest version: $($Configuration.Manifest.version)"
     }
 
@@ -394,6 +412,8 @@ function Invoke-SkillSynchronization {
         -SkillsRepository $Configuration.SkillsRepository -UserHome $Configuration.UserHome
     $managed = Read-ManagedSkillState -Path $Configuration.StatePath
     $plan = @(Get-SkillReconciliationPlan -Configuration $Configuration -Inventory $inventory -Managed $managed -Migrate:$Migrate)
+    $pluginMessages = @(Invoke-ClaudeSkillPlugins -Manifest $Configuration.Manifest -UserHome $Configuration.UserHome -ReadOnly:($DryRun -or $Check))
+    foreach ($message in $pluginMessages) { $messages.Add($message) }
 
     $backupDirectory = $null
     if (-not $DryRun -and -not $Check) {
@@ -404,7 +424,7 @@ function Invoke-SkillSynchronization {
         Actions = $plan
         Messages = @($messages)
         BackupDirectory = $backupDirectory
-        ExitCode = if ($Check -and $plan.Count -gt 0) { 1 } else { 0 }
+        ExitCode = if ($Check -and ($plan.Count -gt 0 -or $pluginMessages.Count -gt 0)) { 1 } else { 0 }
         Synchronized = -not $DryRun -and -not $Check
     }
 }

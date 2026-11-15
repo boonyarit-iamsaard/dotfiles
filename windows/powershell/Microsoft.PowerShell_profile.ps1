@@ -65,7 +65,7 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # Prompt
 # ---------------------------------------------------------------------------
 # Oh My Posh uses the pinned upstream Dark 2026 prompt.
-# Alternatives in oh-my-posh\: default-dark-modern, catppuccin-mocha, onedark.
+# Alternatives in oh-my-posh\: default-dark-modern, catppuccin-mocha.
 $ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\dark-2026.omp.json'
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 

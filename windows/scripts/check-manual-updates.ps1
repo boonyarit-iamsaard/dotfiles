@@ -13,7 +13,7 @@ if ($PSVersionTable.PSEdition -ne 'Core' -or $PSVersionTable.PSVersion -lt [Vers
 }
 
 $platformRoot = Split-Path -Parent $PSScriptRoot
-$manifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
+$manifest = Get-Content -Raw -LiteralPath (Join-Path (Split-Path -Parent $platformRoot) 'shared\skills\skills.json') | ConvertFrom-Json
 $rows = [System.Collections.Generic.List[object]]::new()
 
 function Add-Row([string] $Name, [string] $Status, [string] $Action) {
@@ -21,7 +21,7 @@ function Add-Row([string] $Name, [string] $Status, [string] $Action) {
 }
 
 # Upstream skills checkout: fetch only, then count commits behind upstream.
-$checkout = ([string] $manifest.repository.checkout).Replace('{home}', [Environment]::GetFolderPath('UserProfile'))
+$checkout = Join-Path ([Environment]::GetFolderPath('UserProfile')) 'skills'
 if (-not (Test-Path -LiteralPath (Join-Path $checkout '.git'))) {
     Add-Row 'skills' "no checkout at $checkout" 'run update-skills'
 }
@@ -73,7 +73,7 @@ foreach ($entry in $manifest.vendor.PSObject.Properties) {
         }
     }
     else {
-        Add-Row $name 'unknown vendor source in manifests\skills.json' ''
+        Add-Row $name 'unknown vendor source in shared/skills/skills.json' ''
     }
 }
 

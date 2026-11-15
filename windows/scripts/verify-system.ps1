@@ -7,13 +7,14 @@ $ErrorActionPreference = 'Stop'
 $platformRoot = Split-Path -Parent $PSScriptRoot
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedWindowsLinks.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'modules\SkillInventory.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'modules\SkillPlugins.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedEnvironment.psm1') -Force
 
 $packageManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\packages.json') | ConvertFrom-Json
 $environmentManifestPath = Join-Path $platformRoot 'manifests\environment.json'
 $nodeToolchainScript = Join-Path $PSScriptRoot 'set-node-toolchain.ps1'
 $linkManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\links.json') | ConvertFrom-Json
-$skillManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\skills.json') | ConvertFrom-Json
+$skillManifest = Get-Content -Raw -LiteralPath (Join-Path (Split-Path -Parent $platformRoot) 'shared\skills\skills.json') | ConvertFrom-Json
 $failures = [Collections.Generic.List[string]]::new()
 
 $runningOnWindows = [Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT
@@ -104,8 +105,7 @@ foreach ($packageName in $linkManifest.PSObject.Properties.Name) {
 }
 
 $userHome = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
-$checkout = ([string] $skillManifest.repository.checkout).Replace('{home}', $userHome)
-$skillsRepository = [IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($checkout))
+$skillsRepository = Join-Path $userHome 'skills'
 if (-not (Test-Path -LiteralPath (Join-Path $skillsRepository '.git') -PathType Container)) {
     $failures.Add("Skills checkout is missing or is not a Git repository: $skillsRepository")
 }
@@ -121,6 +121,13 @@ else {
             if (-not (Test-ManagedLink -Path $skill.Target -Source $skill.Source)) {
                 $failures.Add("Skill symlink has the wrong target: $($skill.Target)")
             }
+        }
+        $rules = Join-Path (Split-Path -Parent $platformRoot) 'shared\skills\edit-prose\rules.md'
+        if (-not (Test-Path -LiteralPath $rules -PathType Leaf)) {
+            $failures.Add('Shared edit-prose rules are missing; run update-skills without -NoPull to clone humanizer.')
+        }
+        foreach ($failure in @(Invoke-ClaudeSkillPlugins -Manifest $skillManifest -UserHome $userHome -ReadOnly)) {
+            $failures.Add($failure)
         }
     }
     catch {

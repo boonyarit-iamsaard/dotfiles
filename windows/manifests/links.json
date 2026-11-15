@@ -41,10 +41,6 @@
   ],
   "windows-terminal": [
     {
-      "source": "config/windows-terminal/onedark.json",
-      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\onedark.json"
-    },
-    {
       "source": "config/windows-terminal/dark-modern.json",
       "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\dark-modern.json"
     },
@@ -69,19 +65,19 @@
   ],
   "impeccable": [
     {
-      "source": "skills/vendor/impeccable/claude-agents/impeccable-asset-producer.md",
+      "source": "../shared/skills/vendor/impeccable/claude-agents/impeccable-asset-producer.md",
       "target": "%USERPROFILE%\\.claude\\agents\\impeccable-asset-producer.md"
     },
     {
-      "source": "skills/vendor/impeccable/claude-agents/impeccable-documenter.md",
+      "source": "../shared/skills/vendor/impeccable/claude-agents/impeccable-documenter.md",
       "target": "%USERPROFILE%\\.claude\\agents\\impeccable-documenter.md"
     },
     {
-      "source": "skills/vendor/impeccable/claude-agents/impeccable-finish-reviewer.md",
+      "source": "../shared/skills/vendor/impeccable/claude-agents/impeccable-finish-reviewer.md",
       "target": "%USERPROFILE%\\.claude\\agents\\impeccable-finish-reviewer.md"
     },
     {
-      "source": "skills/vendor/impeccable/claude-agents/impeccable-manual-edit-applier.md",
+      "source": "../shared/skills/vendor/impeccable/claude-agents/impeccable-manual-edit-applier.md",
       "target": "%USERPROFILE%\\.claude\\agents\\impeccable-manual-edit-applier.md"
     }
   ],

@@ -1,6 +1,5 @@
 # Third-party vendored payloads keep their upstream bytes, including CRLF
 # launchers, and are exempt from whitespace checks.
-windows/skills/vendor/** -text -whitespace
 shared/skills/vendor/** -text -whitespace
 shared/themes/btop/catppuccin-mocha.theme -text -whitespace
 shared/themes/lazygit/catppuccin-mocha.yml -text -whitespace

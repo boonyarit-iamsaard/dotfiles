@@ -8,7 +8,7 @@ function Resolve-SkillManifestPath {
     )
 
     $expanded = $Path.Replace('{home}', $UserHome)
-    return [IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($expanded))
+    return [IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($expanded), $UserHome)
 }
 
 function Get-SkillInventory {
@@ -20,7 +20,7 @@ function Get-SkillInventory {
         [Parameter(Mandatory)] [string] $UserHome
     )
 
-    if ($Manifest.version -ne 1) {
+    if ($Manifest.version -ne 2) {
         throw "Unsupported skills manifest version: $($Manifest.version)"
     }
 
@@ -60,15 +60,30 @@ function Get-SkillInventory {
         }
     }
 
-    foreach ($localSkill in @($Manifest.localSkills)) {
-        $source = [IO.Path]::GetFullPath((Join-Path $PlatformRoot ([string] $localSkill.source)))
-        if (-not (Test-Path -LiteralPath (Join-Path $source 'SKILL.md') -PathType Leaf)) {
-            throw "Local skill is missing SKILL.md: $source"
+    $sharedRoot = Join-Path (Split-Path -Parent $PlatformRoot) 'shared\skills'
+    foreach ($localSkill in @($Manifest.skills)) {
+        $sources = @{}
+        if ($localSkill.source -is [string]) {
+            foreach ($consumerName in $consumerRoots.Keys) {
+                $sources[$consumerName] = $localSkill.source
+            }
         }
-        foreach ($consumer in @($localSkill.consumers)) {
-            $consumerName = [string] $consumer
-            if (-not $consumerRoots.ContainsKey($consumerName)) {
-                throw "Unknown skills consumer: $consumerName"
+        else {
+            foreach ($entry in $localSkill.source.PSObject.Properties) {
+                if (-not $consumerRoots.ContainsKey($entry.Name)) {
+                    throw "Unknown skills consumer: $($entry.Name)"
+                }
+                $sources[$entry.Name] = [string] $entry.Value
+            }
+            if ($sources.Count -ne $consumerRoots.Count -and
+                (-not $localSkill.PSObject.Properties['reason'] -or -not $localSkill.reason)) {
+                throw "Skill '$($localSkill.name)' skips a consumer without a reason."
+            }
+        }
+        foreach ($consumerName in $sources.Keys) {
+            $source = [IO.Path]::GetFullPath((Join-Path $sharedRoot $sources[$consumerName]))
+            if (-not (Test-Path -LiteralPath (Join-Path $source 'SKILL.md') -PathType Leaf)) {
+                throw "Personal or vendored skill is missing SKILL.md: $source"
             }
             $key = "$consumerName/$($localSkill.name)"
             if ($desired.ContainsKey($key)) {

@@ -38,6 +38,9 @@ Before running the repository scripts, the machine needs:
 - Native Windows 10 or Windows 11.
 - PowerShell 7.0 or newer (`pwsh`). Windows PowerShell 5.1 is not supported.
 - Internet access to GitHub and Scoop package sources during setup.
+- Claude Code installed and available as `claude` for the pinned Claude plugins.
+  Bootstrap checks this prerequisite before changing the machine; the existing
+  native Claude installation is kept outside Scoop ownership.
 - A standard, non-administrator PowerShell 7 terminal for Scoop and bootstrap.
 - Windows Developer Mode enabled so the standard user can create symbolic links.
   Enabling it once requires administrator approval.
@@ -222,7 +225,6 @@ Terminal and Oh My Posh use vendored upstream extras in their Windows folders.
 | Default Dark Modern | Dark Modern (VS Code)   | `default-dark-modern.omp.json` | `default-dark-modern.yml`                   | shared variant |
 | Dark 2026           | Dark 2026               | `dark-2026.omp.json`           | `dark-2026.yml` (active)                    | active block   |
 | Catppuccin Mocha    | Catppuccin Mocha        | `catppuccin-mocha.omp.json`    | `catppuccin-mocha.yml`                      | shared variant |
-| One Dark (navarasu) | One Dark (navarasu)     | `onedark.omp.json`             | not carried                                 | not carried    |
 
 To switch:
 
@@ -265,11 +267,6 @@ Sources:
   [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal)
   and the `mocha/blue` flavor of
   [catppuccin/lazygit](https://github.com/catppuccin/lazygit).
-- One Dark uses the `dark` variant of
-  [navarasu/onedark.nvim](https://github.com/navarasu/onedark.nvim): its
-  [palette](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/palette.lua)
-  and
-  [terminal mapping](https://github.com/navarasu/onedark.nvim/blob/master/lua/onedark/terminal.lua).
 
 ## Dark Modern theme
 
@@ -411,7 +408,7 @@ automatically:
 
 - `skills`: the upstream skills checkout is behind; run `update-skills`.
 - `impeccable` or `ponytail`: a newer upstream release than the version pinned
-  under `vendor` in `manifests/skills.json`; refresh it with
+  under `vendor` in `../shared/skills/skills.json`; refresh it with
   [docs/impeccable.md](docs/impeccable.md) or
   [docs/ponytail.md](docs/ponytail.md).
 
@@ -479,11 +476,25 @@ collisions, and rolls completed moves back if link creation fails. The managed
 link inventory is stored outside the repository at
 `%LOCALAPPDATA%\dotfiles\skill-sync\managed-links.json`.
 
-Only the promoted `engineering` and `productivity` buckets are installed from
-the fork. The personal `commit-message` and `typescript-house-style` skills live
-under `skills\shared` in this dotfiles repository. Impeccable's
-provider-specific Codex and Claude builds live under `skills\vendor`. All three
-are declared explicitly in `manifests\skills.json`.
+The shared manifest at `../shared/skills/skills.json` declares the promoted
+`engineering` and `productivity` buckets, personal skills, vendored payloads,
+and pinned Claude plugins. Windows uses the `agents` and `claude` consumers; the
+sync migrates the previous `codex` ownership records automatically. Personal
+skills (`commit-message`, `typescript-house-style`, `edit-prose`, `runbook`) and
+vendored Impeccable and Ponytail live under `../shared/skills/`.
+
+Claude receives Ponytail through its pinned plugin, including the session hook
+and slash commands. The sync removes its old managed Ponytail skill links so
+Claude loads one copy. The `agents` consumer keeps the vendored skills.
+`-DryRun` and `-Check` inspect plugin state without changing it; a normal sync
+installs and enables the manifest's pin. It requires the existing `claude` CLI
+on `PATH`, as listed in the bootstrap prerequisites.
+
+The shared `edit-prose/rules.md` link reads the `humanizer` checkout next to
+dotfiles at `../workspace/personal/humanizer`. A first sync without `-NoPull`
+clones it when missing. Existing files are preserved, and `-Check` or `-NoPull`
+reports a missing dependency with the clone location. Existing humanizer
+checkouts are left at their current revision.
 
 Impeccable also supplies Claude subagents. They are linked individually through
 `manifests\links.json`, leaving `$HOME\.claude\agents` as a real directory. See
@@ -497,8 +508,9 @@ verification.
   prioritized `PATH` entries.
 - `manifests/node-toolchain.json` declares the Node.js release and NVM mode.
 - `manifests/links.json` maps tracked files to native Windows destinations.
-- `manifests/skills.json` declares the skills checkout, promoted categories,
-  consumers, and locally owned skills.
+- `../shared/skills/skills.json` declares the skills fork, promoted categories,
+  consumers, personal and vendored skills, and pinned Claude plugins. The fork
+  checkout defaults to `$HOME\skills`; `SKILLS_REPO` overrides it for the sync.
 
 Add future tools through these manifests so bootstrap, update, and verification
 continue to share one source of truth.
