@@ -1,0 +1,192 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[](color_peach)\
+$os\
+$username\
+[](bg:color_yellow fg:color_peach)\
+$directory\
+[](fg:color_yellow bg:color_teal)\
+$git_branch\
+$git_status\
+[](fg:color_teal bg:color_blue)\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+$dotnet\
+[](fg:color_blue bg:color_surface2)\
+$docker_context\
+$conda\
+[](fg:color_surface2 bg:color_surface1)\
+$time\
+[ ](fg:color_surface1)\
+$line_break$character"""
+
+# Command duration on the right, shown only for commands slower than 2s.
+right_format = "$cmd_duration"
+
+# Prompt shown for multi-line input.
+continuation_prompt = "[∙∙ ](color_surface2)"
+
+palette = 'default_dark_modern'
+
+[palettes.default_dark_modern]
+# Default Dark Modern (VS Code), hand-ported from
+# microsoft/vscode theme-defaults/themes/dark_modern.json.
+color_fg0 = '#1f1f1f'         # editor.background - dark text on coloured segments
+color_fg1 = '#cccccc'         # terminal.foreground
+color_bg1 = '#313131'         # input.background
+color_bg3 = '#3c3c3c'         # input.border
+color_blue = '#4daafc'        # textLink.foreground
+color_teal = '#9cdcfe'        # variable
+color_green = '#81b88b'       # gitDecoration.addedResourceForeground
+color_peach = '#d18616'       # charts.orange
+color_mauve = '#b180d7'       # charts.purple
+color_red = '#f85149'         # errorForeground
+color_yellow = '#e2c08d'      # gitDecoration.modifiedResourceForeground
+color_surface1 = '#313131'    # input.background
+color_surface2 = '#3c3c3c'    # input.border
+
+[os]
+disabled = false
+style = "bg:color_peach fg:color_fg0"
+
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+Arch = "󰣇"
+Artix = "󰣇"
+EndeavourOS = ""
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+Pop = ""
+
+[username]
+show_always = true
+style_user = "bg:color_peach fg:color_fg0"
+style_root = "bg:color_peach fg:color_fg0"
+format = '[ $user ]($style)'
+
+[directory]
+style = "fg:color_fg0 bg:color_yellow"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "bg:color_teal"
+format = '[[ $symbol $branch ](fg:color_fg0 bg:color_teal)]($style)'
+
+[git_status]
+style = "bg:color_teal"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+up_to_date = "≡"
+format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_teal)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[c]
+symbol = " "
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[php]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[java]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[python]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[dotnet]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:color_surface2"
+format = '[[ $symbol( $context) ](fg:#89b4fa bg:color_surface2)]($style)'
+
+[conda]
+style = "bg:color_surface2"
+format = '[[ $symbol( $environment) ](fg:#89b4fa bg:color_surface2)]($style)'
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:color_surface1"
+format = '[[  $time ](fg:color_fg1 bg:color_surface1)]($style)'
+
+[cmd_duration]
+min_time = 2000
+style = "fg:color_surface2"
+format = "[took $duration]($style)"
+
+[line_break]
+disabled = false
+
+[character]
+disabled = false
+success_symbol = "[[󰄛](color_green) ❯](color_green)"
+error_symbol = "[[󰄛](color_red) ❯](color_red)"
+vimcmd_symbol = "[󰄛 ❮](color_fg1)"

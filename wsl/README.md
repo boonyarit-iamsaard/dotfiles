@@ -21,6 +21,7 @@ one-line edit per tool:
 | lazygit | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `config/lazygit/themes/`) |
 | lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `config/lazydocker/themes/<name>.yml` |
 | Neovim | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
+| starship | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only) |
 
 The dark 2026 palette is owned by
 [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim); its
