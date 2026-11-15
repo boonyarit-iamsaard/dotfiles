@@ -85,15 +85,14 @@ pwsh --version
 ### 2. Clone the repository
 
 ```powershell
-git clone --branch restructure/platform-folders https://github.com/boonyarit-iamsaard/dotfiles.git "$HOME\dotfiles"
+git clone https://github.com/boonyarit-iamsaard/dotfiles.git "$HOME\dotfiles"
 Set-Location "$HOME\dotfiles\windows"
 git branch --show-current
 ```
 
-The branch command must print `restructure/platform-folders`, the branch that
-holds the `windows/` folder until it reaches `main`. The repository is public,
-so cloning does not require GitHub authentication. Authentication is required
-only when pushing; Git Credential Manager can prompt for it on the first push.
+The branch command must print `main`. The repository is public, so cloning does
+not require GitHub authentication. Authentication is required only when pushing;
+Git Credential Manager can prompt for it on the first push.
 
 Configure commit identity if a new Git installation does not have it yet. Write
 it to `~\.gitconfig.local`, not `--global`: `~\.gitconfig` becomes a managed

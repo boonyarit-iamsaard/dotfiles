@@ -10,8 +10,8 @@ folder for the platform you are changing and follow its guide:
 | `wsl/`     | WSL            | [wsl/README.md](wsl/README.md)         |
 
 `macos/` and `wsl/` have no agent guide of their own yet; follow their README.
-Every platform runs from its folder on the integration branch. The migration
-plan is issue #14 and its sub-issues.
+Every platform tracks `main` and runs from its own folder. The migration plan is
+issue #14 and its sub-issues.
 
 ## Repository-wide rules
 
