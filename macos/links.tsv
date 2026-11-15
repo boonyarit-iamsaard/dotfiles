@@ -28,6 +28,7 @@
 .config/nvim/lua/themes	.config/nvim/lua/themes
 .config/nvim/stylua.toml	.config/nvim/stylua.toml
 .config/superfile	.config/superfile
+.gitconfig	.gitconfig
 .ideavimrc	.ideavimrc
 .local/bin/gh	.local/bin/gh
 .tmux.conf	.tmux.conf

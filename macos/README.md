@@ -38,6 +38,38 @@ LazyGit's `state.yml` is ignored by `.gitignore`, as are the themes superfile
 writes into its `theme/` folder; only `default-dark-modern.toml` there is
 tracked.
 
+## Git config
+
+`links.tsv` links `~/.gitconfig` to `.gitconfig` here. It includes
+`~/dotfiles/shared/gitconfig` for the shared essentials (`core.symlinks=true`),
+then `~/.gitconfig.local` for identity, signing, and machine-only settings. The
+checkout must live at `~/dotfiles`.
+
+On an existing Mac, `check-links` reports `not-a-link: .gitconfig` until the
+unmanaged config moves aside. If `~/.gitconfig.local` already exists, merge the
+settings into it first; do not overwrite it:
+
+```bash
+# One-time migration, only when ~/.gitconfig.local does not already exist:
+mv -n ~/.gitconfig ~/.gitconfig.local
+~/dotfiles/macos/scripts/check-links --create
+git config --show-origin --get core.symlinks   # must name shared/gitconfig
+```
+
+On a fresh Mac, `check-links --create` adds the link; then put personal settings
+in the local file:
+
+```bash
+git config --file ~/.gitconfig.local user.name "Your Name"
+git config --file ~/.gitconfig.local user.email "you@example.com"
+```
+
+Use `--file ~/.gitconfig.local` for local settings instead of `--global`, which
+writes to the tracked `.gitconfig`. Local settings are loaded last and can
+override the shared defaults. Keep `core.symlinks=true` so `CLAUDE.md` checks
+out as a link. `git config --global --list` skips includes; add `--includes` to
+see the merged settings.
+
 ## Themes
 
 Default Dark Modern is active; Catppuccin and Dark 2026 stay available. Shared

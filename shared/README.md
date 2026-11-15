@@ -44,6 +44,7 @@ and Stow commands. Windows links
 `~\.gitconfig` through its manifest with the same includes, and its verifier
 checks that `core.symlinks` comes from the shared file. It is applied and
 verified on Windows; `http.sslBackend` stays in Git for Windows' system config.
-
-macOS adoption and verification remain pending in
-[issue #11](https://github.com/boonyarit-iamsaard/dotfiles/issues/11).
+macOS links [`macos/.gitconfig`](../macos/.gitconfig) at `~/.gitconfig` through
+`macos/links.tsv` with the same includes; see
+[macOS setup](../macos/README.md#git-config). It is applied and verified on
+macOS.
