@@ -11,8 +11,8 @@ folder for the platform you are changing and follow its guide:
 
 `macos/` and `wsl/` have no agent guide of their own yet; follow their README.
 The WSL files are in `wsl/`, but the WSL machine still runs from the `wsl`
-branch until its setup is pointed at this folder. The migration plan is the spec
-in `.scratch/platform-consolidation/`.
+branch until its setup is pointed at this folder. The migration plan is issue
+#14 and its sub-issues.
 
 ## Repository-wide rules
 
@@ -32,16 +32,15 @@ in `.scratch/platform-consolidation/`.
   `.prettierignore` exempt them.
 - `CLAUDE.md` files are symlinks to the `AGENTS.md` beside them. Edit
   `AGENTS.md`.
-- `.scratch/` is ignored. Track a file there only for research, issues and
-  tickets, or when the owner says so or agrees when asked; add it with
-  `git add -f`.
+- `.scratch/` is ignored. Track a file there only for research, or when the
+  owner says so or agrees when asked; add it with `git add -f`.
 
 ## Agent skills
 
 ### Issue tracker
 
-Issues and specs live as local markdown files under `.scratch/<feature>/`. See
-`docs/agents/issue-tracker.md`.
+Issues and specs live in GitHub Issues; specs are parent issues with their
+tickets as sub-issues. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 

@@ -21,5 +21,5 @@ pnpm format:check
 
 The plan for finishing the move, and for sharing themes and other common pieces
 between the platforms, is the spec in
-[`.scratch/platform-consolidation/`](.scratch/platform-consolidation/spec.md),
-with one ticket per step under its `issues/` folder.
+[issue #14](https://github.com/boonyarit-iamsaard/dotfiles/issues/14), with one
+sub-issue per step.
