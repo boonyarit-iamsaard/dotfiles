@@ -65,7 +65,8 @@ foreach ($packageName in $Package) {
             Write-Host "Removed stale link $packageName`: $target -> $staleSource"
         }
         elseif (Get-Item -Force -LiteralPath $target -ErrorAction SilentlyContinue) {
-            throw "Refusing to overwrite existing path: $target"
+            $hint = $mapping.PSObject.Properties['hint']
+            throw "Refusing to overwrite existing path: $target$(if ($hint) { ". $($hint.Value)" })"
         }
 
         $isDirectory = Test-Path -LiteralPath $source -PathType Container

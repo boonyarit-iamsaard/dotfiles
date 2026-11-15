@@ -84,7 +84,8 @@
   "git": [
     {
       "source": "config/git/gitconfig",
-      "target": "%USERPROFILE%\\.gitconfig"
+      "target": "%USERPROFILE%\\.gitconfig",
+      "hint": "Move it aside first: Move-Item -LiteralPath \"$HOME\\.gitconfig\" -Destination \"$HOME\\.gitconfig.local\". If ~\\.gitconfig.local already exists, merge the settings into it instead."
     },
     {
       "source": "config/git/ignore",
