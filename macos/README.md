@@ -24,7 +24,8 @@ are not searched. `--create` adds missing links as relative symlinks and never
 replaces an existing file or link.
 
 Tool-written runtime state (LazyGit `state.yml`, superfile's version stamps) is
-ignored by `.gitignore`.
+ignored by `.gitignore`, as are the themes superfile writes into its `theme/`
+folder; only `default-dark-modern.toml` there is tracked.
 
 ## Themes
 
