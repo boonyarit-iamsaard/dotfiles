@@ -65,6 +65,22 @@ runtime state. Keep `vendor/impeccable/LICENSE` (Apache 2.0), then set
 `vendor.impeccable.version`. Never run `npx impeccable update` in a home
 directory: it writes over the managed links.
 
+From the repository root, preserve executable permission on both Unix launchers
+and install the pinned engine for this machine:
+
+```sh
+chmod +x shared/skills/vendor/impeccable/codex/scripts/impeccable \
+  shared/skills/vendor/impeccable/claude/scripts/impeccable
+shared/skills/vendor/impeccable/codex/scripts/impeccable engine-probe
+shared/skills/vendor/impeccable/claude/scripts/impeccable engine-probe
+```
+
+The first probe needs network access and write access to `~/.impeccable`; the
+launcher verifies the download against its vendored checksums. Both probes
+should report `impeccable-engine` with the version in `scripts/VERSION`. Git
+must track both launchers as mode `100755`. A launcher without executable
+permission makes Codex's Impeccable hook fail with exit code 126.
+
 **Ponytail.** Clone upstream into an empty directory. Replace each
 `vendor/ponytail/<name>` with upstream `skills/<name>` and refresh `LICENSE`
 (MIT). Set `vendor.ponytail.commit` and the `ref` of the Ponytail entry under
