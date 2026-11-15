@@ -390,7 +390,7 @@ function Invoke-SkillSynchronization {
 
     $messages = [Collections.Generic.List[string]]::new()
     Initialize-SkillsCheckout -Configuration $Configuration -Messages $messages -ReadOnly:($DryRun -or $Check) -NoPull:$NoPull
-    $inventory = Get-SkillInventory -Manifest $Configuration.Manifest -DotfilesRoot $Configuration.DotfilesRoot `
+    $inventory = Get-SkillInventory -Manifest $Configuration.Manifest -PlatformRoot $Configuration.PlatformRoot `
         -SkillsRepository $Configuration.SkillsRepository -UserHome $Configuration.UserHome
     $managed = Read-ManagedSkillState -Path $Configuration.StatePath
     $plan = @(Get-SkillReconciliationPlan -Configuration $Configuration -Inventory $inventory -Managed $managed -Migrate:$Migrate)

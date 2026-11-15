@@ -2,9 +2,8 @@
 
 Native Windows developer tooling and configuration managed with PowerShell and
 Scoop. It lives in the `windows/` folder of the dotfiles checkout; run every
-command below from that folder unless it says otherwise. The macOS (`main`) and
-WSL (`wsl`) branches move into their own folders later; see the root
-[HANDOFF.md](../HANDOFF.md).
+command below from that folder unless it says otherwise. Other platforms are
+listed in the root [README.md](../README.md).
 
 ## Scope
 
@@ -80,17 +79,18 @@ git --version
 pwsh --version
 ```
 
-### 2. Clone the Windows branch
+### 2. Clone the repository
 
 ```powershell
-git clone --branch windows https://github.com/boonyarit-iamsaard/dotfiles.git "$HOME\dotfiles"
+git clone --branch restructure/platform-folders https://github.com/boonyarit-iamsaard/dotfiles.git "$HOME\dotfiles"
 Set-Location "$HOME\dotfiles\windows"
 git branch --show-current
 ```
 
-The branch command must print `windows`. The repository is public, so cloning
-does not require GitHub authentication. Authentication is required only when
-pushing; Git Credential Manager can prompt for it on the first push.
+The branch command must print `restructure/platform-folders`, the branch that
+holds the `windows/` folder until it reaches `main`. The repository is public,
+so cloning does not require GitHub authentication. Authentication is required
+only when pushing; Git Credential Manager can prompt for it on the first push.
 
 Configure commit identity if a new Git installation does not have it yet:
 
@@ -190,7 +190,7 @@ Expected results:
 - Scoop prints lazygit's installation directory.
 - Lazygit prints a version and `%LOCALAPPDATA%\lazygit` as its config directory.
 - `LinkType` is `SymbolicLink` and `Target` points into
-  `dotfiles\config\lazygit\config.yml`.
+  `dotfiles\windows\config\lazygit\config.yml`.
 
 Confirm idempotency by running bootstrap a second time. Existing packages and
 correct links should be reported without being replaced.
@@ -468,6 +468,14 @@ verification.
 Add future tools through these manifests so bootstrap, update, and verification
 continue to share one source of truth.
 
+## Machine notes
+
+- **Git is system-wide:** Git is installed under `C:\Program Files\Git`, not by
+  Scoop. Do not add a second Git without first reviewing `PATH` precedence.
+- **Git TLS backend:** this checkout sets `http.sslBackend=openssl` in its local
+  Git config because Schannel failed in the automation environment. Check it
+  with `git config --local --get http.sslBackend`.
+
 ## Troubleshooting
 
 - **Scripts are disabled:** run
@@ -483,5 +491,4 @@ continue to share one source of truth.
   `$HOME\skills`; the updater deliberately refuses to pull a dirty checkout.
 - **Skill target already exists:** inspect it first. Use `-Migrate` only for an
   unchanged copied skill; modified or unrelated paths are never replaced.
-- **Wrong branch or folder:** switch explicitly with `git switch windows`, and
-  run setup and verification from `$HOME\dotfiles\windows`.
+- **Wrong folder:** run setup and verification from `$HOME\dotfiles\windows`.

@@ -15,7 +15,7 @@ function Get-SkillInventory {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [object] $Manifest,
-        [Parameter(Mandatory)] [string] $DotfilesRoot,
+        [Parameter(Mandatory)] [string] $PlatformRoot,
         [Parameter(Mandatory)] [string] $SkillsRepository,
         [Parameter(Mandatory)] [string] $UserHome
     )
@@ -61,7 +61,7 @@ function Get-SkillInventory {
     }
 
     foreach ($localSkill in @($Manifest.localSkills)) {
-        $source = [IO.Path]::GetFullPath((Join-Path $DotfilesRoot ([string] $localSkill.source)))
+        $source = [IO.Path]::GetFullPath((Join-Path $PlatformRoot ([string] $localSkill.source)))
         if (-not (Test-Path -LiteralPath (Join-Path $source 'SKILL.md') -PathType Leaf)) {
             throw "Local skill is missing SKILL.md: $source"
         }

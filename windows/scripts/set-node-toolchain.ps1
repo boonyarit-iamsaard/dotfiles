@@ -6,12 +6,12 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$dotfilesRoot = Split-Path -Parent $PSScriptRoot
-$manifestPath = Join-Path $dotfilesRoot 'manifests\node-toolchain.json'
+$platformRoot = Split-Path -Parent $PSScriptRoot
+$manifestPath = Join-Path $platformRoot 'manifests\node-toolchain.json'
 # Repository tooling (package.json, pnpm) lives at the checkout root, one level
 # above this platform folder.
-$repositoryRoot = Split-Path -Parent $dotfilesRoot
-$packagePath = Join-Path $repositoryRoot 'package.json'
+$checkoutRoot = Split-Path -Parent $platformRoot
+$packagePath = Join-Path $checkoutRoot 'package.json'
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 $package = Get-Content -Raw -LiteralPath $packagePath | ConvertFrom-Json
 $nodeRelease = [string] $manifest.nodeRelease
@@ -81,7 +81,7 @@ if ($actualNodeVersion -notmatch "^v$([regex]::Escape($nodeRelease))\.") {
 }
 
 $null = Get-CommandOutput -Command 'corepack' -Arguments @('--version')
-Push-Location $repositoryRoot
+Push-Location $checkoutRoot
 try {
     $actualPnpmVersion = Get-CommandOutput -Command 'pnpm' -Arguments @('--version')
 }

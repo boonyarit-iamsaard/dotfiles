@@ -8,8 +8,8 @@ if ($PSVersionTable.PSEdition -ne 'Core' -or $PSVersionTable.PSVersion -lt [Vers
     throw 'PowerShell 7.0 or newer is required. Run this script with pwsh.exe.'
 }
 
-$dotfilesRoot = Split-Path -Parent $PSScriptRoot
-$manifestPath = Join-Path $dotfilesRoot 'manifests\packages.json'
+$platformRoot = Split-Path -Parent $PSScriptRoot
+$manifestPath = Join-Path $platformRoot 'manifests\packages.json'
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {

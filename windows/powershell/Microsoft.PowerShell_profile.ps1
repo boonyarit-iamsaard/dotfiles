@@ -112,16 +112,16 @@ Set-Alias -Name lzd -Value lazydocker
 # Dotfiles scripts
 # ---------------------------------------------------------------------------
 # Alias the scripts that are run by hand, under the same names the README
-# uses. This file is symlinked into the repository, so the link target locates
-# the checkout without a hard-coded path.
+# uses. This file is symlinked into the platform folder, so the link target
+# locates that folder without a hard-coded path.
 $profileItem = Get-Item -LiteralPath $PROFILE -Force -ErrorAction SilentlyContinue
 $profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
 
 if ($profileTarget) {
-    $dotfilesRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
+    $platformRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
 
     foreach ($script in 'check-manual-updates', 'docker-cleanup', 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
-        $scriptPath = Join-Path $dotfilesRoot "scripts\$script.ps1"
+        $scriptPath = Join-Path $platformRoot "scripts\$script.ps1"
         if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
             Set-Alias -Name $script -Value $scriptPath -Scope Global
         }
