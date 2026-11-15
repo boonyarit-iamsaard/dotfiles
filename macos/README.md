@@ -224,13 +224,13 @@ The first conversion from copied skills must be previewed before it is run:
 Migration accepts only files whose Git blobs can be traced to the skills
 checkout's history. It snapshots both dotfiles skill packages under
 `~/.local/state/dotfiles-skills/backups`, archives verified Matt copies, and
-keeps the shared skills the manifest declares. The obsolete Matt skills
-`diagnose`, `to-issues`, `to-prd`, and `zoom-out` are archived during migration.
-A failed migration restores moved package copies and attempts to restore the
-previous Stow layout.
+keeps the personal and vendored skills the manifest declares. The obsolete Matt
+skills `diagnose`, `to-issues`, `to-prd`, and `zoom-out` are archived during
+migration. A failed migration restores moved package copies and attempts to
+restore the previous Stow layout.
 
-After migration, personal skills link to their dotfiles directories while Matt's
-skills link directly to the read-only checkout. The synchronizer retires deleted
+After migration, manifest skills link into `shared/skills/` while Matt's skills
+link directly to the read-only checkout. The synchronizer retires deleted
 upstream links, including broken ones, and refuses unexpected package copies.
 `--migrate` can archive retired skills verified against upstream Git history; it
 checks every file and restores moved package copies if migration fails.

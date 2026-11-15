@@ -268,7 +268,7 @@ class Reconciler:
             for skill_md in sorted(category_root.glob("*/SKILL.md")):
                 name = skill_md.parent.name
                 if name in self.shared.all_names or name in RETIRED_LOCAL_SKILLS:
-                    raise SyncError(f"upstream skill collides with a shared skill: {name}")
+                    raise SyncError(f"upstream skill collides with a manifest skill: {name}")
                 previous = discovered.get(name)
                 if previous is not None:
                     raise SyncError(
@@ -508,12 +508,12 @@ class Reconciler:
                     )
                 for resource in source.rglob("*"):
                     if resource.is_symlink() and not resource.exists():
-                        raise SyncError(f"missing personal skill resource: {resource}")
+                        raise SyncError(f"missing manifest skill resource: {resource}")
                 target = live / name
                 if target.exists() and target.resolve() == source.resolve():
                     continue
                 if target.exists() or target.is_symlink():
-                    raise SyncError(f"unmanaged personal skill collision: {target}")
+                    raise SyncError(f"unmanaged manifest skill collision: {target}")
                 actions.append(Action(ActionKind.LINK, consumer, name, target, source))
 
     def _reject_stale_package_copies(self) -> None:

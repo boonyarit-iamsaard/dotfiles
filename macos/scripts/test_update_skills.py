@@ -459,14 +459,14 @@ class UpdateSkillsTest(unittest.TestCase):
         self.agents_live.mkdir(parents=True)
         existing = self.make_local_skill(self.agents_live, "runbook")
         result = self.run_updater(expected_returncode=2)
-        self.assertIn("unmanaged personal skill collision", result.stderr)
+        self.assertIn("unmanaged manifest skill collision", result.stderr)
         self.assertFalse(existing.is_symlink())
 
     def test_missing_personal_resource_is_reported_before_linking(self) -> None:
         skill = self.make_shared_skill("edit-prose")["agents"]
         (skill / "rules.md").symlink_to(self.source / "missing-rules.md")
         result = self.run_updater(expected_returncode=2)
-        self.assertIn("missing personal skill resource", result.stderr)
+        self.assertIn("missing manifest skill resource", result.stderr)
         self.assertFalse(self.agents_live.exists())
 
     @unittest.skipUnless(shutil.which("stow"), "GNU Stow is required")
@@ -564,7 +564,7 @@ class UpdateSkillsTest(unittest.TestCase):
 
         result = self.run_updater(expected_returncode=2)
 
-        self.assertIn("collides with a shared skill: runbook", result.stderr)
+        self.assertIn("collides with a manifest skill: runbook", result.stderr)
 
     def test_all_checkouts_are_checked_before_any_pull(self) -> None:
         self.make_source_skill("alpha")
