@@ -1,6 +1,9 @@
 ---
 name: edit-prose
-description: Prose edit that strips AI writing tells while keeping the writer's voice. Use when tightening, editing, or reviewing prose - articles, docs, READMEs, PR text.
+description:
+  Prose edit that strips AI writing tells while keeping the writer's voice. Use
+  when tightening, editing, or reviewing prose - articles, docs, READMEs, PR
+  text.
 ---
 
 Edit prose with the rules in [rules.md](rules.md), adjusted by the house rules

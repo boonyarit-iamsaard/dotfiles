@@ -2,26 +2,26 @@
 
 ## Maintenance
 
-`~/dotfiles/macos/update-system/update-system.sh` updates installed package managers
-and shared skills. It leaves pinned Homebrew formulas unchanged. The
+`~/dotfiles/macos/update-system/update-system.sh` updates installed package
+managers and shared skills. It leaves pinned Homebrew formulas unchanged. The
 `update-system` alias is available in new shells.
 
 It and `docker-cleanup/docker-cleanup.sh` share `scripts/lib/step-runner.zsh`.
 Both print a summary and exit 1 when an error-severity step fails; warning-only
-failures leave the exit status successful. Docker cleanup removes containers
-and unused volumes, networks, and build cache. Its tests use fake executables
-and never contact a real Docker daemon or run package updates.
+failures leave the exit status successful. Docker cleanup removes containers and
+unused volumes, networks, and build cache. Its tests use fake executables and
+never contact a real Docker daemon or run package updates.
 
 ## Links
 
-`links.tsv` declares every hand-made link from `$HOME` into this checkout,
-one `target<TAB>source` line each. Links into `agents/` and `claude/` are not
+`links.tsv` declares every hand-made link from `$HOME` into this checkout, one
+`target<TAB>source` line each. Links into `agents/` and `claude/` are not
 listed: `scripts/update-skills` manages them with Stow. `scripts/check-links`
 exits 1 when a declared link is missing, points elsewhere, is a real file, or
 its source is gone. It also fails on an undeclared link into the checkout in
-`$HOME` itself or in any directory that holds a declared link; other
-directories are not searched. `--create` adds missing links as relative
-symlinks and never replaces an existing file or link.
+`$HOME` itself or in any directory that holds a declared link; other directories
+are not searched. `--create` adds missing links as relative symlinks and never
+replaces an existing file or link.
 
 Tool-written runtime state (LazyGit `state.yml`, superfile's version stamps) is
 ignored by `.gitignore`.
@@ -31,15 +31,15 @@ ignored by `.gitignore`.
 Default Dark Modern is active; Catppuccin and Dark 2026 stay available. Shared
 settings and theme variants are separate:
 
-| Tool | Switch |
-| --- | --- |
-| Ghostty | Uncomment one `theme` line in `.config/ghostty/config`; variants live under `.config/ghostty/themes/`. |
-| tmux | Change `@theme` in `.tmux.conf` to `catppuccin`, `dark-2026`, or `default-dark-modern`; restart the server for a clean switch. |
-| lazygit | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `Library/Application Support/lazygit/themes/`. |
-| lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments. |
-| Neovim | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern. |
-| superfile | Change `theme` in `Library/Application Support/superfile/config.toml` to a file name under its `theme/` folder. |
-| btop | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed. |
+| Tool       | Switch                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Ghostty    | Uncomment one `theme` line in `.config/ghostty/config`; variants live under `.config/ghostty/themes/`.                         |
+| tmux       | Change `@theme` in `.tmux.conf` to `catppuccin`, `dark-2026`, or `default-dark-modern`; restart the server for a clean switch. |
+| lazygit    | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `Library/Application Support/lazygit/themes/`.     |
+| lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments.                         |
+| Neovim     | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern.     |
+| superfile  | Change `theme` in `Library/Application Support/superfile/config.toml` to a file name under its `theme/` folder.                |
+| btop       | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed.                |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the tmux
 configurations include them without naming the checkout. macOS Application
@@ -63,12 +63,12 @@ processes. Three files put `~/.local/bin` ahead of Homebrew so the wrapper wins
 in every zsh mode: `.zshenv` (for `zsh -c`, which tools spawn), `.zprofile`
 (after its `brew shellenv`, for login shells), and `.zshrc` (interactive). A
 process started before these changed keeps its old `PATH`; check with
-`command -v gh`, or call `~/.local/bin/gh` directly. No account is logged in
-to the keyring (`gh auth status` shows none), so a bypassed wrapper or a
-missing token file makes `gh` fail with "set the GH_TOKEN environment variable"
-instead of acting as another account. To remove a login, run the real binary
-without the variable, because the wrapper's `GH_TOKEN` makes `gh auth logout`
-refuse: `env -u GH_TOKEN /opt/homebrew/bin/gh auth logout -u <user>`.
+`command -v gh`, or call `~/.local/bin/gh` directly. No account is logged in to
+the keyring (`gh auth status` shows none), so a bypassed wrapper or a missing
+token file makes `gh` fail with "set the GH_TOKEN environment variable" instead
+of acting as another account. To remove a login, run the real binary without the
+variable, because the wrapper's `GH_TOKEN` makes `gh auth logout` refuse:
+`env -u GH_TOKEN /opt/homebrew/bin/gh auth logout -u <user>`.
 
 Set up on a new Mac, or when the token expires:
 
@@ -119,8 +119,9 @@ reconcile both Agent Skills consumers:
 
 The command never commits or pushes. It checks both the skills and Humanizer
 checkouts for local changes before any pull and uses `git pull --ff-only`.
-Matt's live catalogs are `ENGINEERING.md` and `PRODUCTIVITY.md` in each consumer;
-the package README points there instead of keeping a stale copied catalog.
+Matt's live catalogs are `ENGINEERING.md` and `PRODUCTIVITY.md` in each
+consumer; the package README points there instead of keeping a stale copied
+catalog.
 
 Preview or diagnose reconciliation with:
 
@@ -141,16 +142,16 @@ The first conversion from copied skills must be previewed before it is run:
 Migration accepts only files whose Git blobs can be traced to the skills
 checkout's history. It snapshots both dotfiles skill packages under
 `~/.local/state/dotfiles-skills/backups`, archives verified Matt copies, and
-keeps the four personal skills listed above.
-The obsolete Matt skills `diagnose`, `to-issues`, `to-prd`, and `zoom-out` are
-archived during migration. A failed migration restores moved package copies
-and attempts to restore the previous Stow layout.
+keeps the four personal skills listed above. The obsolete Matt skills
+`diagnose`, `to-issues`, `to-prd`, and `zoom-out` are archived during migration.
+A failed migration restores moved package copies and attempts to restore the
+previous Stow layout.
 
 After migration, personal skills link to their dotfiles directories while Matt's
 skills link directly to the read-only checkout. The synchronizer retires deleted
 upstream links, including broken ones, and refuses unexpected package copies.
-`--migrate` can archive retired skills verified against upstream Git history;
-it checks every file and restores moved package copies if migration fails.
+`--migrate` can archive retired skills verified against upstream Git history; it
+checks every file and restores moved package copies if migration fails.
 
 Run the maintenance, synchronization, link, and theme checks from `macos/` with:
 

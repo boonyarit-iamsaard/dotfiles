@@ -15,8 +15,8 @@ never write it into this file.
 
 ## Decisions
 
-| Fork | Choice | Why |
-| --- | --- | --- |
+| Fork                           | Choice            | Why          |
+| ------------------------------ | ----------------- | ------------ |
 | `<option the docs leave open>` | `<chosen option>` | `<one line>` |
 
 ## Steps
@@ -29,8 +29,8 @@ never write it into this file.
 - **Why:** Organizations lets member accounts be created and governed from one
   place; "all features" is needed for SCPs and centralized root access, where
   consolidated billing alone is not enough.
-- **Where:** Console, signed in to `<MANAGEMENT_ACCOUNT_ID>` as root with
-  MFA → AWS Organizations (per docs, verify on screen).
+- **Where:** Console, signed in to `<MANAGEMENT_ACCOUNT_ID>` as root with MFA →
+  AWS Organizations (per docs, verify on screen).
 - **Do:**
   1. Choose **Create an organization**.
   2. Confirm the verification email sent to `<ROOT_EMAIL>`.
@@ -38,8 +38,8 @@ never write it into this file.
   account.
 - **Verify:** `aws organizations describe-organization --profile <PROFILE>`
   shows `"FeatureSet": "ALL"` and `MasterAccountId` = `<MANAGEMENT_ACCOUNT_ID>`.
-- **Undo:** ⚠️ Irreversible while member accounts exist; an organization can
-  be deleted only after every member account is removed.
+- **Undo:** ⚠️ Irreversible while member accounts exist; an organization can be
+  deleted only after every member account is removed.
 - **Ticks:** "AWS Organizations enabled with all features" in the source issue.
 - **Source:** `<official doc URL>`
 
@@ -48,4 +48,5 @@ never write it into this file.
 ### `<YYYY-MM-DD>`
 
 - Completed: `<steps>`
-- Deviations from docs: `<what differed and how the step was corrected, or "none">`
+- Deviations from docs:
+  `<what differed and how the step was corrected, or "none">`
