@@ -105,6 +105,14 @@ foreach ($packageName in $linkManifest.PSObject.Properties.Name) {
 }
 
 $userHome = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+
+# A silently dropped include (checkout not at ~\dotfiles) would check out symlinks as text files.
+$sharedGitConfig = (Join-Path (Split-Path -Parent $platformRoot) 'shared\gitconfig') -replace '\\', '/'
+$symlinksSetting = git config --global --includes --show-origin --get core.symlinks 2>$null
+if ($symlinksSetting -ne "file:$sharedGitConfig`ttrue") {
+    $failures.Add("Git does not read core.symlinks=true from shared/gitconfig through the managed ~\.gitconfig (checkout must be at ~\dotfiles; a core.symlinks line in ~\.gitconfig.local overrides it): $symlinksSetting")
+}
+
 $skillsRepository = Join-Path $userHome 'skills'
 if (-not (Test-Path -LiteralPath (Join-Path $skillsRepository '.git') -PathType Container)) {
     $failures.Add("Skills checkout is missing or is not a Git repository: $skillsRepository")

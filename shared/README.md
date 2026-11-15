@@ -38,7 +38,11 @@ Agent skills and theme files have their own guides:
 symlinked `CLAUDE.md` files as links. WSL's managed `~/.gitconfig` includes it,
 then loads identity, signing, and machine-only settings from the untracked
 `~/.gitconfig.local`. See [WSL setup](../wsl/README.md#git-config) for migration
-and Stow commands.
+and Stow commands. Windows links
+[`windows/config/git/gitconfig`](../windows/config/git/gitconfig) at
+`~\.gitconfig` through its manifest with the same includes, and its verifier
+checks that `core.symlinks` comes from the shared file. It is applied and
+verified on Windows; `http.sslBackend` stays in Git for Windows' system config.
 
-macOS and Windows adoption and verification remain pending in
+macOS adoption and verification remain pending in
 [issue #11](https://github.com/boonyarit-iamsaard/dotfiles/issues/11).

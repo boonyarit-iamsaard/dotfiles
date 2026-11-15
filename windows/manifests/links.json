@@ -83,6 +83,10 @@
   ],
   "git": [
     {
+      "source": "config/git/gitconfig",
+      "target": "%USERPROFILE%\\.gitconfig"
+    },
+    {
       "source": "config/git/ignore",
       "target": "%USERPROFILE%\\.config\\git\\ignore"
     }

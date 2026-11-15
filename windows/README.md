@@ -95,11 +95,20 @@ holds the `windows/` folder until it reaches `main`. The repository is public,
 so cloning does not require GitHub authentication. Authentication is required
 only when pushing; Git Credential Manager can prompt for it on the first push.
 
-Configure commit identity if a new Git installation does not have it yet:
+Configure commit identity if a new Git installation does not have it yet. Write
+it to `~\.gitconfig.local`, not `--global`: `~\.gitconfig` becomes a managed
+link during bootstrap and bootstrap refuses to overwrite an existing file there.
 
 ```powershell
-git config --global user.name "Boonyarit Iamsa-ard"
-git config --global user.email "boonyarit.iamsaard@gmail.com"
+git config --file "$HOME\.gitconfig.local" user.name "Boonyarit Iamsa-ard"
+git config --file "$HOME\.gitconfig.local" user.email "boonyarit.iamsaard@gmail.com"
+```
+
+If the machine already has an unmanaged `~\.gitconfig`, move it aside instead,
+unless `~\.gitconfig.local` already exists (merge into it first):
+
+```powershell
+Move-Item -LiteralPath "$HOME\.gitconfig" -Destination "$HOME\.gitconfig.local"
 ```
 
 ### 3. Bootstrap
@@ -126,9 +135,19 @@ explicit store prevents the automatic project-local fallback when a sandbox
 cannot create hard links to the shared store. Agents use approved host execution
 when sandbox access blocks a dependency operation.
 
-The `git` link package installs `config/git/ignore` at Git's default global
-ignore location, `%USERPROFILE%\.config\git\ignore`. It excludes `.pnpm-store/`
-from untracked-file scans in every repository. A custom `core.excludesFile` or
+The `git` link package also manages `~\.gitconfig` from `config/git/gitconfig`.
+That file only includes `~/dotfiles/shared/gitconfig` (the shared essentials,
+`core.symlinks=true`) and then `~/.gitconfig.local` for identity, signing, and
+machine-only settings, so the checkout must live at `~\dotfiles`. Windows'
+`http.sslBackend` stays in Git for Windows' system config, outside both files.
+Use `git config --file "$HOME\.gitconfig.local" ...` for personal settings;
+`--global` writes through the link into the tracked file. Verify with
+`git config --global --includes --show-origin --get core.symlinks`, which must
+name `shared/gitconfig`.
+
+The package also installs `config/git/ignore` at Git's default global ignore
+location, `%USERPROFILE%\.config\git\ignore`. It excludes `.pnpm-store/` from
+untracked-file scans in every repository. A custom `core.excludesFile` or
 `XDG_CONFIG_HOME` overrides that default location.
 
 Apply these settings independently with:
