@@ -16,11 +16,22 @@ branch until its setup is pointed at this folder. The migration plan is issue
 
 ## Repository-wide rules
 
-- **Platform work runs on its own machine.** Change a platform folder only on
-  that platform's machine, where its live links and tools can be verified. A
-  problem seen in another platform's folder becomes a ticket in the issue
-  tracker, not an edit. This is a hard rule.
-- **Root files belong to every platform** and may be fixed from any machine.
+- **Behavior changes are made and verified on their platform.** A behavior
+  change touches anything a platform reads or runs: config, scripts and their
+  executable bits, link lists, manifests, Stow layout, and lint fixes in any of
+  these, even whitespace or comments alone. A platform is the environment the
+  session runs in (macOS, Windows, WSL), not the hardware. A behavior change
+  needed on another platform becomes an issue, not an edit. This is a hard rule.
+- **Root and `shared/` behavior changes are verified on every platform they
+  affect.** Make the change on one affected platform and verify it there; it is
+  done when each affected platform has verified it, one checkbox per platform in
+  its issue.
+- **Inert changes may be made from any machine.** An inert change leaves every
+  platform's behavior as it was: documentation, lint configuration, lint fixes
+  in documentation, and formatting. Formatting is only what the root formatter
+  writes (`pnpm format`): `pnpm format:check` passes and
+  `git diff --ignore-all-space` shows nothing beyond rewrapped lines. Check a
+  doc that describes live state against the files in the repo.
 - Keep platform-specific setup inside its platform folder. Never add one
   platform's setup to another's folder.
 - Repository tooling lives at the root: `package.json` (Prettier and the pinned

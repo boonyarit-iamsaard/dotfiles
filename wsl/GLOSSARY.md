@@ -2,6 +2,20 @@
 
 Personal machine configuration, installed by linking packages into `$HOME`.
 
+## Platforms
+
+**Platform**:
+An environment this repo configures (macOS, Windows, WSL), defined by where the session runs, not by the hardware.
+_Avoid_: machine, OS, host
+
+**Behavior change**:
+A change to anything a platform reads or runs, verified on every platform it affects.
+_Avoid_: platform change, real change
+
+**Inert change**:
+A change that leaves every platform's behavior as it was: formatting, documentation, and lint fixes in documentation.
+_Avoid_: non-behavior change, cosmetic change
+
 ## Theming
 
 **Theme**:
