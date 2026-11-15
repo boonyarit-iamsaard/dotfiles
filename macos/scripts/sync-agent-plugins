@@ -1,0 +1,44 @@
+#!/bin/zsh
+
+# Install and update the Claude Code plugins pinned in shared/skills/skills.json.
+# Each command is safe to re-run, so first runs and updates share one path.
+# Codex gets Ponytail's skills from the vendored copy in ~/.agents/skills instead.
+source "${0:A:h}/lib/step-runner.zsh"
+
+manifest=${0:A:h:h:h}/shared/skills/skills.json
+
+# Each line is "<plugin>@<marketplace> <owner/repo>#<ref>".
+if ! entries=$(python3 -c '
+import json, sys
+for p in json.load(open(sys.argv[1]))["plugins"]["claude"]:
+    print(p["plugin"], p["marketplace"] + "#" + p["ref"])
+' "$manifest"); then
+    log_error "Cannot read the Claude plugins from $manifest."
+    exit 1
+fi
+
+# Adding a marketplace from a different source fails, so a new pin re-adds it.
+pin_marketplace() {
+    local name=$1 source=$2
+    claude plugin marketplace add "$source" && return 0
+    claude plugin marketplace remove "$name" && claude plugin marketplace add "$source"
+}
+
+for entry in ${(f)entries}; do
+    plugin=${entry%% *} source=${entry#* }
+    marketplace=${plugin#*@}
+
+    if command -v claude &> /dev/null; then
+        group_begin "Claude Code: $plugin"
+        step error "Pinning Claude marketplace $marketplace to $source" pin_marketplace "$marketplace" "$source"
+        step error "Refreshing Claude marketplace $marketplace" claude plugin marketplace update "$marketplace"
+        step error "Installing Claude plugin $plugin" claude plugin install "$plugin" --scope user
+        step error "Updating Claude plugin $plugin" claude plugin update "$plugin"
+        group_end
+    else
+        step_skip "Claude Code: $plugin" "'claude' command not found. Skipping Claude plugin $plugin."
+    fi
+done
+
+steps_finish "Agent plugin sync finished."
+exit $?

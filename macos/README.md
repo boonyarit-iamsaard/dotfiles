@@ -139,11 +139,45 @@ keep using `~/.config/gh-agent/token`.
 
 ## Shared agent skills
 
-The personal skills `commit-message`, `edit-prose`, `typescript-house-style`,
-and `runbook` are tracked for both Claude and Codex. The old
-`typescript-object-composition` link is retired automatically. The updater
-creates missing personal directory links, checks their resources, and preserves
-installer-owned skills such as Impeccable.
+Personal and vendored skills come from
+[`shared/skills/skills.json`](../shared/skills/skills.json) (see
+[shared/skills/README.md](../shared/skills/README.md)). Each skill the manifest
+gives a consumer is a relative symlink in that consumer's Stow package
+(`agents/.agents/skills/` or `claude/.claude/skills/`) into `shared/skills/`.
+The updater links each live skill to its package entry, checks its resources,
+and fails when a package entry is a real copy or links somewhere other than its
+manifest source. The old `typescript-object-composition` link is retired
+automatically.
+
+Impeccable's Claude Code subagents are linked the same way from
+`claude/.claude/agents/`; Stow installs them:
+
+```bash
+stow --dir=$HOME/dotfiles/macos --target=$HOME -S claude agents
+```
+
+Ponytail's session hook and slash commands come from its Claude Code plugin,
+pinned in the manifest. `scripts/sync-agent-plugins` pins its marketplace to
+that ref, then installs and updates it; `update-system` runs it after the skills
+updater:
+
+```bash
+~/dotfiles/macos/scripts/sync-agent-plugins
+```
+
+A Mac that installed Impeccable with `npx impeccable` has real copies at
+`~/.claude/skills/impeccable` and `~/.claude/agents/impeccable-*.md`. Move them
+out before the first sync; the updater refuses to replace them:
+
+```bash
+backup=~/.local/state/dotfiles-skills/backups/$(date +%Y%m%d-%H%M%S)-installer-impeccable
+mkdir -p "$backup/agents"
+mv ~/.claude/skills/impeccable "$backup/skill"
+mv ~/.claude/agents/impeccable-*.md "$backup/agents/"
+```
+
+Never run `npx impeccable update` in the home directory: it writes over the
+managed links.
 
 `edit-prose` layers house rules over the MIT-licensed Humanizer rules. On a new
 machine, clone its supporting checkout before syncing:
@@ -186,7 +220,7 @@ The first conversion from copied skills must be previewed before it is run:
 Migration accepts only files whose Git blobs can be traced to the skills
 checkout's history. It snapshots both dotfiles skill packages under
 `~/.local/state/dotfiles-skills/backups`, archives verified Matt copies, and
-keeps the four personal skills listed above. The obsolete Matt skills
+keeps the shared skills the manifest declares. The obsolete Matt skills
 `diagnose`, `to-issues`, `to-prd`, and `zoom-out` are archived during migration.
 A failed migration restores moved package copies and attempts to restore the
 previous Stow layout.

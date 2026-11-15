@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
@@ -29,8 +30,12 @@ class UpdateSkillsTest(unittest.TestCase):
         self.claude_package = self.dotfiles / "claude" / ".claude" / "skills"
         self.agents_live = self.home / ".agents" / "skills"
         self.claude_live = self.home / ".claude" / "skills"
+        self.shared = fixture / "shared" / "skills"
+        self.manifest_skills: list[dict[str, object]] = []
 
         self.home.mkdir()
+        self.shared.mkdir(parents=True)
+        self.write_manifest()
         self.agents_package.mkdir(parents=True)
         self.claude_package.mkdir(parents=True)
         for category in ("engineering", "productivity"):
@@ -48,6 +53,54 @@ class UpdateSkillsTest(unittest.TestCase):
             encoding="utf-8",
         )
         return skill
+
+    def write_manifest(self) -> None:
+        payload = {
+            "version": 2,
+            "repository": {"categories": ["engineering", "productivity"]},
+            "consumers": {
+                "agents": {"target": ".agents/skills"},
+                "claude": {"target": ".claude/skills"},
+            },
+            "skills": self.manifest_skills,
+        }
+        (self.shared / "skills.json").write_text(
+            json.dumps(payload), encoding="utf-8"
+        )
+
+    def make_shared_skill(
+        self,
+        name: str,
+        sources: dict[str, str] | None = None,
+        *,
+        reason: str | None = None,
+        link_packages: bool = True,
+    ) -> dict[str, Path]:
+        """Declare a skill in the shared manifest and link it from each package."""
+        per_consumer = sources or {"agents": name, "claude": name}
+        entry: dict[str, object] = {
+            "name": name,
+            "source": name if sources is None else per_consumer,
+        }
+        if reason is not None:
+            entry["reason"] = reason
+        self.manifest_skills.append(entry)
+        self.write_manifest()
+        packages = {"agents": self.agents_package, "claude": self.claude_package}
+        resolved: dict[str, Path] = {}
+        for consumer, relative in per_consumer.items():
+            skill = self.shared / relative
+            if not skill.exists():
+                skill.mkdir(parents=True)
+                (skill / "SKILL.md").write_text(
+                    f"---\nname: {name}\ndescription: shared fixture\n---\n",
+                    encoding="utf-8",
+                )
+            if link_packages:
+                link = packages[consumer] / name
+                link.symlink_to(os.path.relpath(skill, link.parent))
+            resolved[consumer] = skill
+        return resolved
 
     def make_package_copy(self, root: Path, name: str, source: Path) -> Path:
         destination = root / name
@@ -106,6 +159,7 @@ class UpdateSkillsTest(unittest.TestCase):
                 "SKILL_SYNC_STATE_ROOT": str(self.state),
                 "SKILL_SYNC_BACKUP_ROOT": str(self.backups),
                 "HOME": str(self.home),
+                "SHARED_SKILLS_ROOT": str(self.shared),
             }
         )
         return environment
@@ -159,10 +213,10 @@ class UpdateSkillsTest(unittest.TestCase):
         alpha = self.make_source_skill("alpha")
         zoom_out = self.make_source_skill("zoom-out")
         self.commit_source("add current and legacy skills")
+        self.make_shared_skill("commit-message")
         for package in (self.agents_package, self.claude_package):
             self.make_package_copy(package, "alpha", alpha)
             self.make_package_copy(package, "zoom-out", zoom_out)
-            self.make_local_skill(package, "commit-message")
             self.make_local_skill(package, "typescript-object-composition")
 
         shutil.rmtree(zoom_out)
@@ -173,7 +227,7 @@ class UpdateSkillsTest(unittest.TestCase):
         for package in (self.agents_package, self.claude_package):
             self.assertFalse((package / "alpha").exists())
             self.assertFalse((package / "zoom-out").exists())
-            self.assertTrue((package / "commit-message").is_dir())
+            self.assertTrue((package / "commit-message").is_symlink())
             self.assertTrue((package / "typescript-object-composition").is_dir())
         for live in (self.agents_live, self.claude_live):
             self.assertEqual(alpha.resolve(), (live / "alpha").resolve())
@@ -191,9 +245,9 @@ class UpdateSkillsTest(unittest.TestCase):
     ) -> None:
         alpha = self.make_source_skill("alpha")
         self.commit_source("add alpha")
+        self.make_shared_skill("commit-message")
         for package in (self.agents_package, self.claude_package):
             self.make_package_copy(package, "alpha", alpha)
-            self.make_local_skill(package, "commit-message")
 
         (self.home / ".claude").mkdir()
         (self.home / ".claude" / "settings.json").write_text(
@@ -380,13 +434,13 @@ class UpdateSkillsTest(unittest.TestCase):
 
     def test_personal_skills_are_linked_and_old_house_style_name_is_retired(self) -> None:
         names = ("commit-message", "edit-prose", "typescript-house-style", "runbook")
+        for name in names:
+            self.make_shared_skill(name)
         for package, live in (
             (self.agents_package, self.agents_live),
             (self.claude_package, self.claude_live),
         ):
             live.mkdir(parents=True)
-            for name in names:
-                self.make_local_skill(package, name)
             (live / "typescript-object-composition").symlink_to(
                 package / "typescript-object-composition"
             )
@@ -401,7 +455,7 @@ class UpdateSkillsTest(unittest.TestCase):
         self.run_updater("--check")
 
     def test_personal_skill_collision_preserves_an_unmanaged_directory(self) -> None:
-        self.make_local_skill(self.agents_package, "runbook")
+        self.make_shared_skill("runbook")
         self.agents_live.mkdir(parents=True)
         existing = self.make_local_skill(self.agents_live, "runbook")
         result = self.run_updater(expected_returncode=2)
@@ -409,7 +463,7 @@ class UpdateSkillsTest(unittest.TestCase):
         self.assertFalse(existing.is_symlink())
 
     def test_missing_personal_resource_is_reported_before_linking(self) -> None:
-        skill = self.make_local_skill(self.agents_package, "edit-prose")
+        skill = self.make_shared_skill("edit-prose")["agents"]
         (skill / "rules.md").symlink_to(self.source / "missing-rules.md")
         result = self.run_updater(expected_returncode=2)
         self.assertIn("missing personal skill resource", result.stderr)
@@ -419,12 +473,12 @@ class UpdateSkillsTest(unittest.TestCase):
     def test_migration_also_installs_new_personal_links(self) -> None:
         alpha = self.make_source_skill("alpha")
         self.commit_source("add alpha")
+        self.make_shared_skill("runbook")
         for package, live in (
             (self.agents_package, self.agents_live),
             (self.claude_package, self.claude_live),
         ):
             self.make_package_copy(package, "alpha", alpha)
-            self.make_local_skill(package, "runbook")
             live.mkdir(parents=True)
         self.run_updater("--migrate")
         for package, live in (
@@ -457,10 +511,60 @@ class UpdateSkillsTest(unittest.TestCase):
         backup = next(self.backups.iterdir())
         self.assertTrue((backup / "removed/agents/old-name/SKILL.md").is_file())
 
-    def test_installer_owned_skills_are_preserved(self) -> None:
-        installer = self.make_local_skill(self.claude_package, "impeccable")
+    def test_shared_skills_link_each_consumer_to_its_manifest_source(self) -> None:
+        runbook = self.make_shared_skill("runbook")
+        impeccable = self.make_shared_skill(
+            "impeccable",
+            {"agents": "vendor/impeccable/codex", "claude": "vendor/impeccable/claude"},
+        )
+        ponytail = self.make_shared_skill(
+            "ponytail",
+            {"agents": "vendor/ponytail/ponytail"},
+            reason="Claude gets Ponytail from its plugin.",
+        )
+
         self.run_updater()
-        self.assertTrue(installer.is_dir())
+
+        for consumer, live, package in (
+            ("agents", self.agents_live, self.agents_package),
+            ("claude", self.claude_live, self.claude_package),
+        ):
+            for name, sources in (("runbook", runbook), ("impeccable", impeccable)):
+                self.assertEqual(
+                    package / name,
+                    Path(os.path.normpath(live / os.readlink(live / name))),
+                )
+                self.assertEqual(sources[consumer].resolve(), (live / name).resolve())
+        self.assertEqual(
+            ponytail["agents"].resolve(), (self.agents_live / "ponytail").resolve()
+        )
+        self.assertFalse((self.claude_live / "ponytail").exists())
+        self.run_updater("--check")
+
+    def test_real_package_copy_of_a_shared_skill_is_rejected(self) -> None:
+        self.make_shared_skill("runbook", link_packages=False)
+        copy = self.make_local_skill(self.agents_package, "runbook")
+
+        result = self.run_updater(expected_returncode=2)
+
+        self.assertIn("package entry must link to", result.stderr)
+        self.assertTrue(copy.is_dir())
+        self.assertFalse(self.agents_live.exists())
+
+    def test_manifest_skill_that_skips_a_consumer_needs_a_reason(self) -> None:
+        self.make_shared_skill("ponytail", {"agents": "vendor/ponytail/ponytail"})
+
+        result = self.run_updater(expected_returncode=2)
+
+        self.assertIn("skips claude without a reason", result.stderr)
+
+    def test_upstream_skill_colliding_with_a_shared_skill_is_rejected(self) -> None:
+        self.make_source_skill("runbook")
+        self.make_shared_skill("runbook")
+
+        result = self.run_updater(expected_returncode=2)
+
+        self.assertIn("collides with a shared skill: runbook", result.stderr)
 
     def test_all_checkouts_are_checked_before_any_pull(self) -> None:
         self.make_source_skill("alpha")

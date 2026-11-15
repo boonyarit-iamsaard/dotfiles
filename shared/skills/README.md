@@ -10,10 +10,10 @@ platform's skill sync reads it and links every listed skill into each consumer:
 | `agents` | `~/.agents/skills` | Codex and other Agent Skills clients |
 | `claude` | `~/.claude/skills` | Claude Code                          |
 
-Until [issue #16](https://github.com/boonyarit-iamsaard/dotfiles/issues/16) is
-done, WSL and Windows read this manifest; macOS still installs from its own
-copies. Windows also reconciles the pinned Claude plugins during `update-skills`
-and checks them in `verify-system.ps1`.
+macOS and WSL reach these files through relative symlinks in their Stow packages
+and install the pinned Claude plugins with `scripts/sync-agent-plugins`. Windows
+reaches them through its manifest paths, reconciles the pinned Claude plugins
+during `update-skills`, and checks them in `verify-system.ps1`.
 
 ## What lives here
 

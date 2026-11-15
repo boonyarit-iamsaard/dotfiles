@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Maintenance integration tests using an isolated PATH and fake executables.
 
-SKILLS_UPDATER is a normal executable override: production defaults to the updater
-beside the resolved script, while these tests use a harmless fixture executable.
-No real package manager, Docker daemon, or skill sync is reachable through PATH.
+SKILLS_UPDATER and PLUGINS_SYNC are normal executable overrides: production defaults
+to the scripts beside the resolved script, while these tests use harmless fixture
+executables. No real package manager, Docker daemon, skill sync, or agent CLI is
+reachable through PATH.
 """
 
 from __future__ import annotations
@@ -22,6 +23,8 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNNER = ROOT / "scripts" / "lib" / "step-runner.zsh"
 UPDATE = ROOT / "update-system" / "update-system.sh"
 DOCKER = ROOT / "docker-cleanup" / "docker-cleanup.sh"
+PLUGINS = ROOT / "scripts" / "sync-agent-plugins"
+MANIFEST = ROOT.parent / "shared" / "skills" / "skills.json"
 ZSH = shutil.which("zsh")
 
 FAKE_EXECUTABLE = r'''
@@ -66,6 +69,7 @@ class StepRunnerTest(unittest.TestCase):
         self.home.mkdir()
         self.bin.mkdir()
         self.make_executable("skills-updater")
+        self.make_executable("plugins-sync")
         self.environment = os.environ.copy()
         for variable in ("COMPOSER_HOME", "DOTFILES_ROOT", "ENV", "BASH_ENV"):
             self.environment.pop(variable, None)
@@ -80,6 +84,7 @@ class StepRunnerTest(unittest.TestCase):
                 "CONTAINER_IDS": "",
                 "SDKMAN_DIR": str(self.home / ".sdkman"),
                 "SKILLS_UPDATER": str(self.bin / "skills-updater"),
+                "PLUGINS_SYNC": str(self.bin / "plugins-sync"),
                 "STEP_RUNNER": str(RUNNER),
             }
         )
@@ -109,7 +114,7 @@ class StepRunnerTest(unittest.TestCase):
         self.environment["FAIL_COMMANDS"] = json.dumps(commands)
 
     def run_zsh(
-        self, *arguments: str, expected_returncode: int = 0
+        self, *arguments: str, expected_returncode: int = 0, allow_stderr: bool = False
     ) -> subprocess.CompletedProcess[str]:
         result = subprocess.run(
             [ZSH, "-f", *arguments],
@@ -123,7 +128,8 @@ class StepRunnerTest(unittest.TestCase):
             result.returncode,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
-        self.assertEqual("", result.stderr)
+        if not allow_stderr:
+            self.assertEqual("", result.stderr)
         self.assertNotIn("\033", result.stdout)
         self.assertTrue(result.stdout.isascii(), result.stdout)
         return result
@@ -231,7 +237,7 @@ class StepRunnerTest(unittest.TestCase):
             ["brew", "cleanup", "--prune=all"], ["npm", "update", "-g"],
             ["composer", "self-update", "--stable", "--no-interaction"],
             ["composer", "global", "update", "--no-interaction"],
-            ["sdk-free", "selfupdate"], ["sdk-free", "flush"], ["skills-updater"],
+            ["sdk-free", "selfupdate"], ["sdk-free", "flush"], ["skills-updater"], ["plugins-sync"],
         ):
             self.assertIn(call, calls)
         self.assertIn(["rm", "-rf", "--", str(self.home / ".npm" / "_logs" / "debug.log")], calls)
@@ -276,14 +282,17 @@ class StepRunnerTest(unittest.TestCase):
             "SDKMAN not found. Skipping SDKMAN update.",
         ):
             self.assertIn(message, result.stdout)
-        self.assertEqual([["skills-updater"]], self.recorded_calls())
-        self.assertIn("1 succeeded, 0 failed (0 errors, 0 warnings), 5 skipped", result.stdout)
+        self.assertEqual([["skills-updater"], ["plugins-sync"]], self.recorded_calls())
+        self.assertIn("2 succeeded, 0 failed (0 errors, 0 warnings), 5 skipped", result.stdout)
 
     def test_update_warning_failures_leave_exit_status_successful(self) -> None:
         self.install_update_tools()
-        self.fail_commands("journalctl --vacuum-time=14d", "sdk-free selfupdate", "skills-updater")
+        self.fail_commands(
+            "journalctl --vacuum-time=14d", "sdk-free selfupdate", "skills-updater", "plugins-sync"
+        )
         result = self.run_script(UPDATE)
-        self.assertIn("3 failed (0 errors, 3 warnings)", result.stdout)
+        self.assertIn("4 failed (0 errors, 4 warnings)", result.stdout)
+        self.assertIn("Updating agent plugins [warn]", result.stdout)
         self.assertIn(["sdk-free", "flush"], self.recorded_calls())
         self.assertIn("Updating shared agent skills [warn]", result.stdout)
 
@@ -299,6 +308,60 @@ class StepRunnerTest(unittest.TestCase):
         self.assertIn(["composer", "global", "update", "--no-interaction"], self.recorded_calls())
         self.assertIn(f"COMPOSER_HOME={legacy_home}", result.stdout)
         self.assertIn("0 failed", result.stdout)
+
+    def pinned_ponytail(self) -> str:
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        (plugin,) = manifest["plugins"]["claude"]
+        return f"{plugin['marketplace']}#{plugin['ref']}"
+
+    def link_python(self) -> None:
+        (self.bin / "python3").symlink_to(sys.executable)
+
+    def test_plugin_sync_installs_and_updates_pinned_claude_plugins(self) -> None:
+        self.link_python()
+        self.make_executable("claude")
+        self.make_executable("codex")
+        result = self.run_script(PLUGINS, linked=True)
+        self.assertEqual(
+            [
+                ["claude", "plugin", "marketplace", "add", self.pinned_ponytail()],
+                ["claude", "plugin", "marketplace", "update", "ponytail"],
+                ["claude", "plugin", "install", "ponytail@ponytail", "--scope", "user"],
+                ["claude", "plugin", "update", "ponytail@ponytail"],
+            ],
+            self.recorded_calls(),
+        )
+        self.assertIn("4 succeeded, 0 failed", result.stdout)
+        self.assertIn("[FINISHED] Agent plugin sync finished.", result.stdout)
+
+    def test_plugin_sync_skips_absent_claude(self) -> None:
+        self.link_python()
+        result = self.run_script(PLUGINS)
+        self.assertIn("'claude' command not found. Skipping Claude plugin ponytail@ponytail.", result.stdout)
+        self.assertEqual([], self.recorded_calls())
+        self.assertIn("0 succeeded, 0 failed (0 errors, 0 warnings), 1 skipped", result.stdout)
+
+    def test_plugin_sync_repins_then_stops_group_when_marketplace_add_fails(self) -> None:
+        self.link_python()
+        self.make_executable("claude")
+        pinned = self.pinned_ponytail()
+        self.fail_commands(f"claude plugin marketplace add {pinned}")
+        result = self.run_script(PLUGINS, expected_returncode=1)
+        self.assertEqual(
+            [
+                ["claude", "plugin", "marketplace", "add", pinned],
+                ["claude", "plugin", "marketplace", "remove", "ponytail"],
+                ["claude", "plugin", "marketplace", "add", pinned],
+            ],
+            self.recorded_calls(),
+        )
+        self.assertIn(f"Failed steps: Pinning Claude marketplace ponytail to {pinned} [error]", result.stdout)
+
+    def test_plugin_sync_fails_without_python(self) -> None:
+        self.make_executable("claude")
+        result = self.run_zsh(str(PLUGINS), expected_returncode=1, allow_stderr=True)
+        self.assertIn("Cannot read the Claude plugins from", result.stdout)
+        self.assertEqual([], self.recorded_calls())
 
     def test_docker_missing_aborts_before_any_cleanup(self) -> None:
         result = self.run_script(DOCKER, expected_returncode=1)

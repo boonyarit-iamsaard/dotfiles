@@ -1,0 +1,1 @@
+../../../../shared/skills/vendor/impeccable/claude-agents/impeccable-asset-producer.md

@@ -16,11 +16,9 @@ from pathlib import Path
 from typing import Iterable, TypedDict
 
 
-CATEGORIES = ("engineering", "productivity")
 MANIFEST_VERSION = 1
-LOCAL_SKILLS = frozenset(
-    {"commit-message", "edit-prose", "typescript-house-style", "runbook"}
-)
+SHARED_MANIFEST_FILENAME = "skills.json"
+SHARED_MANIFEST_VERSION = 2
 RETIRED_LOCAL_SKILLS = frozenset({"typescript-object-composition"})
 LEGACY_MATT_SKILLS = frozenset({"diagnose", "to-issues", "to-prd", "zoom-out"})
 
@@ -29,9 +27,9 @@ LEGACY_MATT_SKILLS = frozenset({"diagnose", "to-issues", "to-prd", "zoom-out"})
 class Consumer:
     name: str
     directory: str
-    installer_owned: frozenset[str] = frozenset({"impeccable"})
 
 
+# The Stow packages; shared/skills/skills.json must declare the same consumers.
 CONSUMERS = (Consumer("agents", ".agents"), Consumer("claude", ".claude"))
 CONSUMERS_BY_NAME = {consumer.name: consumer for consumer in CONSUMERS}
 
@@ -63,6 +61,7 @@ class Config:
     state_root: Path
     backup_root: Path
     home: Path
+    shared_root: Path
 
     @property
     def extra_checkouts(self) -> tuple[Path, ...]:
@@ -86,6 +85,69 @@ class Config:
         except KeyError as error:
             raise ValueError(f"unknown consumer: {consumer}") from error
         return self.home / layout.directory / "skills"
+
+
+@dataclass(frozen=True)
+class SharedManifest:
+    """What shared/skills/skills.json declares for this platform's sync."""
+
+    categories: tuple[str, ...]
+    # Each consumer's skills: name -> source directory under shared/skills/.
+    skills: dict[str, dict[str, Path]]
+
+    def names(self, consumer: str) -> frozenset[str]:
+        return frozenset(self.skills[consumer])
+
+    @property
+    def all_names(self) -> frozenset[str]:
+        return frozenset(name for skills in self.skills.values() for name in skills)
+
+
+def read_shared_manifest(shared_root: Path) -> SharedManifest:
+    """Read the categories and per-consumer skills the shared manifest declares.
+
+    A skill's source is one path for every consumer or a map of consumer to
+    path; a map that skips a consumer must say why in "reason".
+    """
+    manifest = shared_root / SHARED_MANIFEST_FILENAME
+    try:
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        if payload.get("version") != SHARED_MANIFEST_VERSION:
+            raise ValueError("unsupported manifest version")
+        categories = tuple(payload["repository"]["categories"])
+        declared = {
+            name: entry["target"] for name, entry in payload["consumers"].items()
+        }
+        expected = {
+            consumer.name: f"{consumer.directory}/skills" for consumer in CONSUMERS
+        }
+        if declared != expected:
+            raise ValueError(f"consumers {declared} do not match {expected}")
+        entries = payload["skills"]
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise SyncError(f"invalid shared manifest {manifest}: {error}") from error
+
+    skills: dict[str, dict[str, Path]] = {name: {} for name in CONSUMERS_BY_NAME}
+    for entry in entries:
+        name = entry["name"]
+        source = entry["source"]
+        sources = (
+            {consumer: source for consumer in CONSUMERS_BY_NAME}
+            if isinstance(source, str)
+            else dict(source)
+        )
+        for consumer in sources:
+            if consumer not in CONSUMERS_BY_NAME:
+                raise SyncError(f"skill {name!r} names unknown consumer {consumer!r}")
+        for consumer in CONSUMERS_BY_NAME:
+            if consumer not in sources and not entry.get("reason"):
+                raise SyncError(f"skill {name!r} skips {consumer} without a reason")
+        for consumer, relative in sources.items():
+            path = shared_root / relative
+            if not (path / "SKILL.md").is_file():
+                raise SyncError(f"skill {name!r} has no SKILL.md in {path}")
+            skills[consumer][name] = path
+    return SharedManifest(categories, skills)
 
 
 @dataclass(frozen=True)
@@ -176,6 +238,7 @@ class Reconciler:
     def __init__(self, config: Config, migrate: bool) -> None:
         self.config = config
         self.migrate = migrate
+        self.shared = read_shared_manifest(config.shared_root)
         self.skills = self._discover_skills()
         self.desired = self._build_desired()
         self.previously_managed = self._read_manifest() | self._infer_managed_links()
@@ -197,15 +260,15 @@ class Reconciler:
             raise SyncError(f"skills checkout not found at {self.config.skills_repo}")
 
         discovered: dict[str, Path] = {}
-        for category in CATEGORIES:
+        for category in self.shared.categories:
             category_root = self.config.skills_root / category
             catalog = category_root / "README.md"
             if not catalog.is_file():
                 raise SyncError(f"missing category catalog: {catalog}")
             for skill_md in sorted(category_root.glob("*/SKILL.md")):
                 name = skill_md.parent.name
-                if name in LOCAL_SKILLS or name in RETIRED_LOCAL_SKILLS:
-                    raise SyncError(f"upstream skill collides with a personal skill: {name}")
+                if name in self.shared.all_names or name in RETIRED_LOCAL_SKILLS:
+                    raise SyncError(f"upstream skill collides with a shared skill: {name}")
                 previous = discovered.get(name)
                 if previous is not None:
                     raise SyncError(
@@ -220,7 +283,7 @@ class Reconciler:
         for consumer in CONSUMERS_BY_NAME:
             for name, source in self.skills.items():
                 desired[(consumer, name)] = source
-            for category in CATEGORIES:
+            for category in self.shared.categories:
                 desired[(consumer, f"{category.upper()}.md")] = (
                     self.config.skills_root / category / "README.md"
                 )
@@ -326,7 +389,7 @@ class Reconciler:
             return cached
 
         discovered = set(self.historical_blobs.get(key, set()))
-        for category in CATEGORIES:
+        for category in self.shared.categories:
             object_path = f"skills/{category}/{name}/{relative.as_posix()}"
             history = subprocess.run(
                 [
@@ -394,7 +457,10 @@ class Reconciler:
         managed_names: set[str],
     ) -> None:
         name = entry.name
-        if name in LOCAL_SKILLS | RETIRED_LOCAL_SKILLS or name not in managed_names:
+        if (
+            name in self.shared.names(consumer) | RETIRED_LOCAL_SKILLS
+            or name not in managed_names
+        ):
             return
         if entry.is_symlink() or not entry.is_dir():
             raise SyncError(f"unverified Matt copy collision: {entry}")
@@ -434,10 +500,12 @@ class Reconciler:
                     and resolved_link(target) == (package / name).resolve()
                 ):
                     actions.append(Action(ActionKind.UNLINK, consumer, name, target))
-            for name in sorted(LOCAL_SKILLS):
+            for name, shared_source in sorted(self.shared.skills[consumer].items()):
                 source = package / name
-                if not source.is_dir():
-                    continue
+                if not source.is_symlink() or source.resolve() != shared_source.resolve():
+                    raise SyncError(
+                        f"package entry must link to {shared_source}: {source}"
+                    )
                 for resource in source.rglob("*"):
                     if resource.is_symlink() and not resource.exists():
                         raise SyncError(f"missing personal skill resource: {resource}")
@@ -452,8 +520,7 @@ class Reconciler:
         for consumer in CONSUMERS_BY_NAME:
             for entry in self._package_entries(consumer):
                 if (
-                    entry.name in LOCAL_SKILLS | RETIRED_LOCAL_SKILLS
-                    or entry.name in CONSUMERS_BY_NAME[consumer].installer_owned
+                    entry.name in self.shared.names(consumer) | RETIRED_LOCAL_SKILLS
                     or entry.name == "README.md"
                     or (consumer, entry.name) in self.migrating_keys
                 ):
@@ -686,7 +753,13 @@ def config_from_environment() -> Config:
             / "backups",
         )
     ).resolve()
+    shared_root = Path(
+        os.environ.get(
+            "SHARED_SKILLS_ROOT", dotfiles_root.parent / "shared" / "skills"
+        )
+    ).resolve()
     return Config(
+        shared_root=shared_root,
         dotfiles_root=dotfiles_root,
         skills_repo=skills_repo,
         state_root=state_root,

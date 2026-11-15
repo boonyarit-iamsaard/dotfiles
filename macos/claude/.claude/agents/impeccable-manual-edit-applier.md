@@ -1,0 +1,1 @@
+../../../../shared/skills/vendor/impeccable/claude-agents/impeccable-manual-edit-applier.md

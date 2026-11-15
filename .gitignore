@@ -19,10 +19,6 @@ macos/.skill-sync/
 __pycache__/
 *.log
 
-# Installer-owned skills are updated in place.
-macos/agents/.agents/skills/impeccable/
-macos/claude/.claude/skills/impeccable/
-
 # Tool-written runtime state.
 macos/.config/lazygit/state.yml
 # superfile writes its bundled themes here; only the one we made is tracked.
