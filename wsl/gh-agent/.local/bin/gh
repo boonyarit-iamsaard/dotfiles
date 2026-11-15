@@ -12,7 +12,7 @@
 #      everything else none.
 #   3. mkdir -p ~/.config/gh-agent && (umask 077; cat > ~/.config/gh-agent/token)
 #      then paste the token, press Enter and Ctrl-D.
-#   4. cd ~/dotfiles && stow gh-agent
+#   4. cd ~/dotfiles/wsl && stow gh-agent
 #   5. Verify: gh api user --jq .login
 #
 # Fine-grained tokens cannot reach Projects owned by a user account, so

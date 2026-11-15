@@ -10,9 +10,8 @@ folder for the platform you are changing and follow its guide:
 | `wsl/`     | WSL            | [wsl/README.md](wsl/README.md)         |
 
 `macos/` and `wsl/` have no agent guide of their own yet; follow their README.
-The WSL files are in `wsl/`, but the WSL machine still runs from the `wsl`
-branch until its setup is pointed at this folder. The migration plan is issue
-#14 and its sub-issues.
+Every platform runs from its folder on the integration branch. The migration
+plan is issue #14 and its sub-issues.
 
 ## Repository-wide rules
 

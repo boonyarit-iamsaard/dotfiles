@@ -8,9 +8,8 @@ Personal developer environment setup, one folder per platform.
 | [`macos/`](macos/)     | macOS          | [macos/README.md](macos/README.md)     |
 | [`wsl/`](wsl/)         | WSL            | [wsl/README.md](wsl/README.md)         |
 
-Start with the README of your platform's folder. The WSL files are in `wsl/`,
-but the WSL machine still runs from the `wsl` branch until its setup is pointed
-at this folder.
+Start with the README of your platform's folder. Each machine links its setup
+from its own folder in this one checkout.
 
 Repository tooling lives at the root:
 

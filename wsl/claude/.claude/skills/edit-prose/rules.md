@@ -1,1 +1,1 @@
-../../../../../workspace/personal/humanizer/SKILL.md
+../../../../../../workspace/personal/humanizer/SKILL.md

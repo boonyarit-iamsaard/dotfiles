@@ -25,7 +25,7 @@ one-line edit per tool:
 The dark 2026 palette is owned by
 [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim); its
 theme extras are vendored byte-for-byte at the commit pinned in
-`config/nvim/lazy-lock.json` (see `docs/adr/0001-palette-owned-upstream-extras-vendored.md`).
+`config/nvim/lazy-lock.json` (see [ADR 0001](../docs/adr/0001-palette-owned-upstream-extras-vendored.md)).
 After bumping the plugin, re-copy each extra from the new pin;
 `python3 -m unittest scripts/test_theme_extras.py` fails on any drift.
 
@@ -166,7 +166,7 @@ and other Agent Skills clients see the same skill versions.
 Update the checkout and reconcile both consumers with:
 
 ```bash
-~/dotfiles/scripts/update-skills
+~/dotfiles/wsl/scripts/update-skills
 ```
 
 Use `--dry-run` to preview changes, `--check` in diagnostics, and `--migrate`
@@ -186,7 +186,7 @@ The shared user-level skill directories remain real, while each managed skill
 folder is linked as a whole directory so Codex can discover it:
 
 ```bash
-~/dotfiles/scripts/update-skills
+~/dotfiles/wsl/scripts/update-skills
 ```
 
 The updater creates `~/.agents/skills` and `~/.claude/skills` before the final
@@ -234,7 +234,7 @@ machine and updates an existing one; `update-system.sh` runs it after the
 skills updater.
 
 ```bash
-~/dotfiles/scripts/sync-agent-plugins
+~/dotfiles/wsl/scripts/sync-agent-plugins
 ```
 
 To add a plugin, append `<plugin>@<marketplace> <owner/repo>` to the `plugins`
