@@ -3,6 +3,7 @@ pnpm-lock.yaml
 # Third-party generated payload; preserve upstream formatting for reviewable refreshes.
 shared/skills/vendor/
 shared/themes/lazygit/catppuccin-mocha.yml
+shared/themes/lazygit/catppuccin-macchiato.yml
 windows/config/windows-terminal/dark-2026.json
 windows/powershell/oh-my-posh/dark-2026.omp.json
 

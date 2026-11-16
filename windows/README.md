@@ -234,15 +234,16 @@ linker refuses to overwrite unmanaged files.
 
 ## Themes
 
-**Default Dark Modern** is active in Windows Terminal, Oh My Posh, LazyGit,
+**Catppuccin Macchiato** is active in Windows Terminal, Oh My Posh, LazyGit,
 LazyDocker and btop. LazyGit, LazyDocker and btop use the shared theme variants.
 Windows Terminal and Oh My Posh use the hand ports in their Windows folders.
 
-| Theme               | Windows Terminal scheme | Oh My Posh                     | LazyGit variant in `shared/themes/lazygit/` | LazyDocker     |
-| ------------------- | ----------------------- | ------------------------------ | ------------------------------------------- | -------------- |
-| Default Dark Modern | Dark Modern (VS Code)   | `default-dark-modern.omp.json` | `default-dark-modern.yml` (active)          | active block   |
-| Dark 2026           | Dark 2026               | `dark-2026.omp.json`           | `dark-2026.yml`                             | shared variant |
-| Catppuccin Mocha    | Catppuccin Mocha        | `catppuccin-mocha.omp.json`    | `catppuccin-mocha.yml`                      | shared variant |
+| Theme                | Windows Terminal scheme | Oh My Posh                      | LazyGit variant in `shared/themes/lazygit/` | LazyDocker     |
+| -------------------- | ----------------------- | ------------------------------- | ------------------------------------------- | -------------- |
+| Default Dark Modern  | Dark Modern (VS Code)   | `default-dark-modern.omp.json`  | `default-dark-modern.yml`                   | shared variant |
+| Dark 2026            | Dark 2026               | `dark-2026.omp.json`            | `dark-2026.yml`                             | shared variant |
+| Catppuccin Mocha     | Catppuccin Mocha        | `catppuccin-mocha.omp.json`     | `catppuccin-mocha.yml`                      | shared variant |
+| Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml` (active)         | active block   |
 
 To switch:
 
@@ -254,21 +255,25 @@ To switch:
 - **Oh My Posh:** change `$ompTheme` in the PowerShell profile.
 - **LazyGit:** change the theme variant filename in `LG_CONFIG_FILE` in the
   PowerShell profile, then reload it with `. $PROFILE`. Keep the shared base as
-  the first file. The active Default Dark Modern variant is a shared hand port
-  with upstream-verified colors; Dark 2026 is also available, vendored from the
-  pinned upstream theme extra.
+  the first file. The active Catppuccin Macchiato variant is vendored from the
+  official port; Default Dark Modern (a shared hand port with upstream-verified
+  colors) and Dark 2026 (vendored from the pinned upstream theme extra) are also
+  available.
 - **LazyDocker:** replace the block between the theme markers in
   `config\lazydocker\config.yml` with a variant from
   `../shared/themes/lazydocker/`, removing only its leading comment lines and
   blank lines. Update the opening marker's theme name too. LazyDocker has no
   include mechanism; the active block must match that shared variant.
 - **btop:** the `btop` link package installs the shared Dark 2026, Default Dark
-  Modern and Catppuccin Mocha themes in
+  Modern, Catppuccin Mocha and Catppuccin Macchiato themes in
   `%USERPROFILE%\scoop\persist\btop\themes`. Select one in btop's options, or
-  set `color_theme` to `dark-2026`, `default-dark-modern` or `catppuccin-mocha`
-  in that persistent directory's `btop.conf` while btop is closed. This native
-  btop4win config remains runtime-owned; the older `config/btop/btop.conf` is
-  not linked over it.
+  set `color_theme` to `dark-2026`, `default-dark-modern`, `catppuccin-mocha` or
+  `catppuccin-macchiato` in `%USERPROFILE%\scoop\apps\btop\current\btop.conf`
+  while btop is closed. That file is the one btop reads; Scoop hard-links it to
+  `scoop\persist\btop\btop.conf`, but btop rewrites it on exit and breaks the
+  link, so an edit to the persist copy can be ignored. This native btop4win
+  config remains runtime-owned; the older `config/btop/btop.conf` is not linked
+  over it.
 
 Sources:
 
@@ -283,11 +288,11 @@ Sources:
   (requires Internet access). It also checks LazyDocker's active marker block.
   The upstream Terminal background is `#121314`; the prompt's PHP segment uses
   `symbol_field` (`#75beff`).
-- Catppuccin Mocha's Windows Terminal scheme follows
+- Catppuccin Mocha's and Macchiato's Windows Terminal schemes follow
   [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal).
-  Its shared btop and LazyGit files are vendored from the official ports at the
-  commits in `shared/themes/catppuccin.json`; `scripts/test-theme-extras.ps1`
-  checks them too.
+  Their shared btop and LazyGit files are vendored from the official ports at
+  the commits in `shared/themes/catppuccin.json`;
+  `scripts/test-theme-extras.ps1` checks them too.
 
 ## Dark Modern theme
 

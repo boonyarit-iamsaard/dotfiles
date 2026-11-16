@@ -31,11 +31,11 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
   plugin commit in each platform's `lazy-lock.json` (see
   [ADR 0001](../../docs/adr/0001-palette-owned-upstream-extras-vendored.md)).
   The platforms must pin the same commit.
-- **Catppuccin Mocha**: `btop/catppuccin-mocha.theme` and
-  `lazygit/catppuccin-mocha.yml` (the yellow accent) are vendored byte for byte
-  from the official `catppuccin/<port>` repos at the commits in
+- **Catppuccin Mocha and Macchiato**: `btop/catppuccin-<flavour>.theme` and
+  `lazygit/catppuccin-<flavour>.yml` (the lavender accent) are vendored byte for
+  byte from the official `catppuccin/<port>` repos at the commits in
   [`catppuccin.json`](catppuccin.json). Catppuccin ships no lazydocker theme, so
-  `lazydocker/catppuccin-mocha.yml` is a hand port of the lazygit keys.
+  `lazydocker/catppuccin-<flavour>.yml` is a hand port of the lazygit keys.
   `tmux/catppuccin.conf` configures the `catppuccin/tmux` plugin, and the
   starship file is a hand-written prompt in Catppuccin colours.
 - **Default Dark Modern**: hand ports of VS Code's

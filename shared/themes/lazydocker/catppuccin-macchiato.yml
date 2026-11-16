@@ -1,0 +1,15 @@
+# Catppuccin Macchiato for lazydocker. Hand port: Catppuccin ships no lazydocker
+# theme, so these are the matching keys of the vendored lazygit theme
+# (shared/themes/lazygit/catppuccin-macchiato.yml). lazydocker supports only these
+# four theme keys.
+gui:
+  theme:
+    activeBorderColor:
+      - "#b7bdf8"
+      - bold
+    inactiveBorderColor:
+      - "#a5adcb"
+    optionsTextColor:
+      - "#8aadf4"
+    selectedLineBgColor:
+      - "#363a4f"

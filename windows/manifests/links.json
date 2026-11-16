@@ -33,6 +33,10 @@
       "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\catppuccin-mocha.theme"
     },
     {
+      "source": "../shared/themes/btop/catppuccin-macchiato.theme",
+      "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\catppuccin-macchiato.theme"
+    },
+    {
       "source": "../shared/themes/btop/dark-2026.theme",
       "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\dark-2026.theme"
     },
@@ -48,6 +52,10 @@
     }
   ],
   "windows-terminal": [
+    {
+      "source": "config/windows-terminal/catppuccin-macchiato.json",
+      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\catppuccin-macchiato.json"
+    },
     {
       "source": "config/windows-terminal/dark-modern.json",
       "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\dark-modern.json"
