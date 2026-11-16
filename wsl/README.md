@@ -57,13 +57,14 @@ each prints a step summary and exits 1 when any error-severity step failed
 
 ## Themes
 
-Three themes are maintained: default dark modern, catppuccin mocha and
-dark 2026. Dark 2026 is active in Neovim, tmux, lazygit, lazydocker and btop;
-starship runs its built-in default. Each tool has a base config plus one theme
-variant per theme in [`../shared/themes/`](../shared/themes/), which every
-platform shares. The theme folders and starship files here are relative symlinks
-into it (`config/lazygit/themes -> ../../../shared/themes/lazygit`). Switching
-is a one-line edit per tool:
+Four themes are maintained: default dark modern, catppuccin mocha, catppuccin
+macchiato and dark 2026. Catppuccin macchiato is active in Neovim, tmux,
+lazygit, lazydocker and btop; starship runs its built-in default. Each tool has
+a base config plus one theme variant per theme in
+[`../shared/themes/`](../shared/themes/), which every platform shares. The theme
+folders and starship files here are relative symlinks into it
+(`config/lazygit/themes -> ../../../shared/themes/lazygit`). Switching is a
+one-line edit per tool:
 
 | Tool       | Switch                                                                                                                                                            |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -73,6 +74,18 @@ is a one-line edit per tool:
 | Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
 | starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only); unset for the built-in default                  |
 | btop       | `color_theme` in `config/btop/btop.conf` (variants in `shared/themes/btop/`)                                                                                      |
+
+Stow links the files in each theme folder one at a time, so a theme file added
+to `shared/themes/` is not in `~/.config` until the `config` package is
+restowed. After adding one, run from `wsl/`:
+
+```bash
+stow --restow --target="$HOME/.config" config
+```
+
+Otherwise lazygit fails with
+`stat …/themes/<name>.yml: no such file or directory`, and btop silently falls
+back to its default theme.
 
 Where each theme file comes from, its pin, and how to refresh it are in
 [shared/themes/README.md](../shared/themes/README.md). The dark 2026 extras are

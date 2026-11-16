@@ -11,7 +11,7 @@ return {
         --   light = "latte",
         --   dark = "macchiato",
         -- },
-        flavour = "mocha",
+        flavour = "macchiato",
         -- flavour = "auto",
         -- transparent_background = true,
       })
@@ -63,14 +63,14 @@ return {
     end,
   },
 
-  -- Keep exactly one import, matching the active colorscheme below.
-  { import = "themes.dark-2026" },
+  -- Keep at most one import, matching the active colorscheme below (none for catppuccin).
+  -- { import = "themes.dark-2026" },
   -- { import = "themes.default-dark-modern" },
   {
     "LazyVim/LazyVim",
     opts = {
-      -- colorscheme = "catppuccin-mocha",
-      colorscheme = "dark-2026",
+      colorscheme = "catppuccin-macchiato",
+      -- colorscheme = "dark-2026",
       -- colorscheme = "vscode",
     },
   },
