@@ -234,16 +234,16 @@ linker refuses to overwrite unmanaged files.
 
 ## Themes
 
-**Catppuccin Macchiato** is active in Windows Terminal, Oh My Posh, LazyGit,
+**Default Dark Modern** is active in Windows Terminal, Oh My Posh, LazyGit,
 LazyDocker and btop. LazyGit, LazyDocker and btop use the shared theme variants.
 Windows Terminal and Oh My Posh use the hand ports in their Windows folders.
 
 | Theme                | Windows Terminal scheme | Oh My Posh                      | LazyGit variant in `shared/themes/lazygit/` | LazyDocker     |
 | -------------------- | ----------------------- | ------------------------------- | ------------------------------------------- | -------------- |
-| Default Dark Modern  | Dark Modern (VS Code)   | `default-dark-modern.omp.json`  | `default-dark-modern.yml`                   | shared variant |
+| Default Dark Modern  | Dark Modern (VS Code)   | `default-dark-modern.omp.json`  | `default-dark-modern.yml` (active)          | active block   |
 | Dark 2026            | Dark 2026               | `dark-2026.omp.json`            | `dark-2026.yml`                             | shared variant |
 | Catppuccin Mocha     | Catppuccin Mocha        | `catppuccin-mocha.omp.json`     | `catppuccin-mocha.yml`                      | shared variant |
-| Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml` (active)         | active block   |
+| Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml`                  | shared variant |
 
 To switch:
 
@@ -255,10 +255,10 @@ To switch:
 - **Oh My Posh:** change `$ompTheme` in the PowerShell profile.
 - **LazyGit:** change the theme variant filename in `LG_CONFIG_FILE` in the
   PowerShell profile, then reload it with `. $PROFILE`. Keep the shared base as
-  the first file. The active Catppuccin Macchiato variant is vendored from the
-  official port; Default Dark Modern (a shared hand port with upstream-verified
-  colors) and Dark 2026 (vendored from the pinned upstream theme extra) are also
-  available.
+  the first file. The active Default Dark Modern variant is a shared hand port
+  with upstream-verified colors; Dark 2026 (vendored from the pinned upstream
+  theme extra) and the Catppuccin flavours (vendored from the official ports)
+  are also available.
 - **LazyDocker:** replace the block between the theme markers in
   `config\lazydocker\config.yml` with a variant from
   `../shared/themes/lazydocker/`, removing only its leading comment lines and
