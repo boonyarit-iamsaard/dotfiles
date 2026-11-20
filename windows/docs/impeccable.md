@@ -2,7 +2,7 @@
 
 Impeccable's provider builds live in `../../shared/skills/vendor/impeccable`,
 with the npm pin in `../../shared/skills/skills.json`. Windows reads that
-manifest for skills and `manifests/links.json` for the four Claude agent files.
+manifest for skills and `manifests/links.json` for the five Claude agent files.
 The skill roots and `$HOME\.claude\agents` stay real directories; individual
 skills and agent files are linked into them.
 

@@ -95,6 +95,10 @@
     {
       "source": "../shared/skills/vendor/impeccable/claude-agents/impeccable-manual-edit-applier.md",
       "target": "%USERPROFILE%\\.claude\\agents\\impeccable-manual-edit-applier.md"
+    },
+    {
+      "source": "../shared/skills/vendor/impeccable/claude-agents/impeccable-motion-reviewer.md",
+      "target": "%USERPROFILE%\\.claude\\agents\\impeccable-motion-reviewer.md"
     }
   ],
   "git": [
