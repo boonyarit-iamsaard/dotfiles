@@ -131,10 +131,10 @@ printf '\npath=("$HOME/.local/bin" ${path:#$HOME/.local/bin})\n' >> ~/.zprofile
 ```
 
 Create the token under GitHub → Settings → Developer settings → Fine-grained
-tokens for the owner account, scoped to the `bookkeeping` and `dotfiles`
-repositories only: Contents, Issues and Pull requests read/write, Actions and
-Commit statuses read-only, everything else none. Without Issues write,
-commenting on or editing an issue fails with "Resource not accessible by
+tokens for the owner account, scoped to the `bookkeeping`, `dotfiles` and
+`foundry` repositories only: Contents, Issues and Pull requests read/write,
+Actions and Commit statuses read-only, everything else none. Without Issues
+write, commenting on or editing an issue fails with "Resource not accessible by
 personal access token". The token file lives outside this repo and must never be
 committed.
 
