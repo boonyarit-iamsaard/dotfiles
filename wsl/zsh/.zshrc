@@ -107,8 +107,8 @@ export PATH="$HOME/go/bin:$PATH"       # Binaries installed by go install.
 # ---------------------------------------------------------------------------
 # Tooling and prompt
 # ---------------------------------------------------------------------------
-# Initialise the Starship prompt with its built-in default config.
-# Set STARSHIP_CONFIG to a config/starship.<name>.toml to theme it.
+# Starship uses the catppuccin mocha prompt; unset STARSHIP_CONFIG for the built-in default.
+export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
 eval "$(starship init zsh)"
 
 # Load nvm and automatically switch the Node version on directory change,
