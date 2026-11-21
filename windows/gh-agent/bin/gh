@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# gh is installed only for agents to handle PRs; it is never logged in. Each
-# call reads a fine-grained token from a file, so the token stays out of the
-# environment of every other process. This copy serves Git Bash, which agent
-# Bash tools run; gh.ps1 beside it serves PowerShell. The directory sits first
-# on the user PATH (manifests/environment.json), ahead of Scoop's gh shim.
+# gh is installed only for agents to handle issues and PRs; it is never logged
+# in. Each call reads a fine-grained token from a file, so the token stays out
+# of the environment of every other process. This copy serves Git Bash, which
+# agent Bash tools run; gh.ps1 beside it serves PowerShell. The directory sits
+# first on the user PATH (manifests/environment.json), ahead of Scoop's gh shim.
 # cmd.exe does not run either wrapper and reaches the unauthenticated gh.
 #
 # Setting up on a new machine, or when the token expires:
 #   1. Install gh from manifests/packages.json (scoop install gh).
 #   2. GitHub → Settings → Developer settings → Fine-grained tokens:
-#      only the bookkeeping and foundry repositories; Contents, Issues and
-#      Pull requests read and write, Actions and Commit statuses read-only,
-#      everything else none.
+#      only the bookkeeping, dotfiles and foundry repositories; Contents,
+#      Issues and Pull requests read and write, Actions and Commit statuses
+#      read-only, everything else none.
 #   3. Save it to %USERPROFILE%\.config\gh-agent\token, readable only by you.
 #   4. Run scripts/set-environment.ps1 so this directory leads the PATH.
 #   5. Verify: gh api user --jq .login
