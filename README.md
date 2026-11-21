@@ -1,6 +1,7 @@
 # Dotfiles
 
-Personal developer environment setup, one folder per platform.
+Personal developer environment setup, one folder per platform. This is personal
+config; contributions are not accepted.
 
 | Folder                 | Platform       | Entry point                            |
 | ---------------------- | -------------- | -------------------------------------- |

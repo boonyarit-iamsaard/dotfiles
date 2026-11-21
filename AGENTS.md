@@ -31,6 +31,9 @@ issue #14 and its sub-issues.
   writes (`pnpm format`): `pnpm format:check` passes and
   `git diff --ignore-all-space` shows nothing beyond rewrapped lines. Check a
   doc that describes live state against the files in the repo.
+- Commit and push directly to `main`. Never open a pull request or a branch for
+  a change unless the owner asks. See
+  [ADR 0003](docs/adr/0003-direct-push-owner-only.md).
 - Keep platform-specific setup inside its platform folder. Never add one
   platform's setup to another's folder.
 - Repository tooling lives at the root: `package.json` (Prettier and the pinned
