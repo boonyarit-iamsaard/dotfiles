@@ -103,10 +103,10 @@ without depending on Neovim's plugin directory at runtime.
 
 ## Agent gh wrapper
 
-`gh` is installed only so agents can handle pull requests; it is never logged
-in. `~/.local/bin/gh` (symlink to `~/dotfiles/macos/.local/bin/gh`) reads a
-fine-grained token from `~/.config/gh-agent/token` for each call and runs
-`/opt/homebrew/bin/gh`, so the token never enters the environment of other
+`gh` is installed only so agents can handle issues and pull requests; it is
+never logged in. `~/.local/bin/gh` (symlink to `~/dotfiles/macos/.local/bin/gh`)
+reads a fine-grained token from `~/.config/gh-agent/token` for each call and
+runs `/opt/homebrew/bin/gh`, so the token never enters the environment of other
 processes. Three files put `~/.local/bin` ahead of Homebrew so the wrapper wins
 in every zsh mode: `.zshenv` (for `zsh -c`, which tools spawn), `.zprofile`
 (after its `brew shellenv`, for login shells), and `.zshrc` (interactive). A
@@ -131,11 +131,12 @@ printf '\npath=("$HOME/.local/bin" ${path:#$HOME/.local/bin})\n' >> ~/.zprofile
 ```
 
 Create the token under GitHub → Settings → Developer settings → Fine-grained
-tokens for the owner account, scoped to the `bookkeeping` repository only:
-Contents, Issues and Pull requests read/write, Actions and Commit statuses
-read-only, everything else none. Without Issues write, commenting on or editing
-an issue fails with "Resource not accessible by personal access token". The
-token file lives outside this repo and must never be committed.
+tokens for the owner account, scoped to the `bookkeeping` and `dotfiles`
+repositories only: Contents, Issues and Pull requests read/write, Actions and
+Commit statuses read-only, everything else none. Without Issues write,
+commenting on or editing an issue fails with "Resource not accessible by
+personal access token". The token file lives outside this repo and must never be
+committed.
 
 `gh project ...` reads `~/.config/gh-agent/project-token` instead of the default
 token file, so project access can use a separately scoped token. Other commands
