@@ -9,8 +9,8 @@
   "lazygit": {
     "commit": "1a4b26cbc2b5be05cc5494d0d7f764120a2cf86d",
     "files": {
-      "lazygit/catppuccin-mocha.yml": "themes-mergable/mocha/lavender.yml",
-      "lazygit/catppuccin-macchiato.yml": "themes-mergable/macchiato/lavender.yml"
+      "lazygit/catppuccin-mocha.yml": "themes-mergable/mocha/mauve.yml",
+      "lazygit/catppuccin-macchiato.yml": "themes-mergable/macchiato/mauve.yml"
     }
   }
 }

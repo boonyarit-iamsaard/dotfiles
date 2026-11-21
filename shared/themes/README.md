@@ -32,8 +32,8 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
   [ADR 0001](../../docs/adr/0001-palette-owned-upstream-extras-vendored.md)).
   The platforms must pin the same commit.
 - **Catppuccin Mocha and Macchiato**: `btop/catppuccin-<flavour>.theme` and
-  `lazygit/catppuccin-<flavour>.yml` (the lavender accent) are vendored byte for
-  byte from the official `catppuccin/<port>` repos at the commits in
+  `lazygit/catppuccin-<flavour>.yml` (the default mauve accent) are vendored
+  byte for byte from the official `catppuccin/<port>` repos at the commits in
   [`catppuccin.json`](catppuccin.json). Catppuccin ships no lazydocker theme, so
   `lazydocker/catppuccin-<flavour>.yml` is a hand port of the lazygit keys.
   `tmux/catppuccin.conf` configures the `catppuccin/tmux` plugin, and the
