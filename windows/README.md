@@ -103,6 +103,10 @@ git config --file "$HOME\.gitconfig.local" user.name "Boonyarit Iamsa-ard"
 git config --file "$HOME\.gitconfig.local" user.email "boonyarit.iamsaard@gmail.com"
 ```
 
+GitKraken also writes this identity into `~\.gitconfig`, which is the tracked
+`config\git\gitconfig`. That `[user]` block is loaded after `~\.gitconfig.local`
+and wins over it, so change your identity in both files.
+
 If the machine already has an unmanaged `~\.gitconfig`, move it aside instead,
 unless `~\.gitconfig.local` already exists (merge into it first):
 
