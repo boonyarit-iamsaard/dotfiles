@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# gh is installed only for agents to handle PRs; it is never logged in. Each
-# call reads a fine-grained token from a file, so the token stays out of the
-# environment of every other process. This lives on PATH rather than as a
-# shell function so non-interactive agent shells (bash, sh) get it too.
+# gh is installed only for agents to handle issues and PRs; it is never logged
+# in. Each call reads a fine-grained token from a file, so the token stays out
+# of the environment of every other process. This lives on PATH rather than as
+# a shell function so non-interactive agent shells (bash, sh) get it too.
 #
 # Setting up on a new machine, or when the token expires:
 #   1. brew install gh
 #   2. GitHub → Settings → Developer settings → Fine-grained tokens:
-#      only the bookkeeping and foundry repositories; Contents, Issues and
-#      Pull requests read and write, Actions and Commit statuses read-only,
-#      everything else none.
+#      only the bookkeeping, dotfiles and foundry repositories; Contents,
+#      Issues and Pull requests read and write, Actions and Commit statuses
+#      read-only, everything else none.
 #   3. mkdir -p ~/.config/gh-agent && (umask 077; cat > ~/.config/gh-agent/token)
 #      then paste the token, press Enter and Ctrl-D.
 #   4. cd ~/dotfiles/wsl && stow gh-agent
