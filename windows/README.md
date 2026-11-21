@@ -110,6 +110,37 @@ unless `~\.gitconfig.local` already exists (merge into it first):
 Move-Item -LiteralPath "$HOME\.gitconfig" -Destination "$HOME\.gitconfig.local"
 ```
 
+Commits and tags are signed with SSH, like on WSL and macOS. On a machine that
+also runs WSL, copy the WSL key, which GitHub already lists as a signing key,
+instead of making a new one. The key only signs here: pushing stays on HTTPS
+through Git Credential Manager. Copy the key, then limit the private key to your
+user:
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.ssh" | Out-Null
+$wslSsh = wsl.exe -e sh -c 'wslpath -w ~/.ssh'
+Copy-Item "$wslSsh\github_ed25519", "$wslSsh\github_ed25519.pub" "$HOME\.ssh"
+icacls "$HOME\.ssh\github_ed25519" /inheritance:r /grant:r "${env:USERNAME}:F"
+```
+
+Then enable signing, and list the key as yours so `git log --show-signature` can
+verify signatures locally:
+
+```powershell
+$local = "$HOME\.gitconfig.local"
+$pub = "$HOME\.ssh\github_ed25519.pub" -replace '\\', '/'
+$signers = "$HOME\.config\git\allowed_signers" -replace '\\', '/'
+git config --file $local gpg.format ssh
+git config --file $local user.signingkey $pub
+git config --file $local commit.gpgsign true
+git config --file $local tag.gpgsign true
+git config --file $local gpg.ssh.allowedSignersFile $signers
+New-Item -ItemType Directory -Force (Split-Path $signers) | Out-Null
+"$(git config --file $local user.email) $((Get-Content $pub).Split(' ')[0..1] -join ' ')" |
+  Set-Content -LiteralPath $signers
+git log -1 --format='%G? %GS'   # G after the next commit
+```
+
 ### 3. Bootstrap
 
 From the repository root:
