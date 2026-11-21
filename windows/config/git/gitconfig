@@ -4,3 +4,5 @@
 [user]
 	name = Boonyarit Iamsa-ard
 	email = boonyarit.iamsaard@gmail.com
+[gpg "ssh"]
+	program = ssh-keygen
