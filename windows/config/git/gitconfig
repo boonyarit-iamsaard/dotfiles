@@ -1,3 +1,6 @@
 [include]
 	path = ~/dotfiles/shared/gitconfig
 	path = ~/.gitconfig.local
+[user]
+	name = Boonyarit Iamsa-ard
+	email = boonyarit.iamsaard@gmail.com
