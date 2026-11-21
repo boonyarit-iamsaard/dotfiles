@@ -58,7 +58,7 @@ each prints a step summary and exits 1 when any error-severity step failed
 ## Themes
 
 Four themes are maintained: default dark modern, catppuccin mocha, catppuccin
-macchiato and dark 2026. Default dark modern is active in Neovim, tmux, lazygit,
+macchiato and dark 2026. Catppuccin mocha is active in Neovim, tmux, lazygit,
 lazydocker and btop; starship runs its built-in default. Each tool has a base
 config plus one theme variant per theme in
 [`../shared/themes/`](../shared/themes/), which every platform shares. The theme
