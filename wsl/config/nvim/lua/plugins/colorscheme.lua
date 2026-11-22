@@ -65,13 +65,13 @@ return {
 
   -- Keep at most one import, matching the active colorscheme below (none for catppuccin).
   -- { import = "themes.dark-2026" },
-  -- { import = "themes.default-dark-modern" },
+  { import = "themes.default-dark-modern" },
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin-mocha",
+      -- colorscheme = "catppuccin-mocha",
       -- colorscheme = "dark-2026",
-      -- colorscheme = "vscode",
+      colorscheme = "vscode",
     },
   },
 }
