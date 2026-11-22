@@ -108,7 +108,7 @@ export PATH="$HOME/go/bin:$PATH"       # Binaries installed by go install.
 # Tooling and prompt
 # ---------------------------------------------------------------------------
 # Starship uses the default dark modern prompt; unset STARSHIP_CONFIG for the built-in default.
-export STARSHIP_CONFIG="$HOME/.config/starship.default-dark-modern.toml"
+# export STARSHIP_CONFIG="$HOME/.config/starship.default-dark-modern.toml"
 eval "$(starship init zsh)"
 
 # Load nvm and automatically switch the Node version on directory change,
