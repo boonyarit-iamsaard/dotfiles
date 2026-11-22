@@ -7,11 +7,13 @@
       "lazydocker",
       "lazygit",
       "nvm",
+      "oh-my-pi",
       "oh-my-posh",
       "temurin17-jdk",
       "temurin25-jdk"
     ],
     "packageCommands": {
+      "oh-my-pi": ["omp"],
       "temurin17-jdk": [],
       "temurin25-jdk": ["java", "javac"]
     }

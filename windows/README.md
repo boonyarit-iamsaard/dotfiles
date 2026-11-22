@@ -504,8 +504,13 @@ Shared skills come from the separate fork at
 `$HOME\skills`. The checkout remains a normal Git repository; skill folders are
 linked individually into the user-wide discovery roots:
 
-- Codex CLI: `$HOME\.agents\skills`
+- Codex CLI and Oh My Pi: `$HOME\.agents\skills`
 - Claude Code: `$HOME\.claude\skills`
+
+In Oh My Pi, open `/extensions` and select **Skills** to see the active source
+for each skill. Use `/skill:impeccable` or `/skill:ponytail` to invoke them
+explicitly. Oh My Pi also discovers compatible skills from the Claude root, so
+the Skills view shows which copy it selected when names overlap.
 
 Update the clean checkout with a fast-forward-only pull and reconcile both
 consumers:
