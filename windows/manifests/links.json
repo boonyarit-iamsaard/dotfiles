@@ -13,6 +13,10 @@
     {
       "source": "config/claude/statusline.ps1",
       "target": "%USERPROFILE%\\.claude\\statusline.ps1"
+    },
+    {
+      "source": "config/claude/agents/general-purpose.md",
+      "target": "%USERPROFILE%\\.claude\\agents\\general-purpose.md"
     }
   ],
   "lazygit": [
