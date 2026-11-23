@@ -36,8 +36,9 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
   byte for byte from the official `catppuccin/<port>` repos at the commits in
   [`catppuccin.json`](catppuccin.json). Catppuccin ships no lazydocker theme, so
   `lazydocker/catppuccin-<flavour>.yml` is a hand port of the lazygit keys.
-  `tmux/catppuccin.conf` configures the `catppuccin/tmux` plugin, and the
-  starship file is a hand-written prompt in Catppuccin colours.
+  `tmux/catppuccin.conf` (Mocha) and `tmux/catppuccin-macchiato.conf` configure
+  the `catppuccin/tmux` plugin, and the starship files are hand-written prompts
+  in Catppuccin colours.
 - **Default Dark Modern**: hand ports of VS Code's
   [`dark_modern.json`](https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json)
   and its registered dark defaults, each colour commented with its VS Code key.

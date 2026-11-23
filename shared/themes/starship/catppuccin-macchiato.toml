@@ -1,0 +1,209 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[](color_peach)\
+$os\
+$username\
+[](bg:color_yellow fg:color_peach)\
+$directory\
+[](fg:color_yellow bg:color_teal)\
+$git_branch\
+$git_status\
+[](fg:color_teal bg:color_blue)\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+$dotnet\
+[](fg:color_blue bg:color_surface2)\
+$docker_context\
+$conda\
+[](fg:color_surface2 bg:color_surface1)\
+$time\
+[ ](fg:color_surface1)\
+$line_break$character"""
+
+# Command duration on the right, shown only for commands slower than 2s.
+right_format = "$cmd_duration"
+
+# Prompt shown for multi-line input.
+continuation_prompt = "[∙∙ ](color_surface2)"
+
+palette = 'catppuccin_macchiato'
+
+[palettes.catppuccin_macchiato]
+# Catppuccin Macchiato Colors Reference
+color_fg0 = '#24273a'         # base (catppuccin.base) - Dark text for light background
+color_fg1 = '#cad3f5'         # text (catppuccin.text) - Light text for dark background
+color_bg1 = '#494d64'         # surface1 (catppuccin.surface1) - Lighter background
+color_bg3 = '#5b6078'         # surface2 (catppuccin.surface2) - Even lighter background
+color_blue = '#8aadf4'        # blue (catppuccin.blue) - Bright blue
+color_teal = '#8bd5ca'        # teal (catppuccin.teal) - Minty teal
+color_green = '#a6da95'       # green (catppuccin.green) - Vibrant green
+color_peach = '#f5a97f'       # peach (catppuccin.peach) - Warm peach
+color_mauve = '#c6a0f6'       # mauve (catppuccin.mauve) - Purple
+color_red = '#ed8796'         # red (catppuccin.red) - Soft red
+color_yellow = '#eed49f'      # yellow (catppuccin.yellow) - Light yellow
+color_surface1 = '#494d64'    # surface1 (catppuccin.surface1) - UI elements background
+color_surface2 = '#5b6078'    # surface2 (catppuccin.surface2) - Alternative UI elements
+
+# Additional Catppuccin Macchiato Colors (for reference)
+# rosewater = '#f4dbd6'   # rosewater (catppuccin.rosewater) - Warm beige
+# flamingo = '#f0c6c6'    # flamingo (catppuccin.flamingo) - Light pink
+# pink = '#f5bde6'       # pink (catppuccin.pink) - Bright pink
+# maroon = '#ee99a0'     # maroon (catppuccin.maroon) - Dark pink
+# sky = '#91d7e3'        # sky (catppuccin.sky) - Light blue
+# sapphire = '#7dc4e4'   # sapphire (catppuccin.sapphire) - Deep sky blue
+# lavender = '#b7bdf8'   # lavender (catppuccin.lavender) - Light purple
+# subtext0 = '#a5adcb'   # subtext0 (catppuccin.subtext0) - Lighter text
+# subtext1 = '#b8c0e0'   # subtext1 (catppuccin.subtext1) - Light text
+# overlay0 = '#6e738d'   # overlay0 (catppuccin.overlay0) - Dark overlay
+# overlay1 = '#8087a2'   # overlay1 (catppuccin.overlay1) - Medium overlay
+# overlay2 = '#939ab7'   # overlay2 (catppuccin.overlay2) - Light overlay
+# surface0 = '#363a4f'   # surface0 (catppuccin.surface0) - Darkest background
+# base = '#24273a'       # base (catppuccin.base) - Main background
+# mantle = '#1e2030'     # mantle (catppuccin.mantle) - Darker background
+# crust = '#181926'      # crust (catppuccin.crust) - Darkest background
+
+[os]
+disabled = false
+style = "bg:color_peach fg:color_fg0"
+
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+Arch = "󰣇"
+Artix = "󰣇"
+EndeavourOS = ""
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+Pop = ""
+
+[username]
+show_always = true
+style_user = "bg:color_peach fg:color_fg0"
+style_root = "bg:color_peach fg:color_fg0"
+format = '[ $user ]($style)'
+
+[directory]
+style = "fg:color_fg0 bg:color_yellow"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "bg:color_teal"
+format = '[[ $symbol $branch ](fg:color_fg0 bg:color_teal)]($style)'
+
+[git_status]
+style = "bg:color_teal"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+up_to_date = "≡"
+format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_teal)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[c]
+symbol = " "
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[php]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[java]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[python]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[dotnet]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:color_surface2"
+format = '[[ $symbol( $context) ](fg:#8aadf4 bg:color_surface2)]($style)'
+
+[conda]
+style = "bg:color_surface2"
+format = '[[ $symbol( $environment) ](fg:#8aadf4 bg:color_surface2)]($style)'
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:color_surface1"
+format = '[[  $time ](fg:color_fg1 bg:color_surface1)]($style)'
+
+[cmd_duration]
+min_time = 2000
+style = "fg:color_surface2"
+format = "[took $duration]($style)"
+
+[line_break]
+disabled = false
+
+[character]
+disabled = false
+success_symbol = "[[󰄛](color_green) ❯](color_green)"
+error_symbol = "[[󰄛](color_red) ❯](color_red)"
+vimcmd_symbol = "[󰄛 ❮](color_fg1)"

@@ -58,21 +58,21 @@ each prints a step summary and exits 1 when any error-severity step failed
 ## Themes
 
 Four themes are maintained: default dark modern, catppuccin mocha, catppuccin
-macchiato and dark 2026. Default dark modern is active in Neovim, tmux, lazygit,
-lazydocker, btop and starship. Each tool has a base config plus one theme
-variant per theme in [`../shared/themes/`](../shared/themes/), which every
+macchiato and dark 2026. Catppuccin macchiato is active in Neovim, tmux,
+lazygit, lazydocker, btop and starship. Each tool has a base config plus one
+theme variant per theme in [`../shared/themes/`](../shared/themes/), which every
 platform shares. The theme folders and starship files here are relative symlinks
 into it (`config/lazygit/themes -> ../../../shared/themes/lazygit`). Switching
 is a one-line edit per tool:
 
-| Tool       | Switch                                                                                                                                                            |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| tmux       | `set -g @theme …` in `tmux/.tmux.conf` (variants in `shared/themes/tmux/`); restart the server for a clean switch                                                 |
-| lazygit    | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `shared/themes/lazygit/`)                                                                            |
-| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `shared/themes/lazydocker/<name>.yml`                      |
-| Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern |
-| starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha and default dark modern only); unset for the built-in default                  |
-| btop       | `color_theme` in `config/btop/btop.conf` (variants in `shared/themes/btop/`)                                                                                      |
+| Tool       | Switch                                                                                                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tmux       | `set -g @theme …` in `tmux/.tmux.conf` (variants in `shared/themes/tmux/`); restart the server for a clean switch                                                      |
+| lazygit    | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `shared/themes/lazygit/`)                                                                                 |
+| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `shared/themes/lazydocker/<name>.yml`                           |
+| Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern      |
+| starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha, catppuccin macchiato and default dark modern only); unset for the built-in default |
+| btop       | `color_theme` in `config/btop/btop.conf` (variants in `shared/themes/btop/`)                                                                                           |
 
 Stow links the files in each theme folder one at a time, so a theme file added
 to `shared/themes/` is not in `~/.config` until the `config` package is

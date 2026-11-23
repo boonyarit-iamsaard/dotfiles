@@ -29,6 +29,7 @@ SHARED_THEME_LINKS = (
     ("config/lazydocker/themes", "lazydocker"),
     ("config/lazygit/themes", "lazygit"),
     ("config/nvim/lua/themes", "nvim"),
+    ("config/starship.catppuccin-macchiato.toml", "starship/catppuccin-macchiato.toml"),
     ("config/starship.catppuccin-mocha.toml", "starship/catppuccin-mocha.toml"),
     ("config/starship.default-dark-modern.toml", "starship/default-dark-modern.toml"),
     ("tmux/.tmux/themes", "tmux"),
