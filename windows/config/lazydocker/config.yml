@@ -1,15 +1,15 @@
 # Theme variant contract: between markers, copy shared/themes/lazydocker/<name>.yml
 # exactly, removing only its leading comment lines and blank lines.
-# >>> theme: default-dark-modern
+# >>> theme: catppuccin-macchiato
 gui:
   theme:
     activeBorderColor:
-      - "#0078d4" # tab.activeBorderTop
+      - "#c6a0f6"
       - bold
     inactiveBorderColor:
-      - "#9d9d9d" # descriptionForeground
+      - "#a5adcb"
     optionsTextColor:
-      - "#4daafc" # textLink.foreground
+      - "#8aadf4"
     selectedLineBgColor:
-      - "#264f78" # editor.selectionBackground
+      - "#363a4f"
 # <<< theme
