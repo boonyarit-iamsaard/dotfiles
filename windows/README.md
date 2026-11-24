@@ -269,16 +269,16 @@ linker refuses to overwrite unmanaged files.
 
 ## Themes
 
-**Catppuccin Macchiato** is active in Windows Terminal, Oh My Posh, LazyGit,
-LazyDocker and btop. LazyGit, LazyDocker and btop use the shared theme variants.
-Windows Terminal and Oh My Posh use the hand ports in their Windows folders.
+**Dark 2026** is active in Windows Terminal, Oh My Posh, LazyGit, LazyDocker and
+btop. LazyGit, LazyDocker and btop use the shared theme variants. Windows
+Terminal and Oh My Posh use the hand ports in their Windows folders.
 
 | Theme                | Windows Terminal scheme | Oh My Posh                      | LazyGit variant in `shared/themes/lazygit/` | LazyDocker     |
 | -------------------- | ----------------------- | ------------------------------- | ------------------------------------------- | -------------- |
 | Default Dark Modern  | Dark Modern (VS Code)   | `default-dark-modern.omp.json`  | `default-dark-modern.yml`                   | shared variant |
-| Dark 2026            | Dark 2026               | `dark-2026.omp.json`            | `dark-2026.yml`                             | shared variant |
+| Dark 2026            | Dark 2026               | `dark-2026.omp.json`            | `dark-2026.yml` (active)                    | active block   |
 | Catppuccin Mocha     | Catppuccin Mocha        | `catppuccin-mocha.omp.json`     | `catppuccin-mocha.yml`                      | shared variant |
-| Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml` (active)         | active block   |
+| Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml`                  | shared variant |
 
 To switch:
 
