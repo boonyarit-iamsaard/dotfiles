@@ -17,7 +17,7 @@ during `update-skills`, and checks them in `verify-system.ps1`.
 
 ## What lives here
 
-- **Personal skills** (`commit-message`, `edit-prose`, `runbook`,
+- **Personal skills** (`commit-message`, `edit-prose`, `runbook`, `tutorial`,
   `typescript-house-style`): written by the owner and kept once, in this folder.
   `edit-prose` links its rules from the `humanizer` checkout at
   `~/workspace/personal/humanizer`.
