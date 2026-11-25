@@ -72,8 +72,8 @@ see the merged settings.
 
 ## Themes
 
-Catppuccin Macchiato is active; Catppuccin Mocha, Default Dark Modern and Dark
-2026 stay available. The btop, lazydocker, lazygit, Neovim and tmux theme
+Dark 2026 is active; Catppuccin Macchiato, Catppuccin Mocha and Default Dark
+Modern stay available. The btop, lazydocker, lazygit, Neovim and tmux theme
 folders here are links into [`shared/themes/`](../shared/themes/README.md);
 Ghostty and superfile keep their themes in this folder. Settings and theme
 variants are separate:

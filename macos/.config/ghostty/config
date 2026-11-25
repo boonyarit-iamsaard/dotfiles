@@ -58,7 +58,7 @@
 # background-blur-radius  = 20
 cursor-color            = cell-foreground
 cursor-text             = cell-background
-font-family             = "JetBrainsMono Nerd Font Mono"
+font-family             = "MesloLGM Nerd Font Mono"
 font-size               = 14
 adjust-cursor-thickness = 2
 # Ghostty draws box glyphs (─├└) at the exact cell centre, which leaves JetBrains Mono's
@@ -67,8 +67,8 @@ adjust-font-baseline    = 2
 macos-titlebar-style    = "hidden"
 # theme                   = "catppuccin-mocha"
 # theme                   = "default-dark-modern"
-theme                   = "catppuccin-macchiato"
-# theme                   = "dark-2026"
+# theme                   = "catppuccin-macchiato"
+theme                   = "dark-2026"
 window-colorspace       = "display-p3"
 # The hidden titlebar puts the first row against the rounded window edge; give the top extra room.
 window-padding-x        = 8

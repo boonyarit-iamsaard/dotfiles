@@ -1,6 +1,6 @@
 return {
   -- Uncomment the matching theme import when selecting a different colorscheme.
-  -- { import = "themes.dark-2026" },
+  { import = "themes.dark-2026" },
   -- { import = "themes.default-dark-modern" },
   {
     "boonyarit-iamsaard/dark-2026.nvim",
@@ -56,9 +56,9 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin-macchiato",
+      -- colorscheme = "catppuccin-macchiato",
       -- colorscheme = "catppuccin-mocha",
-      -- colorscheme = "dark-2026",
+      colorscheme = "dark-2026",
       -- colorscheme = "vscode",
     },
   },
