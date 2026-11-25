@@ -1,7 +1,7 @@
 return {
   -- Uncomment the matching theme import when selecting a different colorscheme.
   -- { import = "themes.dark-2026" },
-  { import = "themes.default-dark-modern" },
+  -- { import = "themes.default-dark-modern" },
   {
     "boonyarit-iamsaard/dark-2026.nvim",
     lazy = false,
@@ -43,7 +43,7 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require("catppuccin").setup({
-        flavour = "mocha", -- latte, frappe, macchiato, mocha
+        flavour = "macchiato", -- latte, frappe, macchiato, mocha
         transparent_background = true, -- let Ghostty's background-opacity/blur show through
         float = {
           transparent = true, -- also make floating windows (pickers, hover, etc.) transparent
@@ -56,9 +56,10 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
+      colorscheme = "catppuccin-macchiato",
       -- colorscheme = "catppuccin-mocha",
       -- colorscheme = "dark-2026",
-      colorscheme = "vscode",
+      -- colorscheme = "vscode",
     },
   },
 }
