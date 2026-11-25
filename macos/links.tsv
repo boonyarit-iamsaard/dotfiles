@@ -29,6 +29,7 @@
 .config/nvim/lua/plugins/snacks.lua	.config/nvim/lua/plugins/snacks.lua
 .config/nvim/lua/themes	.config/nvim/lua/themes
 .config/nvim/stylua.toml	.config/nvim/stylua.toml
+.config/starship.catppuccin-macchiato.toml	.config/starship.catppuccin-macchiato.toml
 .config/superfile	.config/superfile
 .gitconfig	.gitconfig
 .ideavimrc	.ideavimrc

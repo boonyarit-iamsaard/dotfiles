@@ -41,7 +41,8 @@ export PATH="/usr/local/share/dotnet:$PATH"
 export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
 export PATH="$JAVA_HOME/bin:$PATH"
 
-# starship prompt setup
+# starship uses the catppuccin macchiato prompt; unset STARSHIP_CONFIG for the built-in default.
+export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-macchiato.toml"
 eval "$(starship init zsh)"
 
 # bun completions
