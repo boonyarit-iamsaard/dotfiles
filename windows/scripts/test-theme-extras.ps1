@@ -5,6 +5,37 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $checkoutRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+$activeThemes = @(
+    [pscustomobject]@{
+        Tool = 'Oh My Posh'
+        Path = 'windows/powershell/Microsoft.PowerShell_profile.ps1'
+        Pattern = '^\$ompTheme\s*=.*catppuccin-mocha\.omp\.json'
+    }
+    [pscustomobject]@{
+        Tool = 'LazyGit'
+        Path = 'windows/powershell/Microsoft.PowerShell_profile.ps1'
+        Pattern = 'Join-Path\s+\$checkoutRoot.*catppuccin-mocha\.yml'
+    }
+    [pscustomobject]@{
+        Tool = 'LazyDocker'
+        Path = 'windows/config/lazydocker/config.yml'
+        Pattern = '^# >>> theme: catppuccin-mocha$'
+    }
+    [pscustomobject]@{
+        Tool = 'btop'
+        Path = 'windows/config/btop/btop.conf'
+        Pattern = '^color_theme\s*=\s*"catppuccin-mocha"$'
+    }
+)
+
+foreach ($activeTheme in $activeThemes) {
+    $path = Join-Path $checkoutRoot $activeTheme.Path
+    $text = [IO.File]::ReadAllText($path)
+    if (-not [regex]::IsMatch($text, $activeTheme.Pattern, [Text.RegularExpressions.RegexOptions]::Multiline)) {
+        throw "Active theme mismatch: $($activeTheme.Tool) must use Catppuccin Mocha in $($activeTheme.Path)."
+    }
+}
+
 # Keep the Windows pin aligned with the shared extras when refreshing themes.
 $pin = '4d19b8f1c1af75ae67d58506fb144e6b09d68e1f'
 $extras = [ordered]@{

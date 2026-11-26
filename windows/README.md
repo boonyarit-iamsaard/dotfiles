@@ -248,7 +248,7 @@ Expected results:
 - `LinkType` is `SymbolicLink` and `Target` points into
   `dotfiles\shared\config\lazygit\config.yml`.
 
-LazyGit layers the shared Default Dark Modern theme over this base through
+LazyGit layers the shared base and active Catppuccin Mocha variant through
 `LG_CONFIG_FILE`, set by the PowerShell profile. Open a new PowerShell session
 after relinking, or reload the profile with `. $PROFILE`.
 
@@ -269,30 +269,29 @@ linker refuses to overwrite unmanaged files.
 
 ## Themes
 
-**Dark 2026** is active in Windows Terminal, Oh My Posh, LazyGit, LazyDocker and
-btop. LazyGit, LazyDocker and btop use the shared theme variants. Windows
-Terminal and Oh My Posh use the hand ports in their Windows folders.
+**Catppuccin Mocha** is active in Windows Terminal, Oh My Posh, LazyGit,
+LazyDocker and btop. LazyGit, LazyDocker and btop use the shared theme variants.
+Windows Terminal and Oh My Posh use the hand ports in their Windows folders.
 
 | Theme                | Windows Terminal scheme | Oh My Posh                      | LazyGit variant in `shared/themes/lazygit/` | LazyDocker     |
 | -------------------- | ----------------------- | ------------------------------- | ------------------------------------------- | -------------- |
 | Default Dark Modern  | Dark Modern (VS Code)   | `default-dark-modern.omp.json`  | `default-dark-modern.yml`                   | shared variant |
-| Dark 2026            | Dark 2026               | `dark-2026.omp.json`            | `dark-2026.yml` (active)                    | active block   |
-| Catppuccin Mocha     | Catppuccin Mocha        | `catppuccin-mocha.omp.json`     | `catppuccin-mocha.yml`                      | shared variant |
+| Dark 2026            | Dark 2026               | `dark-2026.omp.json`            | `dark-2026.yml`                             | shared variant |
+| Catppuccin Mocha     | Catppuccin Mocha        | `catppuccin-mocha.omp.json`     | `catppuccin-mocha.yml` (active)             | active block   |
 | Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml`                  | shared variant |
 
 To switch:
 
-- **Windows Terminal:** the linker installs each scheme in
-  `config\windows-terminal` as a JSON fragment. Select it under **Settings >
-  Defaults > Appearance > Color scheme**. Profile-level color scheme overrides
-  need the same selection. The fragments leave the user-owned `settings.json`
-  intact; a same-named scheme there takes precedence over a fragment.
+- **Windows Terminal:** the user-owned `settings.json` currently selects
+  **Catppuccin Mocha** as the default color scheme. The linker installs each
+  scheme in `config\windows-terminal` as a JSON fragment, but leaves that file
+  intact; profile-level color scheme overrides need the same selection.
 - **Oh My Posh:** change `$ompTheme` in the PowerShell profile.
 - **LazyGit:** change the theme variant filename in `LG_CONFIG_FILE` in the
   PowerShell profile, then reload it with `. $PROFILE`. Keep the shared base as
-  the first file. The active Catppuccin Macchiato variant is vendored from the
-  official port; Dark 2026 (vendored from the pinned upstream theme extra), the
-  Default Dark Modern hand port and Catppuccin Mocha are also available.
+  the first file. The active Catppuccin Mocha variant is vendored from the
+  official port; Dark 2026, Catppuccin Macchiato and the Default Dark Modern
+  hand port are also available.
 - **LazyDocker:** replace the block between the theme markers in
   `config\lazydocker\config.yml` with a variant from
   `../shared/themes/lazydocker/`, removing only its leading comment lines and
@@ -300,14 +299,14 @@ To switch:
   include mechanism; the active block must match that shared variant.
 - **btop:** the `btop` link package installs the shared Dark 2026, Default Dark
   Modern, Catppuccin Mocha and Catppuccin Macchiato themes in
-  `%USERPROFILE%\scoop\persist\btop\themes`. Select one in btop's options, or
-  set `color_theme` to `dark-2026`, `default-dark-modern`, `catppuccin-mocha` or
-  `catppuccin-macchiato` in `%USERPROFILE%\scoop\apps\btop\current\btop.conf`
-  while btop is closed. That file is the one btop reads; Scoop hard-links it to
+  `%USERPROFILE%\scoop\persist\btop\themes`. The active config uses
+  `color_theme = "catppuccin-mocha"`. Set that value in
+  `%USERPROFILE%\scoop\apps\btop\current\btop.conf` while btop is closed; that
+  file is the one btop reads. Scoop may hard-link it to
   `scoop\persist\btop\btop.conf`, but btop rewrites it on exit and breaks the
   link, so an edit to the persist copy can be ignored. This native btop4win
-  config remains runtime-owned; the older `config/btop/btop.conf` is not linked
-  over it.
+  config remains runtime-owned; the tracked `config/btop/btop.conf` mirrors the
+  active selection but is not linked over it.
 
 Sources:
 
@@ -410,7 +409,7 @@ and linked into `%USERPROFILE%\Documents\PowerShell`:
 .\scripts\link-dotfiles.ps1 powershell
 ```
 
-Oh My Posh uses `powershell\oh-my-posh\default-dark-modern.omp.json`; see
+Oh My Posh uses `powershell\oh-my-posh\catppuccin-mocha.omp.json`; see
 [Themes](#themes) for the alternatives. The Nerd Font Symbols preset also
 remains available. Oh My Posh is declared in `manifests/packages.json`. One
 dependency is not a Scoop package and is installed separately:
