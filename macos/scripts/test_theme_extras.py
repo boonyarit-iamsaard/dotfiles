@@ -30,6 +30,7 @@ SHARED_THEME_LINKS = (
     (".config/lazygit/themes", "lazygit"),
     (".config/nvim/lua/themes", "nvim"),
     (".config/starship.catppuccin-macchiato.toml", "starship/catppuccin-macchiato.toml"),
+    (".config/starship.catppuccin-mocha.toml", "starship/catppuccin-mocha.toml"),
     (".tmux/themes", "tmux"),
 )
 

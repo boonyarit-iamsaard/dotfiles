@@ -79,16 +79,16 @@ lazygit, Neovim and tmux theme folders here are links into
 [`shared/themes/`](../shared/themes/README.md); Ghostty and superfile keep their
 themes in this folder. Settings and theme variants are separate:
 
-| Tool       | Switch                                                                                                                                                         |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ghostty    | Uncomment one `theme` line in `.config/ghostty/config`; variants live under `.config/ghostty/themes/`.                                                         |
-| tmux       | Change `@theme` in `.tmux.conf` to `catppuccin-macchiato`, `catppuccin` (Mocha), `dark-2026`, or `default-dark-modern`; restart the server for a clean switch. |
-| lazygit    | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `.config/lazygit/themes/`.                                                         |
-| lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments.                                                         |
-| Neovim     | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern.                                     |
-| superfile  | Change `theme` in `.config/superfile/config.toml` to a file name under its `theme/` folder.                                                                    |
-| btop       | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed.                                                |
-| starship   | `STARSHIP_CONFIG` in `.zshrc` (`.config/starship.<name>.toml`, linked from `shared/themes/starship/`); unset for the built-in default.                         |
+| Tool       | Switch                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ghostty    | Uncomment one `theme` line in `.config/ghostty/config`; variants live under `.config/ghostty/themes/`.                                                              |
+| tmux       | Change `@theme` in `.tmux.conf` to `catppuccin-macchiato`, `catppuccin` (Mocha), `dark-2026`, or `default-dark-modern`; restart the server for a clean switch.      |
+| lazygit    | Change the second path in `LG_CONFIG_FILE` in `.zshrc`. Variants live under `.config/lazygit/themes/`.                                                              |
+| lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments.                                                              |
+| Neovim     | Change `colorscheme` in `lua/plugins/colorscheme.lua`; enable the matching `themes.*` import for Dark 2026 or Dark Modern.                                          |
+| superfile  | Change `theme` in `.config/superfile/config.toml` to a file name under its `theme/` folder.                                                                         |
+| btop       | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed.                                                     |
+| starship   | `STARSHIP_CONFIG` in `.zshrc` (`.config/starship.<name>.toml`, linked from `shared/themes/starship/`); set to Catppuccin Mocha now, unset for the built-in default. |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the tmux
 configurations include them without naming the checkout.
