@@ -54,7 +54,7 @@
 # adjust-cell-height      = 35%
 # font-family             = "FiraCode Nerd Font Mono"
 
-background-opacity      = 0.92
+background-opacity      = 0.8
 background-blur-radius  = 20
 cursor-color            = cell-foreground
 cursor-text             = cell-background
