@@ -7,7 +7,7 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-      require("dark-2026").setup({})
+      require("dark-2026").setup({ transparent = true }) -- let Ghostty's background-opacity show through
     end,
   },
 

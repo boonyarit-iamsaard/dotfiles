@@ -72,7 +72,8 @@ see the merged settings.
 
 ## Themes
 
-Dark 2026 is active; Catppuccin Macchiato, Catppuccin Mocha and Default Dark
+Ghostty runs Catppuccin Mocha with JetBrainsMono Nerd Font Mono; the other tools
+stay on Dark 2026. Catppuccin Macchiato, Catppuccin Mocha and Default Dark
 Modern stay available. The btop, lazydocker, lazygit, Neovim and tmux theme
 folders here are links into [`shared/themes/`](../shared/themes/README.md);
 Ghostty and superfile keep their themes in this folder. Settings and theme
@@ -90,8 +91,13 @@ variants are separate:
 | starship   | `STARSHIP_CONFIG` in `.zshrc` (`.config/starship.<name>.toml`, linked from `shared/themes/starship/`); unset for the built-in default.                         |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the tmux
-configurations include them without naming the checkout. The transparent Neovim
-floating window is retained.
+configurations include them without naming the checkout.
+
+Ghostty sets `background-opacity` to 0.92 with a 20 blur radius. Neovim sets the
+Dark 2026 `transparent` option, which clears the editor and panel backgrounds
+and keeps floats opaque. lazygit and lazydocker set no background, so they show
+the Ghostty background through already. tmux stays opaque: the Dark 2026 status
+line and pane styles paint their own background.
 
 btop saves its settings on exit, so changing options inside btop edits the
 tracked `btop.conf`.
