@@ -1,15 +1,15 @@
 # Theme variant contract: between markers, copy themes/<name>.yml exactly,
 # removing only its leading comment lines and blank lines.
-# >>> theme: dark-2026
+# >>> theme: catppuccin-mocha
 gui:
   theme:
     activeBorderColor:
-      - "#3994bc" # tab.activeBorderTop
+      - "#cba6f7"
       - bold
     inactiveBorderColor:
-      - "#8c8c8c" # descriptionForeground
+      - "#a6adc8"
     optionsTextColor:
-      - "#48a0c7" # textLink.foreground
+      - "#89b4fa"
     selectedLineBgColor:
-      - "#276782" # editor.selectionBackground, opaque base
+      - "#313244"
 # <<< theme

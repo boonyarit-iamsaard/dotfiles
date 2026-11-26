@@ -7,11 +7,7 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require("catppuccin").setup({
-        -- background = {
-        --   light = "latte",
-        --   dark = "macchiato",
-        -- },
-        flavour = "macchiato",
+        flavour = "mocha",
         -- flavour = "auto",
         -- transparent_background = true,
       })
@@ -63,15 +59,16 @@ return {
     end,
   },
 
-  -- Keep at most one import, matching the active colorscheme below (none for catppuccin).
-  { import = "themes.dark-2026" },
+  -- Keep at most one import, matching the active colorscheme below.
+  { import = "themes.catppuccin-mocha" },
+  -- { import = "themes.dark-2026" },
   -- { import = "themes.default-dark-modern" },
   {
     "LazyVim/LazyVim",
     opts = {
       -- colorscheme = "catppuccin-macchiato",
-      -- colorscheme = "catppuccin-mocha",
-      colorscheme = "dark-2026",
+      colorscheme = "catppuccin-mocha",
+      -- colorscheme = "dark-2026",
       -- colorscheme = "vscode",
     },
   },
