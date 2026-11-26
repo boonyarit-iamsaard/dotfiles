@@ -72,12 +72,13 @@ see the merged settings.
 
 ## Themes
 
-Ghostty, tmux, Neovim, lazygit and lazydocker run Catppuccin Mocha, with
-JetBrainsMono Nerd Font Mono in Ghostty. Catppuccin Macchiato, Dark 2026 and
-Default Dark Modern stay available. The btop, lazydocker, lazygit, Neovim and
-tmux theme folders here are links into
-[`shared/themes/`](../shared/themes/README.md); Ghostty and superfile keep their
-themes in this folder. Settings and theme variants are separate:
+Every tool in the table below runs Catppuccin Mocha, with JetBrainsMono Nerd
+Font Mono in Ghostty. `ActiveThemeScopeTest` in `scripts/test_theme_extras.py`
+fails when a tool is not on Mocha. Catppuccin Macchiato, Dark 2026 and Default
+Dark Modern stay available. The btop, lazydocker, lazygit, Neovim and tmux theme
+folders here are links into [`shared/themes/`](../shared/themes/README.md);
+Ghostty and superfile keep their themes in this folder. Settings and theme
+variants are separate:
 
 | Tool       | Switch                                                                                                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

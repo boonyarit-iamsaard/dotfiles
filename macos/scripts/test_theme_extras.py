@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check pinned Theme extras, the shared theme links and the lazydocker contract."""
+"""Check pinned Theme extras, the shared theme links, the lazydocker contract and the active theme of each macOS tool."""
 
 from __future__ import annotations
 
@@ -32,6 +32,18 @@ SHARED_THEME_LINKS = (
     (".config/starship.catppuccin-macchiato.toml", "starship/catppuccin-macchiato.toml"),
     (".config/starship.catppuccin-mocha.toml", "starship/catppuccin-mocha.toml"),
     (".tmux/themes", "tmux"),
+)
+# Each macOS tool's active-theme line, as a regex. Every tool must name Catppuccin Mocha.
+ACTIVE_THEMES = (
+    (".config/ghostty/config", r'^theme\s*=\s*"catppuccin-mocha"$'),
+    (".tmux.conf", r"^set -g @theme catppuccin$"),
+    (".config/nvim/lua/plugins/colorscheme.lua", r'flavour = "mocha"'),
+    (".config/nvim/lua/plugins/colorscheme.lua", r'colorscheme = "catppuccin-mocha"'),
+    (".zshrc", r"lazygit/themes/catppuccin-mocha\.yml"),
+    (".zshrc", r'^export STARSHIP_CONFIG=.*starship\.catppuccin-mocha\.toml"$'),
+    (".config/lazydocker/config.yml", r"^# >>> theme: catppuccin-mocha$"),
+    (".config/btop/btop.conf", r'^color_theme = "catppuccin-mocha\.theme"$'),
+    (".config/superfile/config.toml", r"^theme = 'catppuccin-mocha'$"),
 )
 
 
@@ -144,6 +156,18 @@ class LazyDockerThemeVariantTest(unittest.TestCase):
             f".config/lazydocker/config.yml: replace text between markers with {theme} "
             "after removing only its leading comment lines and blank lines",
         )
+
+
+class ActiveThemeScopeTest(unittest.TestCase):
+    def test_every_macos_tool_runs_catppuccin_mocha(self) -> None:
+        for relative_path, pattern in ACTIVE_THEMES:
+            with self.subTest(path=relative_path, pattern=pattern):
+                text = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
+                self.assertIsNotNone(
+                    re.search(pattern, text, re.MULTILINE),
+                    f"{relative_path} is not on Catppuccin Mocha; "
+                    "activate the theme in every tool in the macos/README.md theme table",
+                )
 
 
 if __name__ == "__main__":
