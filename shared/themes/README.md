@@ -9,8 +9,8 @@ active theme; there is no shared switch.
 macOS and WSL link the btop, lazydocker, lazygit, Neovim and tmux folders here.
 Windows uses the LazyGit variants through `LG_CONFIG_FILE`, links the btop
 themes through its manifest, and copies the active shared LazyDocker variant
-into its platform config's marker block. macOS and WSL point `STARSHIP_CONFIG`
-at their starship file here.
+into its platform config's marker block. macOS points `STARSHIP_CONFIG` at its
+starship file here; WSL runs starship's built-in default.
 
 | Folder        | Tool                                                    |
 | ------------- | ------------------------------------------------------- |

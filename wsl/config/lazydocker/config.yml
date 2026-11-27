@@ -1,15 +1,15 @@
 # Theme variant contract: between markers, copy themes/<name>.yml exactly,
 # removing only its leading comment lines and blank lines.
-# >>> theme: catppuccin-macchiato
+# >>> theme: default-dark-modern
 gui:
   theme:
     activeBorderColor:
-      - "#c6a0f6"
+      - "#0078d4" # tab.activeBorderTop
       - bold
     inactiveBorderColor:
-      - "#a5adcb"
+      - "#9d9d9d" # descriptionForeground
     optionsTextColor:
-      - "#8aadf4"
+      - "#4daafc" # textLink.foreground
     selectedLineBgColor:
-      - "#363a4f"
+      - "#264f78" # editor.selectionBackground
 # <<< theme

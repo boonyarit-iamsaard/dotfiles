@@ -34,18 +34,20 @@ SHARED_THEME_LINKS = (
     ("config/starship.default-dark-modern.toml", "starship/default-dark-modern.toml"),
     ("tmux/.tmux/themes", "tmux"),
 )
-# Each WSL tool's active-theme line, as a regex. Every tool must name Catppuccin Macchiato.
+# Each WSL tool's active-theme line, as a regex. Every tool must name Default Dark Modern.
 ACTIVE_THEMES = (
-    ("tmux/.tmux.conf", r"^set -g @theme catppuccin-macchiato$"),
-    ("config/nvim/lua/plugins/colorscheme.lua", r'^\s*flavour = "macchiato",?$'),
+    ("tmux/.tmux.conf", r"^set -g @theme default-dark-modern$"),
     (
         "config/nvim/lua/plugins/colorscheme.lua",
-        r'^\s*colorscheme = "catppuccin-macchiato",?$',
+        r'^\s*\{ import = "themes\.default-dark-modern" \},?$',
     ),
-    ("zsh/.zshrc", r"lazygit/themes/catppuccin-macchiato\.yml"),
-    ("zsh/.zshrc", r'^export STARSHIP_CONFIG=.*starship\.catppuccin-macchiato\.toml"$'),
-    ("config/lazydocker/config.yml", r"^# >>> theme: catppuccin-macchiato$"),
-    ("config/btop/btop.conf", r'^color_theme = "catppuccin-macchiato\.theme"$'),
+    (
+        "config/nvim/lua/plugins/colorscheme.lua",
+        r'^\s*colorscheme = "vscode",?$',
+    ),
+    ("zsh/.zshrc", r"lazygit/themes/default-dark-modern\.yml"),
+    ("config/lazydocker/config.yml", r"^# >>> theme: default-dark-modern$"),
+    ("config/btop/btop.conf", r'^color_theme = "default-dark-modern\.theme"$'),
 )
 
 
@@ -161,15 +163,22 @@ class LazyDockerThemeVariantTest(unittest.TestCase):
 
 
 class ActiveThemeScopeTest(unittest.TestCase):
-    def test_every_wsl_tool_runs_catppuccin_macchiato(self) -> None:
+    def test_every_wsl_tool_runs_default_dark_modern(self) -> None:
         for relative_path, pattern in ACTIVE_THEMES:
             with self.subTest(path=relative_path, pattern=pattern):
                 text = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
                 self.assertIsNotNone(
                     re.search(pattern, text, re.MULTILINE),
-                    f"{relative_path} is not on Catppuccin Macchiato; "
+                    f"{relative_path} is not on Default Dark Modern; "
                     "activate the theme in every tool in the wsl/README.md theme table",
                 )
+
+    def test_starship_runs_built_in_default(self) -> None:
+        text = (REPO_ROOT / "zsh/.zshrc").read_text(encoding="utf-8")
+        self.assertIsNone(
+            re.search(r"^export STARSHIP_CONFIG=", text, re.MULTILINE),
+            "zsh/.zshrc sets STARSHIP_CONFIG; unset it for starship's built-in default",
+        )
 
 
 if __name__ == "__main__":
