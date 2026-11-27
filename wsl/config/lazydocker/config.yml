@@ -1,15 +1,15 @@
 # Theme variant contract: between markers, copy themes/<name>.yml exactly,
 # removing only its leading comment lines and blank lines.
-# >>> theme: catppuccin-mocha
+# >>> theme: catppuccin-macchiato
 gui:
   theme:
     activeBorderColor:
-      - "#cba6f7"
+      - "#c6a0f6"
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#a5adcb"
     optionsTextColor:
-      - "#89b4fa"
+      - "#8aadf4"
     selectedLineBgColor:
-      - "#313244"
+      - "#363a4f"
 # <<< theme

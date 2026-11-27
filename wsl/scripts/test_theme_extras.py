@@ -34,22 +34,18 @@ SHARED_THEME_LINKS = (
     ("config/starship.default-dark-modern.toml", "starship/default-dark-modern.toml"),
     ("tmux/.tmux/themes", "tmux"),
 )
-# Each WSL tool's active-theme line, as a regex. Every tool must name Catppuccin Mocha.
+# Each WSL tool's active-theme line, as a regex. Every tool must name Catppuccin Macchiato.
 ACTIVE_THEMES = (
-    ("tmux/.tmux.conf", r"^set -g @theme catppuccin$"),
-    ("config/nvim/lua/plugins/colorscheme.lua", r'^\s*flavour = "mocha",?$'),
+    ("tmux/.tmux.conf", r"^set -g @theme catppuccin-macchiato$"),
+    ("config/nvim/lua/plugins/colorscheme.lua", r'^\s*flavour = "macchiato",?$'),
     (
         "config/nvim/lua/plugins/colorscheme.lua",
-        r'^\s*colorscheme = "catppuccin-mocha",?$',
+        r'^\s*colorscheme = "catppuccin-macchiato",?$',
     ),
-    (
-        "config/nvim/lua/plugins/colorscheme.lua",
-        r'\{ import = "themes\.catppuccin-mocha" \}',
-    ),
-    ("zsh/.zshrc", r"lazygit/themes/catppuccin-mocha\.yml"),
-    ("zsh/.zshrc", r'^export STARSHIP_CONFIG=.*starship\.catppuccin-mocha\.toml"$'),
-    ("config/lazydocker/config.yml", r"^# >>> theme: catppuccin-mocha$"),
-    ("config/btop/btop.conf", r'^color_theme = "catppuccin-mocha\.theme"$'),
+    ("zsh/.zshrc", r"lazygit/themes/catppuccin-macchiato\.yml"),
+    ("zsh/.zshrc", r'^export STARSHIP_CONFIG=.*starship\.catppuccin-macchiato\.toml"$'),
+    ("config/lazydocker/config.yml", r"^# >>> theme: catppuccin-macchiato$"),
+    ("config/btop/btop.conf", r'^color_theme = "catppuccin-macchiato\.theme"$'),
 )
 
 
@@ -165,13 +161,13 @@ class LazyDockerThemeVariantTest(unittest.TestCase):
 
 
 class ActiveThemeScopeTest(unittest.TestCase):
-    def test_every_wsl_tool_runs_catppuccin_mocha(self) -> None:
+    def test_every_wsl_tool_runs_catppuccin_macchiato(self) -> None:
         for relative_path, pattern in ACTIVE_THEMES:
             with self.subTest(path=relative_path, pattern=pattern):
                 text = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
                 self.assertIsNotNone(
                     re.search(pattern, text, re.MULTILINE),
-                    f"{relative_path} is not on Catppuccin Mocha; "
+                    f"{relative_path} is not on Catppuccin Macchiato; "
                     "activate the theme in every tool in the wsl/README.md theme table",
                 )
 

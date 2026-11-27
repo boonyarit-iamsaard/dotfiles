@@ -107,8 +107,8 @@ export PATH="$HOME/go/bin:$PATH"       # Binaries installed by go install.
 # ---------------------------------------------------------------------------
 # Tooling and prompt
 # ---------------------------------------------------------------------------
-# Initialise the Starship prompt with the Catppuccin Mocha config.
-export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
+# Initialise the Starship prompt with the Catppuccin Macchiato config.
+export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-macchiato.toml"
 eval "$(starship init zsh)"
 
 # Load nvm and automatically switch the Node version on directory change,
@@ -153,7 +153,7 @@ alias nv="nvim"
 alias lzd='lazydocker'
 alias lzg="lazygit"
 # Switch theme by changing the second path.
-export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/themes/catppuccin-mocha.yml"
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/themes/catppuccin-macchiato.yml"
 
 # ---------------------------------------------------------------------------
 # Key bindings
