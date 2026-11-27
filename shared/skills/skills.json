@@ -7,13 +7,13 @@
   "vendor": {
     "impeccable": {
       "npm": "impeccable",
-      "version": "4.10.0",
+      "version": "4.11.1",
       "doc": "shared/skills/README.md"
     },
     "ponytail": {
       "git": "https://github.com/DietrichGebert/ponytail.git",
       "branch": "main",
-      "commit": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "commit": "ebd8654c2c627f721eb8f9c0d1bd4090a29f9e10",
       "doc": "shared/skills/README.md"
     }
   },
@@ -22,7 +22,7 @@
       {
         "plugin": "ponytail@ponytail",
         "marketplace": "DietrichGebert/ponytail",
-        "ref": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+        "ref": "ebd8654c2c627f721eb8f9c0d1bd4090a29f9e10"
       }
     ]
   },
