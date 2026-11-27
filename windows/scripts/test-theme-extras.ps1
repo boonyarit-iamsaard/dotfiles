@@ -9,22 +9,22 @@ $activeThemes = @(
     [pscustomobject]@{
         Tool = 'Oh My Posh'
         Path = 'windows/powershell/Microsoft.PowerShell_profile.ps1'
-        Pattern = '^\$ompTheme\s*=.*catppuccin-mocha\.omp\.json'
+        Pattern = '^\$ompTheme\s*=.*catppuccin-macchiato\.omp\.json'
     }
     [pscustomobject]@{
         Tool = 'LazyGit'
         Path = 'windows/powershell/Microsoft.PowerShell_profile.ps1'
-        Pattern = 'Join-Path\s+\$checkoutRoot.*catppuccin-mocha\.yml'
+        Pattern = 'Join-Path\s+\$checkoutRoot.*catppuccin-macchiato\.yml'
     }
     [pscustomobject]@{
         Tool = 'LazyDocker'
         Path = 'windows/config/lazydocker/config.yml'
-        Pattern = '^# >>> theme: catppuccin-mocha$'
+        Pattern = '^# >>> theme: catppuccin-macchiato$'
     }
     [pscustomobject]@{
         Tool = 'btop'
         Path = 'windows/config/btop/btop.conf'
-        Pattern = '^color_theme\s*=\s*"catppuccin-mocha"$'
+        Pattern = '^color_theme\s*=\s*"catppuccin-macchiato"$'
     }
 )
 
@@ -32,7 +32,7 @@ foreach ($activeTheme in $activeThemes) {
     $path = Join-Path $checkoutRoot $activeTheme.Path
     $text = [IO.File]::ReadAllText($path)
     if (-not [regex]::IsMatch($text, $activeTheme.Pattern, [Text.RegularExpressions.RegexOptions]::Multiline)) {
-        throw "Active theme mismatch: $($activeTheme.Tool) must use Catppuccin Mocha in $($activeTheme.Path)."
+        throw "Active theme mismatch: $($activeTheme.Tool) must use Catppuccin Macchiato in $($activeTheme.Path)."
     }
 }
 

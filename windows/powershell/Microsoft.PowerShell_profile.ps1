@@ -64,9 +64,9 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
-# Oh My Posh uses the Catppuccin Mocha prompt.
+# Oh My Posh uses the Catppuccin Macchiato prompt.
 # Alternatives in oh-my-posh\: dark-2026, catppuccin-mocha, catppuccin-macchiato.
-$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\catppuccin-mocha.omp.json'
+$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\catppuccin-macchiato.omp.json'
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 
 if ($ompCommand) {
@@ -124,7 +124,7 @@ if ($profileTarget) {
     $checkoutRoot = Split-Path $platformRoot -Parent
     $env:LG_CONFIG_FILE = @(
         Join-Path $checkoutRoot 'shared\config\lazygit\config.yml'
-        Join-Path $checkoutRoot 'shared\themes\lazygit\catppuccin-mocha.yml'
+        Join-Path $checkoutRoot 'shared\themes\lazygit\catppuccin-macchiato.yml'
     ) -join ','
 
     foreach ($script in 'check-manual-updates', 'docker-cleanup', 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
