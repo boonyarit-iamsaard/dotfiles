@@ -84,6 +84,9 @@ function Set-TerminalScheme {
     param([string] $Text, [string] $Scheme)
 
     $keys = [regex]::Matches($Text, '"colorScheme"\s*:\s*"[^"]*"')
+    if ([regex]::Matches($Text, '"colorScheme"\s*:').Count -ne $keys.Count) {
+        throw 'Windows Terminal settings.json sets colorScheme to a light/dark pair. Set it to one scheme name in profiles.defaults, then rerun set-theme.'
+    }
     if ($keys.Count -gt 1) {
         throw 'Windows Terminal settings.json sets colorScheme more than once. Keep it only in profiles.defaults, then rerun set-theme.'
     }
@@ -149,7 +152,7 @@ function Invoke-ActiveTheme {
     $btopLine = "color_theme = `"$Name`""
     $btop = if (Test-Path -LiteralPath $btopPath -PathType Leaf) {
         $text = [IO.File]::ReadAllText($btopPath)
-        if ($text -match '(?m)^color_theme\s*=.*$') { $text -replace '(?m)^color_theme\s*=.*$', $btopLine }
+        if ($text -match '(?m)^color_theme\s*=') { $text -replace '(?m)^color_theme\s*=[^\r\n]*', $btopLine }
         else { $text.TrimEnd("`r", "`n") + "`n$btopLine`n" }
     }
     elseif (Test-Path -LiteralPath (Split-Path -Parent $btopPath) -PathType Container) {

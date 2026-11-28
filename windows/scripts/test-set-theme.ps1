@@ -123,6 +123,23 @@ try {
     Assert-True ($terminal -match '"defaults": \{ "colorScheme": "Catppuccin Mocha"\}') "colorScheme was not added to profiles.defaults: $terminal"
     $null = $terminal | ConvertFrom-Json
 
+    # A light/dark colorScheme pair is refused rather than given a second key.
+    $pair = '{ "profiles": { "defaults": { "colorScheme": { "dark": "A", "light": "B" } } } }'
+    [IO.File]::WriteAllText($terminalSettings, $pair)
+    Assert-Throws { & $setTheme catppuccin-mocha } 'light/dark pair' 'a light/dark colorScheme pair was not refused'
+    Assert-True ([IO.File]::ReadAllText($terminalSettings) -ceq $pair) 'a light/dark colorScheme pair was changed'
+    [IO.File]::WriteAllText($terminalSettings, $terminal)
+
+    # btop keeps CRLF line endings on the line set-theme rewrites.
+    [IO.File]::WriteAllText($btopConfig, "color_theme = `"dark-2026`"`r`ntheme_background = False`r`n")
+    & $setTheme catppuccin-mocha
+    Assert-True ([IO.File]::ReadAllText($btopConfig) -ceq "color_theme = `"catppuccin-mocha`"`r`ntheme_background = False`r`n") 'btop line endings changed'
+
+    # A corrupt saved theme does not block saving a new one.
+    [IO.File]::WriteAllText($statePath, "not a theme!`n")
+    & $setTheme catppuccin-mocha
+    Assert-True ([IO.File]::ReadAllText($statePath).Trim() -eq 'catppuccin-mocha') 'a corrupt saved theme blocked set-theme <name>'
+
     # -List shows complete themes only and marks the active one.
     $listing = @(& $setTheme -List)
     Assert-True ($listing -contains '* catppuccin-mocha') "-List did not mark the active theme: $($listing -join ', ')"

@@ -29,7 +29,8 @@ repository-wide rules live in the root [AGENTS.md](../AGENTS.md).
 - `scripts/set-theme.ps1` saves and applies this machine's active theme. The
   active theme is local state, never committed; see
   [ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md). It may edit
-  only the `colorScheme` key of Windows Terminal's user-owned `settings.json`.
+  only the `colorScheme` key of Windows Terminal's user-owned `settings.json`
+  and the `color_theme` line of btop's runtime-owned `btop.conf`.
 - `scripts/set-node-toolchain.ps1` idempotently applies and verifies Node.js,
   NVM mode, Corepack, and pnpm.
 - `scripts/update-skills.ps1` updates skills only when invoked directly; do not

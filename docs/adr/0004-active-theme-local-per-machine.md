@@ -22,8 +22,9 @@ several files and the theme test.
 Tools whose config is linked from the repository and can't read the state at
 runtime get a generated copy instead of a link (LazyDocker on Windows). On
 Windows, `set-theme` edits only the `colorScheme` value in Windows Terminal's
-user-owned `settings.json`, a deliberate exception to the rule that scripts
-never modify unmanaged user files. The theme check confirms that every theme has
-a file for each tool, and the system check confirms that the installed configs
-match the active theme. macOS and WSL keep their tracked active themes until
-their own `set-theme` lands.
+user-owned `settings.json` and the `color_theme` line in btop's runtime-owned
+`btop.conf`, deliberate exceptions to the rule that scripts never modify
+unmanaged user files. The theme check confirms that every theme has a file for
+each tool, and the system check confirms that the installed configs match the
+active theme. macOS and WSL keep their tracked active themes until their own
+`set-theme` lands.
