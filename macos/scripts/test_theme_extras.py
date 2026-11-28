@@ -31,16 +31,16 @@ SHARED_THEME_LINKS = (
     (".config/nvim/lua/themes", "nvim"),
     (".config/starship.catppuccin-macchiato.toml", "starship/catppuccin-macchiato.toml"),
     (".config/starship.catppuccin-mocha.toml", "starship/catppuccin-mocha.toml"),
+    (".config/starship.default-dark-modern.toml", "starship/default-dark-modern.toml"),
     (".tmux/themes", "tmux"),
 )
-# Each macOS tool's active-theme line, as a regex. Every tool must name Catppuccin Mocha.
+# Each tool still themed in tracked config, as a regex, must name Catppuccin Mocha;
+# set-theme --check covers starship and LazyGit.
 ACTIVE_THEMES = (
     (".config/ghostty/config", r'^theme\s*=\s*"catppuccin-mocha"$'),
     (".tmux.conf", r"^set -g @theme catppuccin$"),
     (".config/nvim/lua/plugins/colorscheme.lua", r'flavour = "mocha"'),
     (".config/nvim/lua/plugins/colorscheme.lua", r'colorscheme = "catppuccin-mocha"'),
-    (".zshrc", r"lazygit/themes/catppuccin-mocha\.yml"),
-    (".zshrc", r'^export STARSHIP_CONFIG=.*starship\.catppuccin-mocha\.toml"$'),
     (".config/lazydocker/config.yml", r"^# >>> theme: catppuccin-mocha$"),
     (".config/btop/btop.conf", r'^color_theme = "catppuccin-mocha\.theme"$'),
     (".config/superfile/config.toml", r"^theme = 'catppuccin-mocha'$"),

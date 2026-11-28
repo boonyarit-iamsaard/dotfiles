@@ -6,14 +6,16 @@ and WSL through relative symlinks in their Stow packages, Windows through its
 manifest paths. Each platform keeps its own base config and chooses its own
 active theme; there is no shared switch. On Windows the active theme is local to
 each machine and applied by `windows/scripts/set-theme.ps1` (see
-[ADR 0004](../../docs/adr/0004-active-theme-local-per-machine.md)); macOS and
-WSL still set it in their tracked configs.
+[ADR 0004](../../docs/adr/0004-active-theme-local-per-machine.md)). macOS's
+`macos/scripts/set-theme` drives starship and lazygit so far; its other tools
+and WSL still set it in their tracked configs.
 
 macOS and WSL link the btop, lazydocker, lazygit, Neovim and tmux folders here.
 Windows uses the LazyGit variants through `LG_CONFIG_FILE`, links the btop
 themes through its manifest, and has `set-theme` write the active shared
-LazyDocker variant into the installed config. macOS points `STARSHIP_CONFIG` at
-its starship file here; WSL runs starship's built-in default.
+LazyDocker variant into the installed config. macOS's shell startup points
+`STARSHIP_CONFIG` at the active theme's starship file here (Dark 2026's lives in
+`macos/`); WSL runs starship's built-in default.
 
 | Folder        | Tool                                                    |
 | ------------- | ------------------------------------------------------- |
@@ -34,7 +36,9 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
   [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim) at the
   plugin commit in each platform's `lazy-lock.json` (see
   [ADR 0001](../../docs/adr/0001-palette-owned-upstream-extras-vendored.md)).
-  The platforms must pin the same commit.
+  The platforms must pin the same commit. dark-2026.nvim ships no starship
+  extra, so `macos/.config/starship.dark-2026.toml` is a hand port of its
+  palette, each colour commented with its VS Code key.
 - **Catppuccin Mocha and Macchiato**: `btop/catppuccin-<flavour>.theme` and
   `lazygit/catppuccin-<flavour>.yml` (the default mauve accent) are vendored
   byte for byte from the official `catppuccin/<port>` repos at the commits in

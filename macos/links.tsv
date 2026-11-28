@@ -31,10 +31,13 @@
 .config/nvim/stylua.toml	.config/nvim/stylua.toml
 .config/starship.catppuccin-macchiato.toml	.config/starship.catppuccin-macchiato.toml
 .config/starship.catppuccin-mocha.toml	.config/starship.catppuccin-mocha.toml
+.config/starship.dark-2026.toml	.config/starship.dark-2026.toml
+.config/starship.default-dark-modern.toml	.config/starship.default-dark-modern.toml
 .config/superfile	.config/superfile
 .gitconfig	.gitconfig
 .ideavimrc	.ideavimrc
 .local/bin/gh	.local/bin/gh
+.local/bin/set-theme	scripts/set-theme
 .tmux.conf	.tmux.conf
 .tmux/base.conf	.tmux/base.conf
 .tmux/themes	.tmux/themes

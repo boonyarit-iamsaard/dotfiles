@@ -26,5 +26,6 @@ user-owned `settings.json` and the `color_theme` line in btop's runtime-owned
 `btop.conf`, deliberate exceptions to the rule that scripts never modify
 unmanaged user files. The theme check confirms that every theme has a file for
 each tool, and the system check confirms that the installed configs match the
-active theme. macOS and WSL keep their tracked active themes until their own
-`set-theme` lands.
+active theme. WSL keeps its tracked active theme until its own `set-theme`
+lands; macOS's `set-theme` covers starship and lazygit first, and its other
+tools keep their tracked theme until each moves over (#26).

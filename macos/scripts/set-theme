@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""Apply this Mac's active theme to every themed tool; the choice is saved outside the checkout."""
+
+from __future__ import annotations
+
+import argparse
+import os
+import re
+import shlex
+import sys
+from pathlib import Path
+
+
+DEFAULT_THEME = "catppuccin-macchiato"
+NAME = re.compile(r"[a-z0-9-]+")
+# Each tool's theme file, relative to the platform folder and installed at the same path under $HOME.
+THEME_FILES = {
+    "starship": ".config/starship.{}.toml",
+    "LazyGit": ".config/lazygit/themes/{}.yml",
+}
+LAZYGIT_BASE = ".config/lazygit/config.yml"
+
+
+class ThemeError(Exception):
+    pass
+
+
+def state_path(home: Path) -> Path:
+    state_home = os.environ.get("XDG_STATE_HOME") or home / ".local/state"
+    return Path(state_home) / "dotfiles/theme"
+
+
+def catalog(root: Path) -> dict[str, list[str]]:
+    """Every theme any tool has a file for, with the tools it is missing."""
+    names = set()
+    for pattern in THEME_FILES.values():
+        prefix, suffix = Path(pattern).name.split("{}")
+        for path in (root / pattern).parent.glob(f"{prefix}*{suffix}"):
+            name = path.name[len(prefix) : len(path.name) - len(suffix)]
+            if NAME.fullmatch(name) and path.is_file():
+                names.add(name)
+    return {
+        name: [tool for tool, pattern in THEME_FILES.items() if not (root / pattern.format(name)).is_file()]
+        for name in sorted(names)
+    }
+
+
+def active_theme(home: Path) -> str:
+    """The saved theme name, or the default theme when none is saved."""
+    path = state_path(home)
+    if not path.is_file():
+        return DEFAULT_THEME
+    try:
+        name = path.read_text(encoding="utf-8").strip()
+    except (OSError, UnicodeDecodeError) as error:
+        raise ThemeError(f"The saved theme in {path} cannot be read ({error}). Run set-theme <name>.") from error
+    if not NAME.fullmatch(name):
+        raise ThemeError(f"The saved theme in {path} is not a theme name: '{name}'. Run set-theme <name>.")
+    return name
+
+
+def validate(root: Path, name: str) -> None:
+    if not NAME.fullmatch(name):
+        raise ThemeError(f"'{name}' is not a theme name. Run set-theme --list.")
+    missing = catalog(root).get(name)
+    if missing is None:
+        raise ThemeError(f"Unknown theme '{name}'. Run set-theme --list.")
+    if missing:
+        raise ThemeError(f"Theme '{name}' has no file for: {', '.join(missing)}. Nothing was changed.")
+
+
+def startup_theme(root: Path, home: Path) -> str:
+    """The active theme for a new shell, which warns and uses the default rather than fail."""
+    try:
+        name = active_theme(home)
+        validate(root, name)
+        missing = [tool for tool, pattern in THEME_FILES.items() if not (home / pattern.format(name)).is_file()]
+        if missing:
+            raise ThemeError(f"Theme '{name}' is not installed for: {', '.join(missing)}; run check-links --create.")
+    except ThemeError as error:
+        print(f"warning: {error} Using the default theme {DEFAULT_THEME}.", file=sys.stderr)
+        return DEFAULT_THEME
+    return name
+
+
+def shell_exports(home: Path, name: str) -> dict[str, str]:
+    return {
+        "STARSHIP_CONFIG": str(home / THEME_FILES["starship"].format(name)),
+        "LG_CONFIG_FILE": f"{home / LAZYGIT_BASE},{home / THEME_FILES['LazyGit'].format(name)}",
+    }
+
+
+def check(root: Path, home: Path) -> tuple[str, list[str]]:
+    """The active theme, and each way the installed tools do not use it."""
+    name = active_theme(home)
+    validate(root, name)
+    failures = []
+    for tool, pattern in THEME_FILES.items():
+        installed = home / pattern.format(name)
+        if not installed.is_file():
+            failures.append(f"{tool} theme file {installed} is missing; run check-links --create.")
+        elif installed.resolve() != (root / pattern.format(name)).resolve():
+            failures.append(f"{tool} theme file {installed} is not the checkout's file; run check-links.")
+    failures += [
+        f"{key} does not use active theme '{name}'; open a new shell."
+        for key, value in shell_exports(home, name).items()
+        if os.environ.get(key) != value
+    ]
+    return name, failures
+
+
+def apply(root: Path, home: Path, name: str, save: bool) -> None:
+    validate(root, name)
+    if save:
+        path = state_path(home)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"{name}\n", encoding="utf-8")
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("name", nargs="?", help="theme to apply and save; omit to reapply the saved or default theme")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--list", action="store_true", help="list complete themes and mark the active one")
+    modes.add_argument("--check", action="store_true", help="report installed configs that do not use the active theme")
+    modes.add_argument("--env", action="store_true", help="print the shell exports for the active theme (read by .zshrc)")
+    parser.add_argument("--home", type=Path, default=Path.home(), help=argparse.SUPPRESS)
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent, help=argparse.SUPPRESS)
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str]) -> int:
+    args = parse_args(argv)
+    home = args.home.absolute()
+    root = args.root.absolute()
+    try:
+        if args.list:
+            active = active_theme(home)
+            for name, missing in catalog(root).items():
+                if not missing:
+                    print(f"{'*' if name == active else ' '} {name}")
+            return 0
+        if args.check:
+            name, failures = check(root, home)
+            for failure in failures:
+                print(failure)
+            print(f"theme {name}: {len(failures)} problems")
+            return 1 if failures else 0
+        if args.env:
+            for key, value in shell_exports(home, startup_theme(root, home)).items():
+                print(f"export {key}={shlex.quote(value)}")
+            return 0
+        # Read the saved theme only without a name, so a name recovers from corrupt state.
+        name = args.name or active_theme(home)
+        apply(root, home, name, save=bool(args.name))
+    except ThemeError as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 1
+    print(f"Applied theme {name}. Open a new shell, and restart running tools, to see it.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

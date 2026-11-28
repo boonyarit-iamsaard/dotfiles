@@ -17,9 +17,6 @@ alias docker-cleanup="~/docker-cleanup.sh"
 # This file's directory after resolving the ~/.zshrc link.
 alias update-system="${${(%):-%x}:A:h}/update-system/update-system.sh"
 
-# Keep shell lazygit on the same theme as the terminal; variants share a base.
-export LG_CONFIG_FILE="$XDG_CONFIG_HOME/lazygit/config.yml,$XDG_CONFIG_HOME/lazygit/themes/catppuccin-mocha.yml"
-
 # bind keys for vi mode
 bindkey jj vi-cmd-mode
 
@@ -41,8 +38,9 @@ export PATH="/usr/local/share/dotnet:$PATH"
 export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
 export PATH="$JAVA_HOME/bin:$PATH"
 
-# starship uses the catppuccin mocha prompt; unset STARSHIP_CONFIG for the built-in default.
-export STARSHIP_CONFIG="$HOME/.config/starship.catppuccin-mocha.toml"
+# starship and lazygit follow this Mac's active theme, saved by set-theme;
+# this file names none. Exports STARSHIP_CONFIG and LG_CONFIG_FILE.
+eval "$("${${(%):-%x}:A:h}/scripts/set-theme" --env)"
 eval "$(starship init zsh)"
 
 # bun completions
