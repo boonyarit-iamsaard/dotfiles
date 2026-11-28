@@ -7,8 +7,8 @@ manifest paths. Each platform keeps its own base config and chooses its own
 active theme; there is no shared switch. On Windows the active theme is local to
 each machine and applied by `windows/scripts/set-theme.ps1` (see
 [ADR 0004](../../docs/adr/0004-active-theme-local-per-machine.md)). macOS's
-`macos/scripts/set-theme` drives starship, lazygit, tmux, Ghostty, lazydocker
-and superfile so far; its other tools and WSL still set it in their tracked
+`macos/scripts/set-theme` drives starship, lazygit, tmux, Ghostty, lazydocker,
+superfile and btop so far; its other tools and WSL still set it in their tracked
 configs.
 
 macOS and WSL link the btop, lazydocker, lazygit, Neovim and tmux folders here.

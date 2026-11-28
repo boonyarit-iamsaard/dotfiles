@@ -73,8 +73,8 @@ see the merged settings.
 
 ## Themes
 
-starship, lazygit, tmux, Ghostty, lazydocker and superfile follow this Mac's
-active theme, chosen with `set-theme` and saved outside the checkout (see
+starship, lazygit, tmux, Ghostty, lazydocker, superfile and btop follow this
+Mac's active theme, chosen with `set-theme` and saved outside the checkout (see
 [ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md)). The other tools
 in the table below still run Catppuccin Mocha from tracked config;
 `ActiveThemeScopeTest` in `scripts/test_theme_extras.py` fails when one of them
@@ -111,7 +111,7 @@ variants are separate:
 | lazydocker | `set-theme`; generates `~/.config/lazydocker/config.yml` from `.config/lazydocker/base.yml` with the variant body, minus its leading comments, between the theme markers.                                                                         |
 | Neovim     | Change `colorscheme` in the LazyVim opts in `lua/plugins/colorscheme.lua`; Catppuccin Mocha is active. Keep exactly one `themes.*` import uncommented to match it: `themes.catppuccin-mocha`, `themes.dark-2026` or `themes.default-dark-modern`. |
 | superfile  | `set-theme`; generates `~/.config/superfile/config.toml` from `.config/superfile/base.toml` plus the `theme` line; variants live under `.config/superfile/theme/`.                                                                                |
-| btop       | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed.                                                                                                                                   |
+| btop       | `set-theme`; changes only the `color_theme` line of btop's own `~/.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed. Close btop first: it rewrites its config on exit.                                        |
 | starship   | `set-theme`; shell startup sets `STARSHIP_CONFIG` to `.config/starship.<name>.toml`, linked from `shared/themes/starship/` (Dark 2026 lives in this folder).                                                                                      |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the
@@ -132,8 +132,21 @@ backgrounds show the Ghostty background through. lazygit and lazydocker set no
 background, so they show it through already. The tmux themes' status line and
 pane styles use the default background, so tmux is transparent too.
 
-btop saves its settings on exit, so changing options inside btop edits the
-tracked `btop.conf`.
+btop owns `~/.config/btop/btop.conf`, a real file outside the checkout: it saves
+its settings there on exit, and `set-theme` changes only the `color_theme` line,
+or writes just that line when btop has a folder but no config yet. The earlier
+setup linked that file into this folder; `set-theme` replaces the link with a
+copy that keeps its settings. A real btop theme file where a theme link belongs
+becomes the link when its bytes match the checkout's, and is refused with "move
+it aside" when they differ.
+
+On a Mac whose old link now points at the removed tracked file, `set-theme`
+refuses to run; restore the last tracked settings, then rerun it:
+
+```bash
+rm ~/.config/btop/btop.conf
+git -C ~/dotfiles show "$(git -C ~/dotfiles rev-list -n1 HEAD -- macos/.config/btop/btop.conf)^:macos/.config/btop/btop.conf" > ~/.config/btop/btop.conf
+```
 
 Dark 2026 extras in `shared/themes/` are vendored byte-for-byte from the plugin
 revision pinned in `.config/nvim/lazy-lock.json`, which must match the WSL pin.

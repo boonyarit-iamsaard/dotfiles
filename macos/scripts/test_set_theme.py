@@ -40,9 +40,12 @@ class SetThemeTest(unittest.TestCase):
             (self.home / directory).symlink_to(self.root / directory)
 
     def add_theme(
-        self, name: str, tools: tuple[str, ...] = ("starship", "lazygit", "tmux", "ghostty", "lazydocker", "superfile")
+        self,
+        name: str,
+        tools: tuple[str, ...] = ("starship", "lazygit", "tmux", "ghostty", "lazydocker", "superfile", "btop"),
     ) -> None:
         files = {
+            "btop": f".config/btop/themes/{name}.theme",
             "lazydocker": f".config/lazydocker/themes/{name}.yml",
             "superfile": f".config/superfile/theme/{name}.toml",
             "starship": f".config/starship.{name}.toml",
@@ -54,7 +57,7 @@ class SetThemeTest(unittest.TestCase):
             path = self.root / files[tool]
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(f"{name}\n", encoding="utf-8")
-            if tool in ("starship", "ghostty", "superfile"):
+            if tool in ("starship", "ghostty", "superfile", "btop"):
                 (self.home / files[tool]).parent.mkdir(parents=True, exist_ok=True)
                 (self.home / files[tool]).symlink_to(path)
 
@@ -149,6 +152,96 @@ class SetThemeTest(unittest.TestCase):
             "theme = 'dark-2026'\n"
             "editor = ''\n",
         )
+
+    def test_switch_turns_the_old_btop_link_into_a_runtime_copy_keeping_its_settings(self) -> None:
+        tracked = self.root / ".config/btop/btop.conf"
+        tracked.write_bytes(b'#? Config\r\ncolor_theme = "catppuccin-mocha.theme"\r\ntheme_background = False\r\n')
+        installed = self.home / ".config/btop/btop.conf"
+        installed.symlink_to(tracked)
+        before = self.tracked()
+        self.assertIn("is still a link", self.run_theme("--check").stdout)
+
+        result = self.run_theme("dark-2026")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.tracked(), before)
+        self.assertFalse(installed.is_symlink())
+        self.assertEqual(
+            installed.read_bytes(), b'#? Config\r\ncolor_theme = "dark-2026"\r\ntheme_background = False\r\n'
+        )
+
+    def test_switch_refuses_an_old_btop_link_whose_file_is_gone(self) -> None:
+        (self.home / ".config/btop/btop.conf").symlink_to(self.root / ".config/btop/btop.conf")
+
+        result = self.run_theme("dark-2026")
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("links to a file that is gone", result.stderr)
+        self.assertFalse((self.home / ".tmux.conf").exists())
+
+    def test_switch_sets_btop_color_theme_however_its_config_starts(self) -> None:
+        installed = self.home / ".config/btop/btop.conf"
+        for before, after in (
+            ("theme_background = False\n\n", 'theme_background = False\ncolor_theme = "dark-2026"\n'),
+            (None, 'color_theme = "dark-2026"\n'),
+        ):
+            with self.subTest(before=before):
+                installed.unlink(missing_ok=True)
+                if before is not None:
+                    installed.write_text(before, encoding="utf-8")
+
+                result = self.run_theme("dark-2026")
+
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(installed.read_text(encoding="utf-8"), after)
+
+    def test_switch_warns_about_a_missing_or_running_btop_but_still_applies(self) -> None:
+        shutil.rmtree(self.home / ".config/btop")
+        result = self.run_theme("dark-2026")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("install btop", result.stderr)
+        self.assertFalse((self.home / ".config/btop").exists())
+
+        (self.home / ".config/btop").mkdir()
+        fake = Path(self.temporary.name) / "bin"
+        fake.mkdir()
+        (fake / "pgrep").write_text("#!/bin/sh\n[ \"$2\" = btop ]\n", encoding="utf-8")
+        (fake / "pgrep").chmod(0o755)
+        result = self.run_theme("dark-2026", PATH=f"{fake}:{os.environ['PATH']}")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("btop is running", result.stderr)
+        self.assertIn("dark-2026", (self.home / ".config/btop/btop.conf").read_text(encoding="utf-8"))
+
+    def test_switch_refuses_a_btop_link_it_does_not_manage_before_any_write(self) -> None:
+        elsewhere = self.home / "elsewhere.conf"
+        elsewhere.write_text('color_theme = "x"\n', encoding="utf-8")
+        (self.home / ".config/btop/btop.conf").symlink_to(elsewhere)
+
+        result = self.run_theme("dark-2026")
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("is a link that set-theme does not manage", result.stderr)
+        self.assertEqual(elsewhere.read_text(encoding="utf-8"), 'color_theme = "x"\n')
+        self.assertFalse((self.home / ".tmux.conf").exists())
+
+    def test_switch_links_a_matching_real_btop_theme_and_refuses_a_different_one(self) -> None:
+        theme = self.home / ".config/btop/themes/catppuccin-macchiato.theme"
+        theme.unlink()
+        theme.write_text("edited\n", encoding="utf-8")
+
+        refused = self.run_theme("dark-2026")
+
+        self.assertEqual(refused.returncode, 1)
+        self.assertIn("differs from the checkout's", refused.stderr)
+        self.assertEqual(theme.read_text(encoding="utf-8"), "edited\n")
+        self.assertFalse((self.home / ".tmux.conf").exists())
+
+        theme.write_text("catppuccin-macchiato\n", encoding="utf-8")
+        result = self.run_theme("dark-2026")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(theme.is_symlink())
+        self.assertEqual(theme.resolve(), (self.root / ".config/btop/themes/catppuccin-macchiato.theme").resolve())
 
     def test_switch_migrates_old_repo_links_without_touching_tracked_files(self) -> None:
         for target in (".tmux.conf", ".config/ghostty/config"):
@@ -323,7 +416,8 @@ class SetThemeTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn(f"{self.home}/.tmux.conf does not match active theme 'catppuccin-macchiato'", result.stdout)
         self.assertIn(f"{self.home}/.config/ghostty/config does not match active theme", result.stdout)
-        self.assertIn("4 problems", result.stdout)
+        self.assertIn(f"{self.home}/.config/btop/btop.conf does not use active theme", result.stdout)
+        self.assertIn("5 problems", result.stdout)
 
     def test_check_reports_a_copy_that_is_not_the_checkout_file(self) -> None:
         self.run_theme("dark-2026")

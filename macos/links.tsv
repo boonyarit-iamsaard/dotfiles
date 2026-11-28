@@ -2,8 +2,9 @@
 # Check with scripts/check-links; scripts/check-links --create adds missing ones.
 # Links into agents/ and claude/ are owned by scripts/update-skills (Stow).
 # scripts/set-theme generates ~/.tmux.conf, ~/.config/ghostty/config,
-# ~/.config/lazydocker/config.yml and ~/.config/superfile/config.toml.
-.config/btop/btop.conf	.config/btop/btop.conf
+# ~/.config/lazydocker/config.yml and ~/.config/superfile/config.toml, and sets
+# color_theme in ~/.config/btop/btop.conf, which btop owns.
+.config/btop/themes/catppuccin-macchiato.theme	.config/btop/themes/catppuccin-macchiato.theme
 .config/btop/themes/catppuccin-mocha.theme	.config/btop/themes/catppuccin-mocha.theme
 .config/btop/themes/dark-2026.theme	.config/btop/themes/dark-2026.theme
 .config/btop/themes/default-dark-modern.theme	.config/btop/themes/default-dark-modern.theme

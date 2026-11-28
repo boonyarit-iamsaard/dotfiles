@@ -37,11 +37,10 @@ SHARED_THEME_LINKS = (
     (".tmux/themes", "tmux"),
 )
 # Each tool still themed in tracked config, as a regex, must name Catppuccin Mocha;
-# set-theme --check covers starship, LazyGit, tmux, Ghostty, LazyDocker and superfile.
+# set-theme --check covers starship, LazyGit, tmux, Ghostty, LazyDocker, superfile and btop.
 ACTIVE_THEMES = (
     (".config/nvim/lua/plugins/colorscheme.lua", r'flavour = "mocha"'),
     (".config/nvim/lua/plugins/colorscheme.lua", r'colorscheme = "catppuccin-mocha"'),
-    (".config/btop/btop.conf", r'^color_theme = "catppuccin-mocha\.theme"$'),
 )
 
 
