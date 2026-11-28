@@ -4,13 +4,16 @@ Theme files that two or more platforms link live here once, as
 `<tool>/<theme>.<ext>`. Each platform links a whole tool folder or file: macOS
 and WSL through relative symlinks in their Stow packages, Windows through its
 manifest paths. Each platform keeps its own base config and chooses its own
-active theme; there is no shared switch.
+active theme; there is no shared switch. On Windows the active theme is local to
+each machine and applied by `windows/scripts/set-theme.ps1` (see
+[ADR 0004](../../docs/adr/0004-active-theme-local-per-machine.md)); macOS and
+WSL still set it in their tracked configs.
 
 macOS and WSL link the btop, lazydocker, lazygit, Neovim and tmux folders here.
 Windows uses the LazyGit variants through `LG_CONFIG_FILE`, links the btop
-themes through its manifest, and copies the active shared LazyDocker variant
-into its platform config's marker block. macOS points `STARSHIP_CONFIG` at its
-starship file here; WSL runs starship's built-in default.
+themes through its manifest, and has `set-theme` write the active shared
+LazyDocker variant into the installed config. macOS points `STARSHIP_CONFIG` at
+its starship file here; WSL runs starship's built-in default.
 
 | Folder        | Tool                                                    |
 | ------------- | ------------------------------------------------------- |

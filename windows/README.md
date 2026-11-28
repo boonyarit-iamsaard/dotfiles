@@ -269,44 +269,54 @@ linker refuses to overwrite unmanaged files.
 
 ## Themes
 
-**Catppuccin Macchiato** is active in Windows Terminal, Oh My Posh, LazyGit,
-LazyDocker and btop. LazyGit, LazyDocker and btop use the shared theme variants.
-Windows Terminal and Oh My Posh use the hand ports in their Windows folders.
+Each machine chooses its own active theme, and git never records it (see
+[ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md)). `set-theme`
+applies it to Windows Terminal, Oh My Posh, LazyGit, LazyDocker and btop. With
+nothing saved, the machine uses **Catppuccin Macchiato**. LazyGit, LazyDocker
+and btop use the shared theme variants; Windows Terminal and Oh My Posh use the
+files in their Windows folders.
 
 | Theme                | Windows Terminal scheme | Oh My Posh                      | LazyGit variant in `shared/themes/lazygit/` | LazyDocker     |
 | -------------------- | ----------------------- | ------------------------------- | ------------------------------------------- | -------------- |
 | Default Dark Modern  | Dark Modern (VS Code)   | `default-dark-modern.omp.json`  | `default-dark-modern.yml`                   | shared variant |
 | Dark 2026            | Dark 2026               | `dark-2026.omp.json`            | `dark-2026.yml`                             | shared variant |
 | Catppuccin Mocha     | Catppuccin Mocha        | `catppuccin-mocha.omp.json`     | `catppuccin-mocha.yml`                      | shared variant |
-| Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml` (active)         | active block   |
+| Catppuccin Macchiato | Catppuccin Macchiato    | `catppuccin-macchiato.omp.json` | `catppuccin-macchiato.yml`                  | shared variant |
 
-To switch:
+```powershell
+set-theme -List
+set-theme dark-2026
+set-theme
+```
 
-- **Windows Terminal:** the user-owned `settings.json` currently selects
-  **Catppuccin Macchiato** as the default color scheme. The linker installs each
-  scheme in `config\windows-terminal` as a JSON fragment, but leaves that file
-  intact; profile-level color scheme overrides need the same selection.
-- **Oh My Posh:** change `$ompTheme` in the PowerShell profile.
-- **LazyGit:** change the theme variant filename in `LG_CONFIG_FILE` in the
-  PowerShell profile, then reload it with `. $PROFILE`. Keep the shared base as
-  the first file. The active Catppuccin Macchiato variant is vendored from the
-  official port; Dark 2026, Catppuccin Mocha and the Default Dark Modern hand
-  port are also available.
-- **LazyDocker:** replace the block between the theme markers in
-  `config\lazydocker\config.yml` with a variant from
-  `../shared/themes/lazydocker/`, removing only its leading comment lines and
-  blank lines. Update the opening marker's theme name too. LazyDocker has no
-  include mechanism; the active block must match that shared variant.
-- **btop:** the `btop` link package installs the shared Dark 2026, Default Dark
-  Modern, Catppuccin Mocha and Catppuccin Macchiato themes in
-  `%USERPROFILE%\scoop\persist\btop\themes`. The active config uses
-  `color_theme = "catppuccin-macchiato"`. Set that value in
-  `%USERPROFILE%\scoop\apps\btop\current\btop.conf` while btop is closed; that
-  file is the one btop reads. Scoop may hard-link it to
-  `scoop\persist\btop\btop.conf`, but btop rewrites it on exit and breaks the
-  link, so an edit to the persist copy can be ignored. This native btop4win
-  config remains runtime-owned; the tracked `config/btop/btop.conf` mirrors the
-  active selection but is not linked over it.
+`set-theme <name>` saves the name in `%LOCALAPPDATA%\dotfiles\theme` and applies
+it; `set-theme` alone re-applies the saved theme, or the default, and
+`bootstrap.ps1` runs it that way. A theme missing a file for any of the five
+tools is refused, and nothing changes. Open a new shell, and restart running
+tools, to see the change. What it does per tool:
+
+- **Oh My Posh and LazyGit:** the PowerShell profile reads the saved name when
+  it starts and picks `oh-my-posh\<name>.omp.json` and the LazyGit variant for
+  `LG_CONFIG_FILE`, after the shared base.
+- **LazyDocker:** writes `%APPDATA%\lazydocker\config.yml` from the tracked base
+  `config\lazydocker\config.yml`, with the shared variant's body between the
+  theme markers. LazyDocker has no include mechanism. The file starts with a
+  generated header; `set-theme` refuses to overwrite a file without it.
+- **btop:** sets `color_theme` in
+  `%USERPROFILE%\scoop\apps\btop\current\btop.conf`, the file btop reads, and
+  creates it if btop has not run yet. Close btop first: it rewrites that file on
+  exit. The `btop` link package installs the theme files in
+  `%USERPROFILE%\scoop\persist\btop\themes`. The tracked `config/btop/btop.conf`
+  records the other preferred settings; it is not linked and its `color_theme`
+  is not used.
+- **Windows Terminal:** sets the one `colorScheme` key in the user-owned
+  `settings.json` and leaves the rest of the file as it is, adding the key to
+  `profiles.defaults` if it is missing. It refuses when the file sets
+  `colorScheme` more than once, because profile-level overrides would win. The
+  `windows-terminal` link package installs each scheme as a fragment.
+
+`scripts\verify-system.ps1` reports any tool whose installed config does not use
+the active theme.
 
 Sources:
 
@@ -318,9 +328,9 @@ Sources:
   from formatting and line-ending conversion. Refresh them from that same pin
   when refreshing the shared extras; update the pin in
   `scripts/test-theme-extras.ps1` and run it to verify all five against upstream
-  (requires Internet access). It also checks LazyDocker's active marker block.
-  The upstream Terminal background is `#121314`; the prompt's PHP segment uses
-  `symbol_field` (`#75beff`).
+  (requires Internet access). It also checks that every theme has a file for
+  each of the five tools. The upstream Terminal background is `#121314`; the
+  prompt's PHP segment uses `symbol_field` (`#75beff`).
 - Catppuccin Mocha's and Macchiato's Windows Terminal schemes follow
   [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal).
   Their shared btop and LazyGit files are vendored from the official ports at
@@ -329,9 +339,9 @@ Sources:
 
 ## Dark Modern theme
 
-`config\windows-terminal\dark-modern.json` adds **Dark Modern (VS Code)**, a
-Windows Terminal port of VS Code's default dark theme. Colors are transcribed
-from upstream
+`config\windows-terminal\default-dark-modern.json` adds **Dark Modern (VS
+Code)**, a Windows Terminal port of VS Code's default dark theme. Colors are
+transcribed from upstream
 [`dark_modern.json`](https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json),
 which `include`s `dark_plus.json` and `dark_vs.json`. A key absent from all
 three falls back to VS Code's color registry default, as it does in the
@@ -355,26 +365,27 @@ is the whole window. The registry defaults are in
 and
 [`editorColors.ts`](https://github.com/microsoft/vscode/blob/main/src/vs/platform/theme/common/colors/editorColors.ts).
 
-Apply or check the managed theme links with:
+Apply or check the managed theme links and the active theme with:
 
 ```powershell
-.\scripts\link-dotfiles.ps1 windows-terminal,lazygit,lazydocker,btop
+.\scripts\link-dotfiles.ps1 windows-terminal,lazygit,btop
+.\scripts\set-theme.ps1
 .\scripts\verify-system.ps1
 ```
 
 ## LazyDocker
 
-LazyDocker is installed through Scoop. Its themed configuration is tracked at
-`config\lazydocker\config.yml` and linked to its native Windows config
-directory:
+LazyDocker is installed through Scoop. Its base configuration is tracked at
+`config\lazydocker\config.yml`, and `set-theme` writes the installed
+`%APPDATA%\lazydocker\config.yml` from it with the active theme (see
+[Themes](#themes)):
 
 ```powershell
-.\scripts\link-dotfiles.ps1 lazydocker
+.\scripts\set-theme.ps1
 lazydocker
 ```
 
-The config link is `%APPDATA%\lazydocker\config.yml`. A Docker daemon must be
-reachable to use LazyDocker.
+A Docker daemon must be reachable to use LazyDocker.
 
 ## Claude Code status line
 
@@ -409,10 +420,10 @@ and linked into `%USERPROFILE%\Documents\PowerShell`:
 .\scripts\link-dotfiles.ps1 powershell
 ```
 
-Oh My Posh uses `powershell\oh-my-posh\catppuccin-macchiato.omp.json`; see
-[Themes](#themes) for the alternatives. The Nerd Font Symbols preset also
-remains available. Oh My Posh is declared in `manifests/packages.json`. One
-dependency is not a Scoop package and is installed separately:
+Oh My Posh uses `powershell\oh-my-posh\<name>.omp.json` for the active theme;
+see [Themes](#themes). The Nerd Font Symbols preset also remains available. Oh
+My Posh is declared in `manifests/packages.json`. One dependency is not a Scoop
+package and is installed separately:
 
 - `Terminal-Icons` comes from the PowerShell Gallery:
   `Install-Module Terminal-Icons -Scope CurrentUser`. The profile imports it
@@ -488,8 +499,6 @@ Link or unlink one configuration package:
 ```powershell
 .\scripts\link-dotfiles.ps1 lazygit
 .\scripts\link-dotfiles.ps1 lazygit -Delete
-.\scripts\link-dotfiles.ps1 lazydocker
-.\scripts\link-dotfiles.ps1 lazydocker -Delete
 ```
 
 The link script is idempotent and refuses to overwrite or delete unmanaged

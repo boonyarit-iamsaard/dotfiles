@@ -26,6 +26,10 @@ repository-wide rules live in the root [AGENTS.md](../AGENTS.md).
   manifest, then reapplies the environment manifest so Scoop-driven `PATH` and
   `JAVA_HOME` changes do not persist.
 - `scripts/set-environment.ps1` idempotently applies the environment manifest.
+- `scripts/set-theme.ps1` saves and applies this machine's active theme. The
+  active theme is local state, never committed; see
+  [ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md). It may edit
+  only the `colorScheme` key of Windows Terminal's user-owned `settings.json`.
 - `scripts/set-node-toolchain.ps1` idempotently applies and verifies Node.js,
   NVM mode, Corepack, and pnpm.
 - `scripts/update-skills.ps1` updates skills only when invoked directly; do not
@@ -69,7 +73,9 @@ After changing bootstrap, manifests, linking, or update behavior:
 5. Run `scripts/verify-system.ps1` in a normal user PowerShell session.
 6. For link changes, run `scripts/link-dotfiles.ps1 <package>` twice and confirm
    the second run reports that the package is already linked.
-7. For status line changes, run `scripts/test-statusline.ps1`.
+7. For status line changes, run `scripts/test-statusline.ps1`. For theme
+   changes, run `scripts/test-set-theme.ps1`,
+   `scripts/test-powershell-profile.ps1` and `scripts/test-theme-extras.ps1`.
 8. For skill changes, run `scripts/test-update-skills.ps1`, then run
    `scripts/update-skills.ps1 -Check -NoPull` after the live links are set up.
 

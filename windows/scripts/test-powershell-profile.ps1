@@ -20,7 +20,7 @@ $profilePath = Join-Path (Split-Path -Parent $PSScriptRoot) 'powershell\Microsof
 $originalEnvironment = @{}
 
 try {
-    foreach ($name in 'ANDROID_HOME', 'ANDROID_SDK_ROOT', 'JAVA_HOME', 'LOCALAPPDATA', 'Path', 'PSModulePath', 'SCOOP') {
+    foreach ($name in 'ANDROID_HOME', 'ANDROID_SDK_ROOT', 'JAVA_HOME', 'LG_CONFIG_FILE', 'LOCALAPPDATA', 'Path', 'PSModulePath', 'SCOOP') {
         $originalEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
     }
 
@@ -36,7 +36,20 @@ try {
     $env:JAVA_HOME = $defaultJavaHome
     $env:Path = "$(Join-Path $defaultJavaHome 'bin');C:\keep"
 
-    . $profilePath
+    # The profile follows this machine's saved theme, and finds the checkout
+    # through its link, as when it is installed.
+    New-Item -ItemType Directory -Force -Path (Join-Path $env:LOCALAPPDATA 'dotfiles') | Out-Null
+    [IO.File]::WriteAllText((Join-Path $env:LOCALAPPDATA 'dotfiles\theme'), "dark-2026`n")
+    $profileLink = Join-Path $testRoot 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $profileLink) | Out-Null
+    New-Item -ItemType SymbolicLink -Path $profileLink -Target $profilePath | Out-Null
+    New-Item -ItemType SymbolicLink -Path (Join-Path (Split-Path -Parent $profileLink) 'oh-my-posh') -Target (Join-Path (Split-Path -Parent $profilePath) 'oh-my-posh') | Out-Null
+    $PROFILE = $profileLink
+
+    . $profileLink
+
+    Assert-True ($ompTheme -like '*\oh-my-posh\dark-2026.omp.json') "Oh My Posh does not use the saved theme: $ompTheme"
+    Assert-True ($env:LG_CONFIG_FILE -like '*\shared\themes\lazygit\dark-2026.yml') "LazyGit does not use the saved theme: $env:LG_CONFIG_FILE"
 
     Assert-True ($null -ne (Get-Command jdk17 -ErrorAction SilentlyContinue)) 'jdk17 is not available'
     Assert-True ($null -ne (Get-Command jdk25 -ErrorAction SilentlyContinue)) 'jdk25 is not available'

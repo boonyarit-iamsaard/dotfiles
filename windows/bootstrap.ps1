@@ -45,6 +45,7 @@ if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
 & (Join-Path $PSScriptRoot 'scripts\set-node-toolchain.ps1')
 & (Join-Path $PSScriptRoot 'scripts\set-environment.ps1')
 & (Join-Path $PSScriptRoot 'scripts\link-dotfiles.ps1')
+& (Join-Path $PSScriptRoot 'scripts\set-theme.ps1')
 & (Join-Path $PSScriptRoot 'scripts\update-skills.ps1')
 & (Join-Path $PSScriptRoot 'scripts\verify-system.ps1')
 

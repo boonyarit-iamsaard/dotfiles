@@ -5,34 +5,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $checkoutRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-$activeThemes = @(
-    [pscustomobject]@{
-        Tool = 'Oh My Posh'
-        Path = 'windows/powershell/Microsoft.PowerShell_profile.ps1'
-        Pattern = '^\$ompTheme\s*=.*catppuccin-macchiato\.omp\.json'
-    }
-    [pscustomobject]@{
-        Tool = 'LazyGit'
-        Path = 'windows/powershell/Microsoft.PowerShell_profile.ps1'
-        Pattern = 'Join-Path\s+\$checkoutRoot.*catppuccin-macchiato\.yml'
-    }
-    [pscustomobject]@{
-        Tool = 'LazyDocker'
-        Path = 'windows/config/lazydocker/config.yml'
-        Pattern = '^# >>> theme: catppuccin-macchiato$'
-    }
-    [pscustomobject]@{
-        Tool = 'btop'
-        Path = 'windows/config/btop/btop.conf'
-        Pattern = '^color_theme\s*=\s*"catppuccin-macchiato"$'
-    }
-)
+Import-Module (Join-Path $PSScriptRoot 'modules\ActiveTheme.psm1') -Force
 
-foreach ($activeTheme in $activeThemes) {
-    $path = Join-Path $checkoutRoot $activeTheme.Path
-    $text = [IO.File]::ReadAllText($path)
-    if (-not [regex]::IsMatch($text, $activeTheme.Pattern, [Text.RegularExpressions.RegexOptions]::Multiline)) {
-        throw "Active theme mismatch: $($activeTheme.Tool) must use Catppuccin Macchiato in $($activeTheme.Path)."
+# Every theme set-theme can apply has a file for each themed tool. Oh My Posh's
+# nerd-font-symbols prompt is a standalone prompt, not a theme.
+foreach ($theme in Get-ThemeCatalog -CheckoutRoot $checkoutRoot | Where-Object Name -NE 'nerd-font-symbols') {
+    if ($theme.Missing.Count -gt 0) {
+        throw "Theme $($theme.Name) has no file for: $($theme.Missing -join ', ')."
     }
 }
 
@@ -66,17 +45,4 @@ foreach ($port in $catppuccin.PSObject.Properties) {
     }
 }
 
-$config = [IO.File]::ReadAllText((Join-Path $checkoutRoot 'windows/config/lazydocker/config.yml')) -replace '\r\n', "`n"
-$activeBlocks = [regex]::Matches($config, '(?ms)^# >>> theme: ([a-z0-9-]+)\n(.*?)^# <<< theme$')
-if ($activeBlocks.Count -ne 1) {
-    throw 'LazyDocker must have exactly one active theme marker block.'
-}
-$activeBlock = $activeBlocks[0]
-$themeName = $activeBlock.Groups[1].Value
-$variant = [IO.File]::ReadAllText((Join-Path $checkoutRoot "shared/themes/lazydocker/$themeName.yml")) -replace '\r\n', "`n"
-$expectedBlock = ($variant -replace '\A(?:#[^\n]*\n|\n)*', '').TrimEnd("`n")
-if ($activeBlock.Groups[2].Value.TrimEnd("`n") -cne $expectedBlock) {
-    throw "LazyDocker active block differs from the shared $themeName variant."
-}
-
-Write-Host 'Theme extras, Catppuccin files and LazyDocker active block match their upstream pins.'
+Write-Host 'Every theme is complete, and theme extras and Catppuccin files match their upstream pins.'

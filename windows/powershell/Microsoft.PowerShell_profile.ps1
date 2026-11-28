@@ -64,9 +64,15 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
-# Oh My Posh uses the Catppuccin Macchiato prompt.
-# Alternatives in oh-my-posh\: dark-2026, catppuccin-mocha, catppuccin-macchiato.
-$ompTheme = Join-Path $PSScriptRoot 'oh-my-posh\catppuccin-macchiato.omp.json'
+# Oh My Posh and LazyGit follow this machine's active theme, saved by
+# set-theme; the default matches scripts\modules\ActiveTheme.psm1.
+$activeTheme = 'catppuccin-macchiato'
+$themeStatePath = Join-Path $env:LOCALAPPDATA 'dotfiles\theme'
+if (Test-Path -LiteralPath $themeStatePath -PathType Leaf) {
+    $savedTheme = (Get-Content -Raw -LiteralPath $themeStatePath).Trim()
+    if ($savedTheme -match '^[a-z0-9-]+$') { $activeTheme = $savedTheme }
+}
+$ompTheme = Join-Path $PSScriptRoot "oh-my-posh\$activeTheme.omp.json"
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 
 if ($ompCommand) {
@@ -120,14 +126,14 @@ $profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
 if ($profileTarget) {
     $platformRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
 
-    # LazyGit reads the shared base first, then the platform's selected theme.
+    # LazyGit reads the shared base first, then the active theme's variant.
     $checkoutRoot = Split-Path $platformRoot -Parent
     $env:LG_CONFIG_FILE = @(
         Join-Path $checkoutRoot 'shared\config\lazygit\config.yml'
-        Join-Path $checkoutRoot 'shared\themes\lazygit\catppuccin-macchiato.yml'
+        Join-Path $checkoutRoot "shared\themes\lazygit\$activeTheme.yml"
     ) -join ','
 
-    foreach ($script in 'check-manual-updates', 'docker-cleanup', 'link-dotfiles', 'set-environment', 'update-skills', 'update-system', 'verify-system') {
+    foreach ($script in 'check-manual-updates', 'docker-cleanup', 'link-dotfiles', 'set-environment', 'set-theme', 'update-skills', 'update-system', 'verify-system') {
         $scriptPath = Join-Path $platformRoot "scripts\$script.ps1"
         if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
             Set-Alias -Name $script -Value $scriptPath -Scope Global

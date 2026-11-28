@@ -9,6 +9,7 @@ Import-Module (Join-Path $PSScriptRoot 'modules\ManagedWindowsLinks.psm1') -Forc
 Import-Module (Join-Path $PSScriptRoot 'modules\SkillInventory.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'modules\SkillPlugins.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'modules\ManagedEnvironment.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'modules\ActiveTheme.psm1') -Force
 
 $packageManifest = Get-Content -Raw -LiteralPath (Join-Path $platformRoot 'manifests\packages.json') | ConvertFrom-Json
 $environmentManifestPath = Join-Path $platformRoot 'manifests\environment.json'
@@ -102,6 +103,15 @@ foreach ($packageName in $linkManifest.PSObject.Properties.Name) {
             $failures.Add("Symlink has the wrong target: $target")
         }
     }
+}
+
+try {
+    foreach ($failure in @(Test-ActiveTheme -CheckoutRoot (Split-Path -Parent $platformRoot))) {
+        $failures.Add($failure)
+    }
+}
+catch {
+    $failures.Add($_.Exception.Message)
 }
 
 $userHome = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)

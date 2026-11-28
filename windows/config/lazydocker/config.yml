@@ -1,15 +1,5 @@
-# Theme variant contract: between markers, copy shared/themes/lazydocker/<name>.yml
-# exactly, removing only its leading comment lines and blank lines.
-# >>> theme: catppuccin-macchiato
-gui:
-  theme:
-    activeBorderColor:
-      - "#c6a0f6"
-      - bold
-    inactiveBorderColor:
-      - "#a5adcb"
-    optionsTextColor:
-      - "#8aadf4"
-    selectedLineBgColor:
-      - "#363a4f"
+# Base config for lazydocker. set-theme.ps1 writes the installed config from
+# this file, with the active theme's shared/themes/lazydocker/<name>.yml body
+# between the markers.
+# >>> theme
 # <<< theme

@@ -49,20 +49,14 @@
       "target": "%USERPROFILE%\\scoop\\persist\\btop\\themes\\default-dark-modern.theme"
     }
   ],
-  "lazydocker": [
-    {
-      "source": "config/lazydocker/config.yml",
-      "target": "%APPDATA%\\lazydocker\\config.yml"
-    }
-  ],
   "windows-terminal": [
     {
       "source": "config/windows-terminal/catppuccin-macchiato.json",
       "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\catppuccin-macchiato.json"
     },
     {
-      "source": "config/windows-terminal/dark-modern.json",
-      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\dark-modern.json"
+      "source": "config/windows-terminal/default-dark-modern.json",
+      "target": "%LOCALAPPDATA%\\Microsoft\\Windows Terminal\\Fragments\\dotfiles\\default-dark-modern.json"
     },
     {
       "source": "config/windows-terminal/dark-2026.json",

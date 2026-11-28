@@ -38,6 +38,13 @@ where the upstream ships no theme extra for that tool. _Avoid_: port, copy
 theme, loaded on top of that tool's shared base config. _Avoid_: theme config,
 full copy
 
+**Active theme**: The theme a machine currently applies to every themed tool,
+chosen on that machine and never committed. _Avoid_: current theme, selected
+theme
+
+**Default theme**: The theme a machine applies when no active theme has been
+chosen there (Catppuccin Macchiato). _Avoid_: fallback theme, base theme
+
 ## Skill sync
 
 **Consumer**: An agent tool whose skill directory receives managed links
