@@ -73,13 +73,11 @@ see the merged settings.
 
 ## Themes
 
-starship, lazygit, tmux, Ghostty, lazydocker, superfile and btop follow this
-Mac's active theme, chosen with `set-theme` and saved outside the checkout (see
-[ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md)). The other tools
-in the table below still run Catppuccin Mocha from tracked config;
-`ActiveThemeScopeTest` in `scripts/test_theme_extras.py` fails when one of them
-is not on Mocha. Catppuccin Macchiato, Catppuccin Mocha, Dark 2026 and Default
-Dark Modern are available.
+Every tool in the table below follows this Mac's active theme, chosen with
+`set-theme` and saved outside the checkout (see
+[ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md)); no tracked
+config selects a theme. Catppuccin Macchiato, Catppuccin Mocha, Dark 2026 and
+Default Dark Modern are available.
 
 ```bash
 ~/dotfiles/macos/scripts/check-links --create # links ~/.local/bin/set-theme
@@ -100,34 +98,36 @@ with none saved, Catppuccin Macchiato is used. `.zshrc` names no theme: it reads
 unknown or incomplete. Open a new shell, reload Ghostty and restart the tmux
 server after a switch. The btop, lazydocker, lazygit, Neovim and tmux theme
 folders here are links into [`shared/themes/`](../shared/themes/README.md);
-Ghostty and superfile keep their themes in this folder. Settings and theme
-variants are separate:
+Ghostty and superfile keep their themes in this folder, and so does Neovim's
+`lua/macos_themes/`: each file imports the shared `themes.<name>` specs, except
+Catppuccin Macchiato's Snacks LazyGit colours, which are macOS-only and stay out
+of the shared folder. Settings and theme variants are separate:
 
-| Tool       | Switch                                                                                                                                                                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ghostty    | `set-theme`; generates `~/.config/ghostty/config` from `.config/ghostty/base` plus the `theme` line; variants live under `.config/ghostty/themes/`.                                                                                               |
-| tmux       | `set-theme`; generates `~/.tmux.conf` with `@theme` and the `~/.tmux/base.conf` include (Mocha keeps the file name `catppuccin.conf`); restart the server for a clean switch.                                                                     |
-| lazygit    | `set-theme`; shell startup sets `LG_CONFIG_FILE` to `config.yml` followed by the variant under `.config/lazygit/themes/`.                                                                                                                         |
-| lazydocker | `set-theme`; generates `~/.config/lazydocker/config.yml` from `.config/lazydocker/base.yml` with the variant body, minus its leading comments, between the theme markers.                                                                         |
-| Neovim     | Change `colorscheme` in the LazyVim opts in `lua/plugins/colorscheme.lua`; Catppuccin Mocha is active. Keep exactly one `themes.*` import uncommented to match it: `themes.catppuccin-mocha`, `themes.dark-2026` or `themes.default-dark-modern`. |
-| superfile  | `set-theme`; generates `~/.config/superfile/config.toml` from `.config/superfile/base.toml` plus the `theme` line; variants live under `.config/superfile/theme/`.                                                                                |
-| btop       | `set-theme`; changes only the `color_theme` line of btop's own `~/.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed. Close btop first: it rewrites its config on exit.                                        |
-| starship   | `set-theme`; shell startup sets `STARSHIP_CONFIG` to `.config/starship.<name>.toml`, linked from `shared/themes/starship/` (Dark 2026 lives in this folder).                                                                                      |
+| Tool       | Switch                                                                                                                                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ghostty    | `set-theme`; generates `~/.config/ghostty/config` from `.config/ghostty/base` plus the `theme` line; variants live under `.config/ghostty/themes/`.                                                        |
+| tmux       | `set-theme`; generates `~/.tmux.conf` with `@theme` and the `~/.tmux/base.conf` include (Mocha keeps the file name `catppuccin.conf`); restart the server for a clean switch.                              |
+| lazygit    | `set-theme`; shell startup sets `LG_CONFIG_FILE` to `config.yml` followed by the variant under `.config/lazygit/themes/`.                                                                                  |
+| lazydocker | `set-theme`; generates `~/.config/lazydocker/config.yml` from `.config/lazydocker/base.yml` with the variant body, minus its leading comments, between the theme markers.                                  |
+| Neovim     | `set-theme`; generates `~/.config/nvim/lua/active_theme.lua` with the colorscheme, the Catppuccin flavour and the `macos_themes.<name>` import that `lua/plugins/colorscheme.lua` reads; restart Neovim.   |
+| superfile  | `set-theme`; generates `~/.config/superfile/config.toml` from `.config/superfile/base.toml` plus the `theme` line; variants live under `.config/superfile/theme/`.                                         |
+| btop       | `set-theme`; changes only the `color_theme` line of btop's own `~/.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed. Close btop first: it rewrites its config on exit. |
+| starship   | `set-theme`; shell startup sets `STARSHIP_CONFIG` to `.config/starship.<name>.toml`, linked from `shared/themes/starship/` (Dark 2026 lives in this folder).                                               |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the
 generated `~/.tmux.conf` includes them without naming the checkout.
 
 `set-theme` owns `~/.tmux.conf`, `~/.config/ghostty/config`,
-`~/.config/lazydocker/config.yml` and `~/.config/superfile/config.toml`: their
-first line says edits are overwritten, so put lasting settings in the tracked
-base. It replaces the old links from those paths, or from the whole
-`~/.config/lazydocker` and `~/.config/superfile` folders, into this folder with
-real ones before it writes beneath them, and refuses any other link or file
-there, or a parent folder that leads into the checkout, with "move it aside"
-before it writes anything.
+`~/.config/lazydocker/config.yml`, `~/.config/superfile/config.toml` and
+`~/.config/nvim/lua/active_theme.lua`: their first line says edits are
+overwritten, so put lasting settings in the tracked base. It replaces the old
+links from those paths, or from the whole `~/.config/lazydocker` and
+`~/.config/superfile` folders, into this folder with real ones before it writes
+beneath them, and refuses any other link or file there, or a parent folder that
+leads into the checkout, with "move it aside" before it writes anything.
 
 Ghostty sets `background-opacity` to 0.8 with a 20 blur radius. Neovim's
-Catppuccin Mocha uses `transparent_background` and transparent floats, so its
+Catppuccin uses `transparent_background` and transparent floats, so its
 backgrounds show the Ghostty background through. lazygit and lazydocker set no
 background, so they show it through already. The tmux themes' status line and
 pane styles use the default background, so tmux is transparent too.

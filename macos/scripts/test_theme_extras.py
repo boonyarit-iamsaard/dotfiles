@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check pinned Theme extras, the shared theme links, the lazydocker contract and the active theme of each macOS tool."""
+"""Check pinned Theme extras, the shared theme links, the lazydocker contract and the theme-neutral Neovim config."""
 
 from __future__ import annotations
 
@@ -35,12 +35,6 @@ SHARED_THEME_LINKS = (
     (".config/starship.catppuccin-mocha.toml", "starship/catppuccin-mocha.toml"),
     (".config/starship.default-dark-modern.toml", "starship/default-dark-modern.toml"),
     (".tmux/themes", "tmux"),
-)
-# Each tool still themed in tracked config, as a regex, must name Catppuccin Mocha;
-# set-theme --check covers starship, LazyGit, tmux, Ghostty, LazyDocker, superfile and btop.
-ACTIVE_THEMES = (
-    (".config/nvim/lua/plugins/colorscheme.lua", r'flavour = "mocha"'),
-    (".config/nvim/lua/plugins/colorscheme.lua", r'colorscheme = "catppuccin-mocha"'),
 )
 
 
@@ -182,16 +176,24 @@ class LazyDockerThemeVariantTest(unittest.TestCase):
                 )
 
 
-class ActiveThemeScopeTest(unittest.TestCase):
-    def test_every_macos_tool_runs_catppuccin_mocha(self) -> None:
-        for relative_path, pattern in ACTIVE_THEMES:
-            with self.subTest(path=relative_path, pattern=pattern):
-                text = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
-                self.assertIsNotNone(
-                    re.search(pattern, text, re.MULTILINE),
-                    f"{relative_path} is not on Catppuccin Mocha; "
-                    "activate the theme in every tool in the macos/README.md theme table",
-                )
+class NeovimThemeSelectionTest(unittest.TestCase):
+    def test_macchiato_lazygit_override_matches_the_shared_lazygit_theme(self) -> None:
+        # Scans each file's own syntax: YAML `key:` then `- '#hex'`, Lua `key = { "#hex"`.
+        yml = (SHARED_THEMES / "lazygit/catppuccin-macchiato.yml").read_text(encoding="utf-8")
+        lua = (REPO_ROOT / ".config/nvim/lua/macos_themes/catppuccin-macchiato.lua").read_text(encoding="utf-8")
+        expected = dict(re.findall(r"(\w+):\s*\n\s*- '(#[0-9a-f]{6})'", yml))
+        expected["authorColors"] = re.search(r"'\*': '(#[0-9a-f]{6})'", yml).group(1)
+        actual = dict(re.findall(r'(\w+) = \{ (?:\[\'"\*"\'\] = )?"(#[0-9a-f]{6})"', lua))
+        self.assertEqual(len(expected), 13)
+        self.assertEqual(actual, expected)
+
+
+    def test_tracked_colorscheme_config_names_no_theme(self) -> None:
+        text = (REPO_ROOT / ".config/nvim/lua/plugins/colorscheme.lua").read_text(encoding="utf-8")
+        self.assertIsNone(
+            re.search(r'(colorscheme|flavour|import)\s*=\s*"', text),
+            "colorscheme.lua must take the theme from active_theme, which set-theme writes",
+        )
 
 
 if __name__ == "__main__":

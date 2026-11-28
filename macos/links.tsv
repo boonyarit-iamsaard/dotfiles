@@ -2,8 +2,9 @@
 # Check with scripts/check-links; scripts/check-links --create adds missing ones.
 # Links into agents/ and claude/ are owned by scripts/update-skills (Stow).
 # scripts/set-theme generates ~/.tmux.conf, ~/.config/ghostty/config,
-# ~/.config/lazydocker/config.yml and ~/.config/superfile/config.toml, and sets
-# color_theme in ~/.config/btop/btop.conf, which btop owns.
+# ~/.config/lazydocker/config.yml, ~/.config/superfile/config.toml and
+# ~/.config/nvim/lua/active_theme.lua, and sets color_theme in
+# ~/.config/btop/btop.conf, which btop owns.
 .config/btop/themes/catppuccin-macchiato.theme	.config/btop/themes/catppuccin-macchiato.theme
 .config/btop/themes/catppuccin-mocha.theme	.config/btop/themes/catppuccin-mocha.theme
 .config/btop/themes/dark-2026.theme	.config/btop/themes/dark-2026.theme
@@ -21,6 +22,7 @@
 .config/nvim/lua/config/keymaps.lua	.config/nvim/lua/config/keymaps.lua
 .config/nvim/lua/config/lazy.lua	.config/nvim/lua/config/lazy.lua
 .config/nvim/lua/config/options.lua	.config/nvim/lua/config/options.lua
+.config/nvim/lua/macos_themes	.config/nvim/lua/macos_themes
 .config/nvim/lua/plugins/better-escape.lua	.config/nvim/lua/plugins/better-escape.lua
 .config/nvim/lua/plugins/colorscheme.lua	.config/nvim/lua/plugins/colorscheme.lua
 .config/nvim/lua/plugins/conform.lua	.config/nvim/lua/plugins/conform.lua

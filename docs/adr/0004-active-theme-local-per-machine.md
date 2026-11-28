@@ -21,12 +21,13 @@ several files and the theme test.
 
 Tools whose config is linked from the repository and can't read the state at
 runtime get a generated copy instead of a link (LazyDocker on Windows; tmux,
-Ghostty, LazyDocker and superfile on macOS). On Windows, `set-theme` edits only
-the `colorScheme` value in Windows Terminal's user-owned `settings.json` and the
-`color_theme` line in btop's runtime-owned `btop.conf` (as macOS's does for its
-btop), deliberate exceptions to the rule that scripts never modify unmanaged
-user files. The theme check confirms that every theme has a file for each tool,
-and the system check confirms that the installed configs match the active theme.
-WSL keeps its tracked active theme until its own `set-theme` lands; macOS's
-`set-theme` covers starship, lazygit, tmux, Ghostty, LazyDocker, superfile and
-btop, and its other tools keep their tracked theme until each moves over (#26).
+Ghostty, LazyDocker, superfile and Neovim's theme selection on macOS). On
+Windows, `set-theme` edits only the `colorScheme` value in Windows Terminal's
+user-owned `settings.json` and the `color_theme` line in btop's runtime-owned
+`btop.conf` (as macOS's does for its btop), deliberate exceptions to the rule
+that scripts never modify unmanaged user files. The theme check confirms that
+every theme has a file for each tool, and the system check confirms that the
+installed configs match the active theme. WSL keeps its tracked active theme
+until its own `set-theme` lands; macOS's `set-theme` covers all eight of its
+tools: starship, lazygit, tmux, Ghostty, LazyDocker, superfile, btop and Neovim
+(#26).
