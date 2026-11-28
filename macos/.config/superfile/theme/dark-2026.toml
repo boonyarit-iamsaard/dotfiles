@@ -1,0 +1,60 @@
+# Dark 2026 for superfile. Hand port: the dark-2026.nvim pin in
+# .config/nvim/lazy-lock.json ships no superfile extra, so these colours come
+# from its lua/dark-2026/palette.lua, each naming the VS Code key it came from.
+# Keys follow https://superfile.dev/configure/custom-theme/
+
+# Chroma has no Dark 2026 style; github-dark matches its GitHub Dark syntax colours.
+code_syntax_highlight = "github-dark"
+
+#-- Full Screen
+full_screen_fg = "#bfbfbf" # foreground
+full_screen_bg = "#121314" # editor.background
+
+#-- Gradient
+gradient_color = ["#3994bc", "#48a0c7"] # tab.activeBorderTop, textLink.foreground
+
+#-- File Panel
+file_panel_fg = "#bfbfbf"                 # foreground
+file_panel_bg = "#121314"                 # editor.background
+file_panel_border = "#2a2b2c"             # panel.border
+file_panel_border_active = "#3994bc"      # tab.activeBorderTop
+file_panel_top_directory_icon = "#73c991" # gitDecoration.addedResourceForeground
+file_panel_top_path = "#48a0c7"           # textLink.foreground
+file_panel_item_selected_fg = "#bfbfbf"   # foreground
+file_panel_item_selected_bg = "#2c2d2e"   # list.inactiveSelectionBackground
+
+#-- Footer
+footer_fg = "#bfbfbf"            # foreground
+footer_bg = "#191a1b"            # panel.background
+footer_border = "#2a2b2c"        # panel.border
+footer_border_active = "#3994bc" # tab.activeBorderTop
+
+#-- Sidebar
+sidebar_fg = "#bfbfbf"               # foreground
+sidebar_bg = "#191a1b"               # sideBar.background
+sidebar_title = "#8c8c8c"            # descriptionForeground
+sidebar_border = "#191a1b"           # sideBar.background
+sidebar_border_active = "#3994bc"    # tab.activeBorderTop
+sidebar_item_selected_fg = "#bfbfbf" # foreground
+sidebar_item_selected_bg = "#2c2d2e" # list.inactiveSelectionBackground
+sidebar_divider = "#2a2b2c"          # panel.border
+
+#-- Modals
+modal_fg = "#bfbfbf"            # foreground
+modal_bg = "#202122"            # editorWidget.background
+modal_border_active = "#2a2b2c" # widget.border
+modal_cancel_fg = "#ffffff"     # button.foreground
+modal_cancel_bg = "#f48771"     # gitDecoration.deletedResourceForeground
+modal_confirm_fg = "#ffffff"    # button.foreground
+modal_confirm_bg = "#297aa0"    # button.background
+
+#-- Help Menu
+help_menu_hotkey = "#48a0c7" # textLink.foreground
+help_menu_title = "#e5ba7d"  # gitDecoration.modifiedResourceForeground
+
+#-- Special
+cursor = "#bbbebf"  # editor.foreground
+correct = "#73c991" # gitDecoration.addedResourceForeground
+error = "#f48771"   # errorForeground
+hint = "#48a0c7"    # textLink.foreground
+cancel = "#f48771"  # gitDecoration.deletedResourceForeground

@@ -34,9 +34,10 @@ superfile read their config there, as on WSL, instead of
 toggles, version stamps, log) in `~/Library/Application Support/superfile`,
 outside the repo.
 
-LazyGit's `state.yml` is ignored by `.gitignore`, as are the themes superfile
-writes into its `theme/` folder; only `default-dark-modern.toml` there is
-tracked.
+LazyGit's `state.yml` is ignored by `.gitignore`. `~/.config/lazydocker` and
+`~/.config/superfile` are real folders, so what those tools write stays out of
+the checkout; `links.tsv` links only the theme files and superfile's
+`hotkeys.toml` into them.
 
 ## Git config
 
@@ -72,8 +73,8 @@ see the merged settings.
 
 ## Themes
 
-starship, lazygit, tmux and Ghostty follow this Mac's active theme, chosen with
-`set-theme` and saved outside the checkout (see
+starship, lazygit, tmux, Ghostty, lazydocker and superfile follow this Mac's
+active theme, chosen with `set-theme` and saved outside the checkout (see
 [ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md)). The other tools
 in the table below still run Catppuccin Mocha from tracked config;
 `ActiveThemeScopeTest` in `scripts/test_theme_extras.py` fails when one of them
@@ -87,6 +88,11 @@ set-theme dark-2026             # check, apply, then save the choice
 set-theme                       # reapply the saved theme, or Catppuccin Macchiato
 set-theme --check               # report tools that do not use the active theme
 ```
+
+On a Mac that still links `~/.config/lazydocker` or `~/.config/superfile` whole
+into this folder, run `~/dotfiles/macos/scripts/set-theme` (it works before a
+new shell loads the `set-theme` link) to replace them with real folders, then
+`check-links --create` again to link the theme files into them.
 
 The choice is saved in `${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/theme`;
 with none saved, Catppuccin Macchiato is used. `.zshrc` names no theme: it reads
@@ -102,20 +108,23 @@ variants are separate:
 | Ghostty    | `set-theme`; generates `~/.config/ghostty/config` from `.config/ghostty/base` plus the `theme` line; variants live under `.config/ghostty/themes/`.                                                                                               |
 | tmux       | `set-theme`; generates `~/.tmux.conf` with `@theme` and the `~/.tmux/base.conf` include (Mocha keeps the file name `catppuccin.conf`); restart the server for a clean switch.                                                                     |
 | lazygit    | `set-theme`; shell startup sets `LG_CONFIG_FILE` to `config.yml` followed by the variant under `.config/lazygit/themes/`.                                                                                                                         |
-| lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments.                                                                                                                                            |
+| lazydocker | `set-theme`; generates `~/.config/lazydocker/config.yml` from `.config/lazydocker/base.yml` with the variant body, minus its leading comments, between the theme markers.                                                                         |
 | Neovim     | Change `colorscheme` in the LazyVim opts in `lua/plugins/colorscheme.lua`; Catppuccin Mocha is active. Keep exactly one `themes.*` import uncommented to match it: `themes.catppuccin-mocha`, `themes.dark-2026` or `themes.default-dark-modern`. |
-| superfile  | Change `theme` in `.config/superfile/config.toml` to a file name under its `theme/` folder.                                                                                                                                                       |
+| superfile  | `set-theme`; generates `~/.config/superfile/config.toml` from `.config/superfile/base.toml` plus the `theme` line; variants live under `.config/superfile/theme/`.                                                                                |
 | btop       | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed.                                                                                                                                   |
 | starship   | `set-theme`; shell startup sets `STARSHIP_CONFIG` to `.config/starship.<name>.toml`, linked from `shared/themes/starship/` (Dark 2026 lives in this folder).                                                                                      |
 
 `~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the
 generated `~/.tmux.conf` includes them without naming the checkout.
 
-`set-theme` owns `~/.tmux.conf` and `~/.config/ghostty/config`: their first line
-says edits are overwritten, so put lasting settings in the tracked base. It
-replaces the old links from those paths into this folder, and refuses any other
-link or file there, or a parent folder that leads into the checkout, with "move
-it aside" before it writes anything.
+`set-theme` owns `~/.tmux.conf`, `~/.config/ghostty/config`,
+`~/.config/lazydocker/config.yml` and `~/.config/superfile/config.toml`: their
+first line says edits are overwritten, so put lasting settings in the tracked
+base. It replaces the old links from those paths, or from the whole
+`~/.config/lazydocker` and `~/.config/superfile` folders, into this folder with
+real ones before it writes beneath them, and refuses any other link or file
+there, or a parent folder that leads into the checkout, with "move it aside"
+before it writes anything.
 
 Ghostty sets `background-opacity` to 0.8 with a 20 blur radius. Neovim's
 Catppuccin Mocha uses `transparent_background` and transparent floats, so its
@@ -132,6 +141,12 @@ To update them, follow
 [Refresh a vendored file](../shared/themes/README.md#refresh-a-vendored-file)
 and run `python3 -m unittest scripts/test_theme_extras.py`. These files work
 without depending on Neovim's plugin directory at runtime.
+
+superfile's Catppuccin themes are superfile's own, pinned byte-for-byte in
+`.config/superfile/upstream.json` and checked by `scripts/test_theme_extras.py`;
+Dark 2026 and Default Dark Modern are hand ports that name the VS Code key
+behind each colour. superfile's bundled themes land in the real
+`~/.config/superfile/theme/`, not here.
 
 ## Agent gh wrapper
 

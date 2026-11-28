@@ -1,0 +1,4 @@
+# Base config for lazydocker. scripts/set-theme writes the installed config from
+# this file, with the active theme's themes/<name>.yml body between the markers.
+# >>> theme
+# <<< theme

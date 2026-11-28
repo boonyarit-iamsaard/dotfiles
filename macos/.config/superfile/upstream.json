@@ -1,0 +1,8 @@
+{
+  "repo": "yorukot/superfile",
+  "commit": "865dba26c1d8d35b95bd7b7501ebdeac66ce2618",
+  "files": {
+    "theme/catppuccin-macchiato.toml": "src/superfile_config/theme/catppuccin-macchiato.toml",
+    "theme/catppuccin-mocha.toml": "src/superfile_config/theme/catppuccin-mocha.toml"
+  }
+}

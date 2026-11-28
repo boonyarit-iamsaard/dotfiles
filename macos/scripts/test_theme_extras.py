@@ -7,6 +7,8 @@ import json
 import os
 import re
 import subprocess
+import tempfile
+import tomllib
 import unittest
 import urllib.error
 import urllib.request
@@ -35,13 +37,11 @@ SHARED_THEME_LINKS = (
     (".tmux/themes", "tmux"),
 )
 # Each tool still themed in tracked config, as a regex, must name Catppuccin Mocha;
-# set-theme --check covers starship, LazyGit, tmux and Ghostty.
+# set-theme --check covers starship, LazyGit, tmux, Ghostty, LazyDocker and superfile.
 ACTIVE_THEMES = (
     (".config/nvim/lua/plugins/colorscheme.lua", r'flavour = "mocha"'),
     (".config/nvim/lua/plugins/colorscheme.lua", r'colorscheme = "catppuccin-mocha"'),
-    (".config/lazydocker/config.yml", r"^# >>> theme: catppuccin-mocha$"),
     (".config/btop/btop.conf", r'^color_theme = "catppuccin-mocha\.theme"$'),
-    (".config/superfile/config.toml", r"^theme = 'catppuccin-mocha'$"),
 )
 
 
@@ -103,6 +103,32 @@ class CatppuccinThemesTest(unittest.TestCase):
                     self.assertEqual(upstream, vendored.read_bytes(), fix)
 
 
+class SuperfileThemesTest(unittest.TestCase):
+    def test_vendored_superfile_themes_match_pin(self) -> None:
+        directory = REPO_ROOT / ".config/superfile"
+        pin = json.loads((directory / "upstream.json").read_text(encoding="utf-8"))
+        for relative_path, upstream_path in pin["files"].items():
+            with self.subTest(file=relative_path):
+                url = f"https://raw.githubusercontent.com/{pin['repo']}/{pin['commit']}/{upstream_path}"
+                try:
+                    with urllib.request.urlopen(url, timeout=20) as response:
+                        upstream = response.read()
+                except (urllib.error.URLError, TimeoutError) as error:
+                    self.skipTest(f"cannot fetch {url}: {error}")
+                vendored = directory / relative_path
+                fix = f"macos/.config/superfile/{relative_path}: re-download from {url}"
+                self.assertTrue(vendored.is_file(), fix)
+                self.assertEqual(upstream, vendored.read_bytes(), fix)
+
+
+    def test_every_superfile_theme_sets_the_pinned_themes_keys(self) -> None:
+        directory = REPO_ROOT / ".config/superfile/theme"
+        keys = set(tomllib.loads((directory / "catppuccin-mocha.toml").read_text(encoding="utf-8")))
+        for theme in sorted(directory.glob("*.toml")):
+            with self.subTest(theme=theme.name):
+                self.assertEqual(set(tomllib.loads(theme.read_text(encoding="utf-8"))), keys)
+
+
 class SharedThemeLinksTest(unittest.TestCase):
     def test_theme_paths_link_into_shared_themes(self) -> None:
         for relative_path, shared_path in SHARED_THEME_LINKS:
@@ -118,42 +144,43 @@ class SharedThemeLinksTest(unittest.TestCase):
 
 
 class LazyDockerThemeVariantTest(unittest.TestCase):
-    def test_active_theme_matches_named_variant_body(self) -> None:
+    def test_generated_config_holds_the_named_variant_body(self) -> None:
         directory = REPO_ROOT / ".config/lazydocker"
-        lines = (directory / "config.yml").read_text(encoding="utf-8").splitlines(
-            keepends=True
-        )
-        starts = [
-            index for index, line in enumerate(lines) if line.startswith("# >>> theme:")
-        ]
-        ends = [
-            index
-            for index, line in enumerate(lines)
-            if line.rstrip("\r\n") == "# <<< theme"
-        ]
-        self.assertEqual(1, len(starts), "expected exactly one # >>> theme: <name> marker")
-        self.assertEqual(1, len(ends), "expected exactly one # <<< theme marker")
-        start, end = starts[0], ends[0]
-        self.assertLess(start, end, "Theme variant markers must surround the YAML body")
-        marker = re.fullmatch(r"# >>> theme: ([a-z0-9][a-z0-9-]*)", lines[start].rstrip("\r\n"))
-        self.assertIsNotNone(marker, "expected # >>> theme: <name> marker")
-        theme = directory / "themes" / f"{marker.group(1)}.yml"
-        self.assertTrue(theme.is_file(), f"named Theme variant is missing: {theme}")
-        theme_lines = theme.read_text(encoding="utf-8").splitlines(keepends=True)
-        body_start = 0
-        while body_start < len(theme_lines):
-            line = theme_lines[body_start]
-            if line.strip() and not line.lstrip().startswith("#"):
-                break
-            body_start += 1
-        body = "".join(theme_lines[body_start:])
-        self.assertTrue(body, f"Theme variant has no YAML body: {theme}")
-        self.assertEqual(
-            body,
-            "".join(lines[start + 1 : end]),
-            f".config/lazydocker/config.yml: replace text between markers with {theme} "
-            "after removing only its leading comment lines and blank lines",
-        )
+        listed = subprocess.run(
+            [str(REPO_ROOT / "scripts/set-theme"), "--list"], capture_output=True, text=True, check=True
+        ).stdout
+        for name in listed.replace("*", "").split():
+            with self.subTest(theme=name), tempfile.TemporaryDirectory() as home:
+                subprocess.run(
+                    [str(REPO_ROOT / "scripts/set-theme"), "--home", home, name],
+                    capture_output=True,
+                    check=True,
+                    env={**os.environ, "XDG_STATE_HOME": home},
+                )
+                lines = (Path(home) / ".config/lazydocker/config.yml").read_text(encoding="utf-8").splitlines(
+                    keepends=True
+                )
+                self.assertEqual(lines.count(f"# >>> theme: {name}\n"), 1, "expected one # >>> theme: <name> marker")
+                self.assertEqual(lines.count("# <<< theme\n"), 1, "expected one # <<< theme marker")
+                start, end = lines.index(f"# >>> theme: {name}\n"), lines.index("# <<< theme\n")
+                self.assertLess(start, end, "Theme variant markers must surround the YAML body")
+                theme_lines = (directory / "themes" / f"{name}.yml").read_text(encoding="utf-8").splitlines(
+                    keepends=True
+                )
+                # Scanned line by line, independently of set-theme's regex.
+                body_start = 0
+                while body_start < len(theme_lines):
+                    line = theme_lines[body_start]
+                    if line.strip() and not line.lstrip().startswith("#"):
+                        break
+                    body_start += 1
+                body = "".join(theme_lines[body_start:]).rstrip("\n") + "\n"
+                self.assertEqual(
+                    body,
+                    "".join(lines[start + 1 : end]),
+                    f"set-theme must copy {name}.yml between the markers, "
+                    "removing only its leading comment lines and blank lines",
+                )
 
 
 class ActiveThemeScopeTest(unittest.TestCase):

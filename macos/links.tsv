@@ -1,7 +1,8 @@
 # Hand-made macOS links: target under $HOME<TAB>source under this checkout.
 # Check with scripts/check-links; scripts/check-links --create adds missing ones.
 # Links into agents/ and claude/ are owned by scripts/update-skills (Stow).
-# scripts/set-theme generates ~/.tmux.conf and ~/.config/ghostty/config.
+# scripts/set-theme generates ~/.tmux.conf, ~/.config/ghostty/config,
+# ~/.config/lazydocker/config.yml and ~/.config/superfile/config.toml.
 .config/btop/btop.conf	.config/btop/btop.conf
 .config/btop/themes/catppuccin-mocha.theme	.config/btop/themes/catppuccin-mocha.theme
 .config/btop/themes/dark-2026.theme	.config/btop/themes/dark-2026.theme
@@ -10,7 +11,7 @@
 .config/ghostty/themes/catppuccin-mocha	.config/ghostty/themes/catppuccin-mocha
 .config/ghostty/themes/dark-2026	.config/ghostty/themes/dark-2026
 .config/ghostty/themes/default-dark-modern	.config/ghostty/themes/default-dark-modern
-.config/lazydocker	.config/lazydocker
+.config/lazydocker/themes	.config/lazydocker/themes
 .config/lazygit	.config/lazygit
 .config/nvim/init.lua	.config/nvim/init.lua
 .config/nvim/lazy-lock.json	.config/nvim/lazy-lock.json
@@ -33,7 +34,11 @@
 .config/starship.catppuccin-mocha.toml	.config/starship.catppuccin-mocha.toml
 .config/starship.dark-2026.toml	.config/starship.dark-2026.toml
 .config/starship.default-dark-modern.toml	.config/starship.default-dark-modern.toml
-.config/superfile	.config/superfile
+.config/superfile/hotkeys.toml	.config/superfile/hotkeys.toml
+.config/superfile/theme/catppuccin-macchiato.toml	.config/superfile/theme/catppuccin-macchiato.toml
+.config/superfile/theme/catppuccin-mocha.toml	.config/superfile/theme/catppuccin-mocha.toml
+.config/superfile/theme/dark-2026.toml	.config/superfile/theme/dark-2026.toml
+.config/superfile/theme/default-dark-modern.toml	.config/superfile/theme/default-dark-modern.toml
 .gitconfig	.gitconfig
 .ideavimrc	.ideavimrc
 .local/bin/gh	.local/bin/gh

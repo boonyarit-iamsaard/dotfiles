@@ -21,6 +21,3 @@ __pycache__/
 
 # Tool-written runtime state.
 macos/.config/lazygit/state.yml
-# superfile writes its bundled themes here; only the one we made is tracked.
-macos/.config/superfile/theme/*
-!macos/.config/superfile/theme/default-dark-modern.toml

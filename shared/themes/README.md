@@ -7,8 +7,9 @@ manifest paths. Each platform keeps its own base config and chooses its own
 active theme; there is no shared switch. On Windows the active theme is local to
 each machine and applied by `windows/scripts/set-theme.ps1` (see
 [ADR 0004](../../docs/adr/0004-active-theme-local-per-machine.md)). macOS's
-`macos/scripts/set-theme` drives starship and lazygit so far; its other tools
-and WSL still set it in their tracked configs.
+`macos/scripts/set-theme` drives starship, lazygit, tmux, Ghostty, lazydocker
+and superfile so far; its other tools and WSL still set it in their tracked
+configs.
 
 macOS and WSL link the btop, lazydocker, lazygit, Neovim and tmux folders here.
 Windows uses the LazyGit variants through `LG_CONFIG_FILE`, links the btop
@@ -53,7 +54,10 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
 
 `macos/scripts/test_theme_extras.py` and `wsl/scripts/test_theme_extras.py`
 check the vendored files against their pins. The Catppuccin check downloads from
-GitHub and skips when offline.
+GitHub and skips when offline. macOS's superfile Catppuccin themes are not
+shared: they live in `macos/.config/superfile/theme/`, pinned to superfile's own
+repo in `macos/.config/superfile/upstream.json`, and the macOS test checks them
+the same way.
 
 ## Refresh a vendored file
 
