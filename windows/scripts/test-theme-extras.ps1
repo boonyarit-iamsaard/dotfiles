@@ -22,7 +22,6 @@ $extras = [ordered]@{
     'shared/themes/lazydocker/dark-2026.yml' = 'extras/lazydocker/dark-2026.yml'
     'shared/themes/btop/dark-2026.theme' = 'extras/btop/dark-2026.theme'
     'windows/config/windows-terminal/dark-2026.json' = 'extras/windows-terminal/dark-2026.json'
-    'windows/powershell/oh-my-posh/dark-2026.omp.json' = 'extras/oh-my-posh/dark-2026.omp.json'
 }
 
 foreach ($extra in $extras.GetEnumerator()) {

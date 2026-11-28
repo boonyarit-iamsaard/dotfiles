@@ -320,17 +320,20 @@ the active theme.
 
 Sources:
 
-- Dark 2026's five active tool themes match
+- Dark 2026's LazyGit, LazyDocker, btop and Windows Terminal themes match
   [dark-2026.nvim](https://github.com/boonyarit-iamsaard/dark-2026.nvim) at
   `4d19b8f1c1af75ae67d58506fb144e6b09d68e1f`, the shared theme pin. Windows
-  Terminal's `extras/windows-terminal/dark-2026.json` and Oh My Posh's
-  `extras/oh-my-posh/dark-2026.omp.json` are vendored byte for byte and exempt
-  from formatting and line-ending conversion. Refresh them from that same pin
-  when refreshing the shared extras; update the pin in
-  `scripts/test-theme-extras.ps1` and run it to verify all five against upstream
+  Terminal's `extras/windows-terminal/dark-2026.json` is vendored byte for byte
+  and exempt from formatting and line-ending conversion. Refresh it from that
+  same pin when refreshing the shared extras; update the pin in
+  `scripts/test-theme-extras.ps1` and run it to verify all four against upstream
   (requires Internet access). It also checks that every theme has a file for
-  each of the five tools. The upstream Terminal background is `#121314`; the
-  prompt's PHP segment uses `symbol_field` (`#75beff`).
+  each of the five tools. The upstream Terminal background is `#121314`.
+- The Dark 2026 and Default Dark Modern Oh My Posh prompts are hand ports with
+  the Catppuccin prompts' powerline layout. They use the colours of
+  `shared/themes/starship/dark-2026.toml` and `default-dark-modern.toml`, which
+  name the VS Code key for each colour, so they match the macOS and WSL starship
+  prompts.
 - Catppuccin Mocha's and Macchiato's Windows Terminal schemes follow
   [catppuccin/windows-terminal](https://github.com/catppuccin/windows-terminal).
   Their shared btop and LazyGit files are vendored from the official ports at
