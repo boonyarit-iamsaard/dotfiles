@@ -1,0 +1,452 @@
+#!/usr/bin/env python3
+"""Apply WSL's active theme to every themed tool; the choice stays outside the checkout."""
+
+from __future__ import annotations
+
+import argparse
+import os
+import re
+import shlex
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+
+DEFAULT_THEME = "catppuccin-macchiato"
+NAME = re.compile(r"[a-z0-9-]+")
+THEME_FILES = {
+    "Starship": "config/starship.{}.toml",
+    "LazyGit": "config/lazygit/themes/{}.yml",
+    "tmux": "tmux/.tmux/themes/{}.conf",
+    "LazyDocker": "config/lazydocker/themes/{}.yml",
+    "Neovim": "config/nvim/lua/themes/{}",
+    "btop": "config/btop/themes/{}.theme",
+}
+HOME_THEME_FILES = {
+    "Starship": ".config/starship.{}.toml",
+    "LazyGit": ".config/lazygit/themes/{}.yml",
+    "tmux": ".tmux/themes/{}.conf",
+    "LazyDocker": ".config/lazydocker/themes/{}.yml",
+    "Neovim": ".config/nvim/lua/themes/{}",
+    "btop": ".config/btop/themes/{}.theme",
+}
+FILE_NAMES = {"tmux": {"catppuccin-mocha": "catppuccin"}}
+NEOVIM_BUILT_INS = {"catppuccin-macchiato", "catppuccin-mocha"}
+SHELL_TOOLS = ("Starship", "LazyGit")
+LAZYDOCKER_BASE = "config/lazydocker/config.yml"
+TMUX_BASE = "tmux/.tmux/base.conf"
+NVIM_BASE = "config/nvim/lua/plugins/colorscheme.lua"
+NVIM_COLORSCHEMES = {"default-dark-modern": "vscode"}
+HOME_BTOP_CONFIG = ".config/btop/btop.conf"
+COLOR_THEME = re.compile(r"(?m)^color_theme\s*=[^\r\n]*")
+LEGACY_SOURCES = {
+    ".tmux.conf": "tmux/.tmux.conf",
+    ".config/lazydocker/config.yml": "config/lazydocker/config.yml",
+    ".config/btop/btop.conf": "config/btop/btop.conf",
+}
+
+
+class ThemeError(Exception):
+    pass
+
+
+def state_path(home: Path) -> Path:
+    state_home = os.environ.get("XDG_STATE_HOME") or home / ".local/state"
+    return Path(state_home).expanduser() / "dotfiles/theme"
+
+
+def theme_file(tool: str, name: str) -> str:
+    actual_name = FILE_NAMES.get(tool, {}).get(name, name)
+    return THEME_FILES[tool].format(actual_name)
+
+
+def installed_theme_file(tool: str, name: str) -> str:
+    actual_name = FILE_NAMES.get(tool, {}).get(name, name)
+    return HOME_THEME_FILES[tool].format(actual_name)
+
+
+def theme_exists(root: Path, tool: str, name: str) -> bool:
+    if tool == "Neovim" and name in NEOVIM_BUILT_INS:
+        return True
+    path = root / theme_file(tool, name)
+    return path.is_dir() if tool == "Neovim" else path.is_file()
+
+
+def catalog(root: Path) -> dict[str, list[str]]:
+    """Return every discovered theme and the tools it cannot provide."""
+    names: set[str] = set(NEOVIM_BUILT_INS)
+    for tool, pattern in THEME_FILES.items():
+        directory = (root / pattern).parent
+        if not directory.is_dir():
+            continue
+        prefix, suffix = Path(pattern).name.split("{}")
+        reverse_names = {file: theme for theme, file in FILE_NAMES.get(tool, {}).items()}
+        if tool == "Neovim":
+            names.update(
+                path.name for path in directory.iterdir() if path.is_dir() and NAME.fullmatch(path.name)
+            )
+            continue
+        for path in directory.glob(f"{prefix}*{suffix}"):
+            if not path.is_file():
+                continue
+            name = path.name[len(prefix) : len(path.name) - len(suffix)]
+            if NAME.fullmatch(name):
+                names.add(reverse_names.get(name, name))
+    return {
+        name: [tool for tool in THEME_FILES if not theme_exists(root, tool, name)]
+        for name in sorted(names)
+    }
+
+
+def active_theme(home: Path) -> str:
+    """Read the saved theme, or use the default when no state exists."""
+    path = state_path(home)
+    if not path.is_file():
+        return DEFAULT_THEME
+    try:
+        name = path.read_text(encoding="utf-8").strip()
+    except (OSError, UnicodeDecodeError) as error:
+        raise ThemeError(f"The saved theme in {path} cannot be read ({error}). Run set-theme <name>.") from error
+    if not NAME.fullmatch(name):
+        raise ThemeError(f"The saved theme in {path} is not a theme name: '{name}'. Run set-theme <name>.")
+    return name
+
+
+def validate(root: Path, name: str) -> None:
+    if not NAME.fullmatch(name):
+        raise ThemeError(f"'{name}' is not a theme name. Run set-theme --list.")
+    missing = catalog(root).get(name)
+    if missing is None:
+        raise ThemeError(f"Unknown theme '{name}'. Run set-theme --list.")
+    if missing:
+        raise ThemeError(f"Theme '{name}' has no file for: {', '.join(missing)}. Nothing was changed.")
+
+
+def startup_theme(root: Path, home: Path) -> str:
+    """Use the default for a new shell when saved state is not usable."""
+    try:
+        name = active_theme(home)
+        validate(root, name)
+        missing = [tool for tool in SHELL_TOOLS if not (home / installed_theme_file(tool, name)).is_file()]
+        if missing:
+            raise ThemeError(f"Theme '{name}' is not installed for: {', '.join(missing)}; run the WSL stow commands.")
+    except ThemeError as error:
+        print(f"warning: {error} Using the default theme {DEFAULT_THEME}.", file=sys.stderr)
+        return DEFAULT_THEME
+    return name
+
+
+def shell_exports(home: Path, name: str) -> dict[str, str]:
+    return {
+        "STARSHIP_CONFIG": str(home / installed_theme_file("Starship", name)),
+        "LG_CONFIG_FILE": f"{home / '.config/lazygit/config.yml'},{home / installed_theme_file('LazyGit', name)}",
+    }
+
+
+def header(base: str, comment: str = "#") -> str:
+    return f"{comment} Generated by wsl/scripts/set-theme from wsl/{base}; edits are overwritten.\n"
+
+
+def nvim_selection(name: str) -> str:
+    fields = {"colorscheme": NVIM_COLORSCHEMES.get(name, name)}
+    if name.startswith("catppuccin-"):
+        fields["flavour"] = name.removeprefix("catppuccin-")
+    else:
+        fields["import"] = f"themes.{name}"
+    body = ", ".join(f'{key} = "{value}"' for key, value in fields.items())
+    return f"{header(NVIM_BASE, '--')}return {{ {body} }}\n"
+
+
+def lazydocker_config(root: Path, name: str) -> str:
+    """Insert the variant body between the tracked base's empty markers."""
+    base = (root / LAZYDOCKER_BASE).read_text(encoding="utf-8")
+    variant = (root / theme_file("LazyDocker", name)).read_text(encoding="utf-8")
+    body = re.sub(r"\A(?:#[^\n]*\n|\n)*", "", variant).rstrip("\n")
+    marker = re.compile(r"(?m)^# >>> theme\n# <<< theme$")
+    if len(marker.findall(base)) != 1:
+        raise ThemeError(f"wsl/{LAZYDOCKER_BASE} must hold exactly one empty theme marker block.")
+    return header(LAZYDOCKER_BASE) + marker.sub(
+        lambda _: f"# >>> theme: {name}\n{body}\n# <<< theme", base
+    )
+
+
+def generated(root: Path, name: str) -> dict[str, str]:
+    return {
+        ".tmux.conf": (
+            f"{header(TMUX_BASE)}set -g @theme {Path(theme_file('tmux', name)).stem}\n"
+            "source-file ~/.tmux/base.conf\n"
+        ),
+        ".config/lazydocker/config.yml": lazydocker_config(root, name),
+        ".config/nvim/lua/active_theme.lua": nvim_selection(name),
+    }
+
+
+def old_link(root: Path, home: Path, target: str) -> bool:
+    path = home / target
+    source = root / LEGACY_SOURCES.get(target, target)
+    if not path.is_symlink():
+        return False
+    return Path(os.path.normpath(path.parent / os.readlink(path))) == source
+
+
+def inside(path: Path, directory: Path) -> bool:
+    try:
+        path.resolve().relative_to(directory.resolve())
+    except ValueError:
+        return False
+    return True
+
+
+def parent_links(home: Path, path: Path) -> list[Path]:
+    try:
+        relative = path.parent.relative_to(home)
+    except ValueError:
+        return []
+    links: list[Path] = []
+    current = home
+    for part in relative.parts:
+        current /= part
+        if current.is_symlink():
+            links.append(current)
+    return links
+
+
+def assert_safe_parent(root: Path, home: Path, path: Path) -> None:
+    checkout = root.resolve().parent
+    for parent in parent_links(home, path):
+        if inside(parent, checkout):
+            raise ThemeError(f"{parent} leads into the checkout. Move it aside, then rerun set-theme.")
+        raise ThemeError(f"{parent} is a parent link that set-theme does not manage. Move it aside, then rerun set-theme.")
+
+
+def assert_owned(root: Path, home: Path, target: str) -> None:
+    """Only replace an old repo link or a file this selector generated."""
+    path = home / target
+    assert_safe_parent(root, home, path)
+    if path.is_symlink():
+        if not old_link(root, home, target):
+            raise ThemeError(f"{path} is a link that set-theme does not manage. Move it aside, then rerun set-theme.")
+    elif path.exists():
+        try:
+            with path.open(encoding="utf-8") as file:
+                first = file.readline()
+        except (OSError, UnicodeDecodeError):
+            first = ""
+        if not re.match(r"(?:#|--) Generated by wsl/scripts/set-theme", first):
+            raise ThemeError(f"{path} was not generated by set-theme. Move it aside, then rerun set-theme.")
+
+
+def btop_config(root: Path, home: Path, name: str) -> str | None:
+    """Return btop's config with only its color_theme line changed."""
+    path = home / HOME_BTOP_CONFIG
+    assert_safe_parent(root, home, path)
+    if path.is_symlink():
+        if not old_link(root, home, HOME_BTOP_CONFIG):
+            raise ThemeError(f"{path} is a link that set-theme does not manage. Move it aside, then rerun set-theme.")
+        if not path.exists():
+            raise ThemeError(f"{path} links to a file that is gone. Restore btop settings, then rerun set-theme.")
+    if path.exists() and not path.is_file():
+        raise ThemeError(f"{path} is not a file that set-theme manages. Move it aside, then rerun set-theme.")
+    if path.is_file():
+        try:
+            text = path.read_bytes().decode("utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+            raise ThemeError(f"{path} cannot be read ({error}). Move it aside, then rerun set-theme.") from error
+        line = f'color_theme = "{name}"'
+        if COLOR_THEME.search(text):
+            return COLOR_THEME.sub(lambda _: line, text)
+        return text.rstrip("\r\n") + f"\n{line}\n"
+    if path.parent.is_dir():
+        return f'color_theme = "{name}"\n'
+    return None
+
+
+def btop_theme_copies(root: Path, home: Path) -> list[tuple[Path, Path]]:
+    """Find matching real theme copies that can safely become managed links."""
+    copies: list[tuple[Path, Path]] = []
+    for name in catalog(root):
+        installed = home / installed_theme_file("btop", name)
+        tracked = root / theme_file("btop", name)
+        if installed.is_symlink() or not installed.is_file() or not tracked.is_file():
+            continue
+        links = parent_links(home, installed)
+        if links:
+            if inside(links[-1], root.resolve().parent):
+                continue
+            raise ThemeError(f"{links[-1]} is a parent link that set-theme does not manage. Move it aside, then rerun set-theme.")
+        if installed.read_bytes() != tracked.read_bytes():
+            raise ThemeError(f"{installed} differs from the checkout's {tracked}. Move it aside, then rerun set-theme.")
+        copies.append((installed, tracked))
+    return copies
+
+
+def link(path: Path, source: Path) -> None:
+    temporary = path.with_name(f".{path.name}.link")
+    temporary.unlink(missing_ok=True)
+    temporary.symlink_to(os.path.relpath(source, path.parent))
+    os.replace(temporary, path)
+
+
+def write(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
+    with os.fdopen(descriptor, "w", encoding="utf-8") as file:
+        file.write(content)
+    os.replace(temporary, path)
+
+
+def check_theme_files(root: Path, home: Path, name: str) -> list[str]:
+    failures: list[str] = []
+    for tool in THEME_FILES:
+        if tool == "Neovim" and name in NEOVIM_BUILT_INS:
+            continue
+        installed = home / installed_theme_file(tool, name)
+        exists = installed.is_dir() if tool == "Neovim" else installed.is_file()
+        if not exists:
+            failures.append(f"{tool} theme file {installed} is missing; run the WSL stow commands.")
+        elif installed.resolve() != (root / theme_file(tool, name)).resolve():
+            failures.append(f"{tool} theme file {installed} is not the checkout's file; restow the WSL config.")
+    return failures
+
+
+def check_generated_configs(root: Path, home: Path, name: str) -> list[str]:
+    failures: list[str] = []
+    for target, content in generated(root, name).items():
+        installed = home / target
+        if installed.is_symlink() or not installed.is_file() or installed.read_bytes() != content.encode():
+            failures.append(f"{installed} does not match active theme '{name}'; run set-theme.")
+    return failures
+
+
+def check_btop(home: Path, name: str) -> list[str]:
+    failures: list[str] = []
+    btop = home / HOME_BTOP_CONFIG
+    if btop.is_symlink():
+        failures.append(f"{btop} is still a link, not btop's own file; run set-theme.")
+    elif btop.is_file():
+        try:
+            text = btop.read_bytes().decode("utf-8", "replace")
+        except OSError:
+            text = ""
+        if not re.search(rf'(?m)^color_theme\s*=\s*"{re.escape(name)}"\s*$', text):
+            failures.append(f"{btop} does not use active theme '{name}'; close btop, then run set-theme.")
+    return failures
+
+
+def check_shell_exports(home: Path, name: str) -> list[str]:
+    failures: list[str] = []
+    for key, value in shell_exports(home, name).items():
+        if os.environ.get(key) != value:
+            failures.append(f"{key} does not use active theme '{name}'; open a new shell.")
+    return failures
+
+
+def check(root: Path, home: Path) -> tuple[str, list[str]]:
+    name = active_theme(home)
+    validate(root, name)
+    failures = [
+        *check_theme_files(root, home, name),
+        *check_generated_configs(root, home, name),
+        *check_btop(home, name),
+        *check_shell_exports(home, name),
+    ]
+    return name, failures
+
+
+def assert_state_safe(root: Path, home: Path) -> None:
+    path = state_path(home)
+    if inside(path, root.resolve().parent):
+        raise ThemeError(f"{path} leads into the checkout. Move it aside, then rerun set-theme.")
+    if path.is_symlink() or (path.exists() and not path.is_file()):
+        raise ThemeError(f"{path} is not a state file that set-theme manages. Move it aside, then rerun set-theme.")
+    if path.parent.is_symlink() or (path.parent.exists() and not path.parent.is_dir()):
+        raise ThemeError(f"{path.parent} is not a state directory that set-theme manages. Move it aside, then rerun set-theme.")
+
+
+def apply(root: Path, home: Path, name: str, save: bool) -> None:
+    validate(root, name)
+    configs = generated(root, name)
+    for target in configs:
+        assert_owned(root, home, target)
+    btop = btop_config(root, home, name)
+    copies = btop_theme_copies(root, home)
+    if save:
+        assert_state_safe(root, home)
+
+    for copy, source in copies:
+        link(copy, source)
+    for target, content in configs.items():
+        write(home / target, content)
+    if btop is None:
+        print(f"warning: btop has no config folder {(home / HOME_BTOP_CONFIG).parent}; install btop, then rerun set-theme.", file=sys.stderr)
+    else:
+        try:
+            running = subprocess.run(["pgrep", "-x", "btop"], capture_output=True).returncode == 0
+        except OSError:
+            running = False
+        if running:
+            print("warning: btop is running and rewrites its config on exit; close it, then rerun set-theme.", file=sys.stderr)
+        write(home / HOME_BTOP_CONFIG, btop)
+    if save:
+        path = state_path(home)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"{name}\n", encoding="utf-8")
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("name", nargs="?", help="theme to apply and save; omit to reapply the saved or default theme")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--list", action="store_true", help="list complete themes and mark the active one")
+    modes.add_argument("--check", action="store_true", help="report installed configs that do not use the active theme")
+    modes.add_argument("--env", action="store_true", help="print shell exports for the active theme (read by .zshrc)")
+    parser.add_argument("--home", type=Path, default=Path.home(), help=argparse.SUPPRESS)
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent, help=argparse.SUPPRESS)
+    return parser.parse_args(argv)
+
+
+def list_themes(root: Path, home: Path) -> int:
+    active = active_theme(home)
+    for name, missing in catalog(root).items():
+        if not missing:
+            print(f"{'*' if name == active else ' '} {name}")
+    return 0
+
+
+def print_check(root: Path, home: Path) -> int:
+    name, failures = check(root, home)
+    for failure in failures:
+        print(failure)
+    print(f"theme {name}: {len(failures)} problems")
+    return 1 if failures else 0
+
+
+def print_env(root: Path, home: Path) -> int:
+    for key, value in shell_exports(home, startup_theme(root, home)).items():
+        print(f"export {key}={shlex.quote(value)}")
+    return 0
+
+
+def main(argv: list[str]) -> int:
+    args = parse_args(argv)
+    home = args.home.absolute()
+    root = args.root.absolute()
+    try:
+        if args.list:
+            return list_themes(root, home)
+        if args.check:
+            return print_check(root, home)
+        if args.env:
+            return print_env(root, home)
+        name = args.name or active_theme(home)
+        apply(root, home, name, save=bool(args.name))
+    except ThemeError as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 1
+    print(f"Applied theme {name}. Open a new shell, and restart running tools, to see it.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

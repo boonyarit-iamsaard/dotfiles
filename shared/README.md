@@ -9,21 +9,20 @@ The non-theme config extraction is tracked in
 | [`.ideavimrc`](.ideavimrc)                               | macOS, WSL and Windows |
 
 macOS and WSL link these files through relative symlinks in their platform
-folders; macOS selects its Default Dark Modern LazyGit variant through
-`LG_CONFIG_FILE` in `macos/.zshrc`. Windows links both files through its
-manifest and selects the shared Dark 2026 LazyGit variant through
-`LG_CONFIG_FILE` in its PowerShell profile. All three platforms have applied and
-verified their links. LazyGit's shared base has no theme; each platform selects
-a theme variant over it.
+folders and select a local theme variant through `LG_CONFIG_FILE` in shell
+startup. Windows links both files through its manifest and selects the shared
+Dark 2026 LazyGit variant through `LG_CONFIG_FILE` in its PowerShell profile.
+All three platforms have applied and verified their links. LazyGit's shared base
+has no theme; each platform selects a theme variant over it.
 
 Two items from #10 stay per platform:
 
-- **btop settings:** the active theme and preferences differ. macOS uses Default
-  Dark Modern, a 1800 ms update interval, and fixed network scaling; WSL uses
-  Dark 2026, 2000 ms, and automatic network scaling. Windows has an older config
-  with different process sorting and box order. btop also writes its settings on
-  exit. Sharing the config would couple these preferences across platforms; its
-  theme files are shared separately under [`themes/`](themes/).
+- **btop settings:** preferences differ by platform, and btop writes its own
+  runtime config on exit. macOS keeps a 1800 ms update interval and fixed
+  network scaling; WSL keeps 2000 ms and automatic network scaling; Windows has
+  different process sorting and box order. Sharing the config would couple these
+  preferences across platforms, so each platform owns its runtime copy and the
+  theme files stay shared under [`themes/`](themes/).
 - **Global agent instructions:** the only tracked copy is
   [`windows/agents/global-instructions.md`](../windows/agents/global-instructions.md).
   It describes the native Windows dotfiles path, PowerShell 7, and the Windows

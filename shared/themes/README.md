@@ -7,17 +7,15 @@ manifest paths. Each platform keeps its own base config and chooses its own
 active theme; there is no shared switch. On Windows the active theme is local to
 each machine and applied by `windows/scripts/set-theme.ps1` (see
 [ADR 0004](../../docs/adr/0004-active-theme-local-per-machine.md)). macOS's
-`macos/scripts/set-theme` drives all its tools, Neovim included. WSL's matching
-selector is specified in #27; until it lands, WSL still sets its active theme in
-tracked configs.
+`macos/scripts/set-theme` and WSL's `wsl/scripts/set-theme` drive all their
+platform tools, Neovim included.
 
 macOS and WSL link the btop, lazydocker, lazygit, Neovim and tmux folders here.
 Windows uses the LazyGit variants through `LG_CONFIG_FILE`, links the btop
 themes through its manifest, and has `set-theme` write the active shared
-LazyDocker variant into the installed config. macOS's shell startup points
-`STARSHIP_CONFIG` at the active theme's starship file here. #27 adds the same
-Starship selection to WSL; its Dark 2026 hand port will move here from macOS so
-both platforms use one file.
+LazyDocker variant into the installed config. macOS's and WSL's shell startup
+point `STARSHIP_CONFIG` at the active theme's starship file here; both platforms
+use the shared Dark 2026 hand port.
 
 | Folder        | Tool                                                    |
 | ------------- | ------------------------------------------------------- |
@@ -39,10 +37,8 @@ Ghostty and superfile on macOS, Windows Terminal and Oh My Posh on Windows.
   plugin commit in each platform's `lazy-lock.json` (see
   [ADR 0001](../../docs/adr/0001-palette-owned-upstream-extras-vendored.md)).
   The platforms must pin the same commit. dark-2026.nvim ships no starship
-  extra, so the existing `macos/.config/starship.dark-2026.toml` is a hand port
-  of its palette, each colour commented with its VS Code key. When #27 is
-  implemented, move that file to `starship/dark-2026.toml` so macOS and WSL can
-  link the same hand port.
+  extra, so `starship/dark-2026.toml` is a hand port of its palette, each colour
+  commented with its VS Code key, linked by macOS and WSL.
 - **Catppuccin Mocha and Macchiato**: `btop/catppuccin-<flavour>.theme` and
   `lazygit/catppuccin-<flavour>.yml` (the default mauve accent) are vendored
   byte for byte from the official `catppuccin/<port>` repos at the commits in

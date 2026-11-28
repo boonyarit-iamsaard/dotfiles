@@ -33,6 +33,7 @@ SHARED_THEME_LINKS = (
     (".config/nvim/lua/themes", "nvim"),
     (".config/starship.catppuccin-macchiato.toml", "starship/catppuccin-macchiato.toml"),
     (".config/starship.catppuccin-mocha.toml", "starship/catppuccin-mocha.toml"),
+    (".config/starship.dark-2026.toml", "starship/dark-2026.toml"),
     (".config/starship.default-dark-modern.toml", "starship/default-dark-modern.toml"),
     (".tmux/themes", "tmux"),
 )

@@ -1,4 +1,20 @@
+-- The active theme comes from lua/active_theme.lua, which wsl/scripts/set-theme
+-- writes outside the checkout; this file names no theme.
+local ok, theme = pcall(require, "active_theme")
+if not ok then
+  -- Only a missing fragment falls back; a broken one should fail loudly.
+  if not tostring(theme):find("module 'active_theme' not found", 1, true) then
+    error(theme)
+  end
+  theme = {}
+  vim.schedule(function()
+    vim.notify("No active theme: run ~/dotfiles/wsl/scripts/set-theme", vim.log.levels.WARN)
+  end)
+end
+
 return {
+  theme.import and { import = theme.import } or {},
+
   {
     "catppuccin/nvim",
     name = "catppuccin",
@@ -7,8 +23,7 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require("catppuccin").setup({
-        flavour = "macchiato",
-        -- flavour = "auto",
+        flavour = theme.flavour,
         -- transparent_background = true,
       })
     end,
@@ -59,16 +74,10 @@ return {
     end,
   },
 
-  -- Keep at most one import, matching the active colorscheme below (none for catppuccin).
-  -- { import = "themes.dark-2026" },
-  { import = "themes.default-dark-modern" },
   {
     "LazyVim/LazyVim",
     opts = {
-      -- colorscheme = "catppuccin-macchiato",
-      -- colorscheme = "catppuccin-mocha",
-      -- colorscheme = "dark-2026",
-      colorscheme = "vscode",
+      colorscheme = theme.colorscheme,
     },
   },
 }

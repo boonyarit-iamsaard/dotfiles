@@ -107,7 +107,9 @@ export PATH="$HOME/go/bin:$PATH"       # Binaries installed by go install.
 # ---------------------------------------------------------------------------
 # Tooling and prompt
 # ---------------------------------------------------------------------------
-# Starship uses its built-in default prompt; unset STARSHIP_CONFIG for it.
+# Starship and LazyGit follow this machine's active theme, saved by set-theme;
+# this file names none. Exports STARSHIP_CONFIG and LG_CONFIG_FILE.
+eval "$("${${(%):-%x}:A:h}/../scripts/set-theme" --env)"
 eval "$(starship init zsh)"
 
 # Load nvm and automatically switch the Node version on directory change,
@@ -151,8 +153,6 @@ alias update-system="~/update-system.sh"
 alias nv="nvim"
 alias lzd='lazydocker'
 alias lzg="lazygit"
-# Switch theme by changing the second path.
-export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/themes/default-dark-modern.yml"
 
 # ---------------------------------------------------------------------------
 # Key bindings

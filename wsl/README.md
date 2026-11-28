@@ -14,7 +14,7 @@ status.
 Restow these packages from `wsl/`:
 
 ```bash
-stow --restow --target="$HOME/.config" config
+stow --no-folding --restow --target="$HOME/.config" config
 stow --restow --target="$HOME" ideavimrc
 ```
 
@@ -57,50 +57,62 @@ each prints a step summary and exits 1 when any error-severity step failed
 
 ## Themes
 
-Four themes are maintained: default dark modern, catppuccin mocha, catppuccin
-macchiato and dark 2026. The current WSL checkout selects Default Dark Modern in
-tracked configs, and Starship runs its built-in default prompt. Each tool has a
-base config plus one theme variant per theme in
-[`../shared/themes/`](../shared/themes/), which every platform shares. The theme
-folders and starship files here are relative symlinks into it
-(`config/lazygit/themes -> ../../../shared/themes/lazygit`). Switching is a
-one-line edit per tool:
+Four themes are available: Catppuccin Macchiato, Catppuccin Mocha, Dark 2026 and
+Default Dark Modern. `set-theme` saves this machine's active theme at
+`${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/theme`; with no state file it
+uses Catppuccin Macchiato. WSL reads the Linux state path only; it never shares
+Windows' `%LOCALAPPDATA%` theme state.
 
-| Tool       | Switch                                                                                                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| tmux       | `set -g @theme …` in `tmux/.tmux.conf` (variants in `shared/themes/tmux/`); restart the server for a clean switch                                                      |
-| lazygit    | second path of `LG_CONFIG_FILE` in `zsh/.zshrc` (variants in `shared/themes/lazygit/`)                                                                                 |
-| lazydocker | replace the block between the `# >>> theme` markers in `config/lazydocker/config.yml` with the body of `shared/themes/lazydocker/<name>.yml`                           |
-| Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern      |
-| starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha, catppuccin macchiato and default dark modern only); unset for the built-in default |
-| btop       | `color_theme` in `config/btop/btop.conf` (variants in `shared/themes/btop/`)                                                                                           |
+On a fresh install, stow the packages and run the selector by full path once:
 
-Ticket [#27](https://github.com/boonyarit-iamsaard/dotfiles/issues/27) defines
-the move to a per-machine active theme. Its selector will cover Starship,
-LazyGit, tmux, LazyDocker, Neovim and btop. It will save the canonical theme
-name at `${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/theme`, default to
-Catppuccin Macchiato when no choice exists, and keep that state separate from
-Windows' theme state. Shell startup will use `set-theme --env` for Starship and
-LazyGit; tmux, LazyDocker, Neovim and btop will use generated or runtime-owned
-configs outside the checkout. The Dark 2026 Starship hand port will move into
-`shared/themes/starship/` so macOS and WSL use the same file.
+```bash
+stow --no-folding --restow --target="$HOME/.config" config
+stow --restow --target="$HOME" tmux bin
+~/dotfiles/wsl/scripts/set-theme
+```
 
-Until #27 is implemented, follow the tracked-config table above. The planned
-first migration will restow the WSL packages and run
-`~/dotfiles/wsl/scripts/set-theme` by full path. A new shell and restarted
-tmux/Neovim processes are required after a switch.
+The `bin` package provides `~/.local/bin/set-theme` for later shells. On an
+existing checkout, run the full-path selector before relying on that link; it
+replaces the old generated or repo-owned links only when it can prove they are
+owned by this checkout. A new shell and restarted tmux/Neovim processes are
+required after a switch.
+
+```bash
+set-theme --list                # complete themes; * marks the active one
+set-theme dark-2026             # apply and save a choice
+set-theme                       # reapply the saved choice or the default
+set-theme --check               # report installed drift
+```
+
+Each tool has a tracked base and theme variants in
+[`../shared/themes/`](../shared/themes/); the selector keeps generated and
+runtime-owned files outside the checkout:
+
+| Tool       | Runtime behavior                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Starship   | shell startup sets `STARSHIP_CONFIG` to the selected shared variant                                                                                   |
+| LazyGit    | shell startup sets `LG_CONFIG_FILE` to the shared base plus selected variant                                                                          |
+| tmux       | generates `~/.tmux.conf` with `@theme` and the tracked `~/.tmux/base.conf`; restart the server after switching                                        |
+| LazyDocker | generates `~/.config/lazydocker/config.yml` from the tracked base and selected variant                                                                |
+| Neovim     | generates `~/.config/nvim/lua/active_theme.lua`; Catppuccin selects its built-in variant, while Dark 2026 and Default Dark Modern import shared specs |
+| btop       | owns `~/.config/btop/btop.conf`; `set-theme` changes only `color_theme` and warns if btop is running                                                  |
 
 Stow links the files in each theme folder one at a time, so a theme file added
 to `shared/themes/` is not in `~/.config` until the `config` package is
 restowed. After adding one, run from `wsl/`:
 
 ```bash
-stow --restow --target="$HOME/.config" config
+stow --no-folding --restow --target="$HOME/.config" config
 ```
 
 Otherwise lazygit fails with
 `stat …/themes/<name>.yml: no such file or directory`, and btop silently falls
 back to its default theme.
+
+The earlier checkout tracked `config/btop/btop.conf`. If an existing machine
+still has a dangling link to that removed file, restore a copy of the last
+tracked settings to `~/.config/btop/btop.conf`, then rerun `set-theme`; the
+selector will change only its `color_theme` line.
 
 Where each theme file comes from, its pin, and how to refresh it are in
 [shared/themes/README.md](../shared/themes/README.md). The dark 2026 extras are
