@@ -494,5 +494,75 @@ class SetThemeTest(unittest.TestCase):
         self.assertEqual([name for name in listed if name != "*"], list(THEMES))
 
 
+class FreshInstallTest(unittest.TestCase):
+    """The README install on an empty $HOME, then every theme in turn, against the real checkout."""
+
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.home = Path(temporary.name).resolve() / "home"
+        self.home.mkdir()
+        self.env = {**os.environ, "XDG_STATE_HOME": str(Path(temporary.name).resolve() / "state")}
+
+    def run_in_home(self, script: str, *args: str, **env: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [str(REPO_ROOT / "scripts" / script), "--home", str(self.home), *args],
+            capture_output=True,
+            text=True,
+            env={**self.env, **env},
+        )
+
+    def checkout_state(self) -> tuple[str, str]:
+        """Status plus the diff, so a write into an already modified file shows too."""
+        git = ("git", "-C", str(REPO_ROOT))
+        status = ("status", "--porcelain", "--ignored", "--untracked-files=all")
+        diff = ("diff", "HEAD", "--binary", "--", ".")
+        return tuple(subprocess.run([*git, *args], capture_output=True, text=True, check=True).stdout for args in (status, diff))
+
+    def assert_follows(self, name: str) -> None:
+        env = self.run_in_home("set-theme", "--env").stdout
+        shell = subprocess.run(
+            ["zsh", "-fc", f'{env}\nprint -r -- "$STARSHIP_CONFIG"; print -r -- "$LG_CONFIG_FILE"'],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        starship, lazygit = shell.stdout.splitlines()
+        checked = self.run_in_home("set-theme", "--check", STARSHIP_CONFIG=starship, LG_CONFIG_FILE=lazygit)
+        self.assertIn(f"theme {name}: 0 problems", checked.stdout)
+        self.assertEqual(checked.returncode, 0)
+        # Each generated config names the theme, checked apart from --check, which compares with set-theme's own output.
+        tmux = "catppuccin" if name == "catppuccin-mocha" else name
+        for target, line in (
+            (".tmux.conf", f"set -g @theme {tmux}\n"),
+            (".config/ghostty/config", f'theme = "{name}"\n'),
+            (".config/superfile/config.toml", f"theme = '{name}'\n"),
+            (".config/btop/btop.conf", f'color_theme = "{name}"\n'),
+        ):
+            self.assertIn(line, (self.home / target).read_text(encoding="utf-8"), target)
+        selection = (self.home / ".config/nvim/lua/active_theme.lua").read_text(encoding="utf-8")
+        self.assertIn(f'import = "macos_themes.{name}"', selection)
+        self.assertIn(f"/{name}.yml", lazygit)
+        self.assertIn(name, starship)
+        self.assertIn("0 problems", self.run_in_home("check-links").stdout)
+
+    def test_install_then_every_theme_follows_and_leaves_the_checkout_untouched(self) -> None:
+        before = self.checkout_state()
+        self.assertEqual(self.run_in_home("check-links", "--create").returncode, 0)
+        installed = self.run_in_home("set-theme")
+        self.assertEqual(installed.returncode, 0, installed.stderr)
+        self.assert_follows("catppuccin-macchiato")
+        self.assertEqual(self.checkout_state(), before)
+
+        listed = self.run_in_home("set-theme", "--list").stdout.split()
+        self.assertEqual([name for name in listed if name != "*"], list(THEMES))
+        for name in THEMES:
+            with self.subTest(theme=name):
+                applied = self.run_in_home("set-theme", name)
+                self.assertEqual(applied.returncode, 0, applied.stderr)
+                self.assert_follows(name)
+                self.assertEqual(self.checkout_state(), before)
+
+
 if __name__ == "__main__":
     unittest.main()

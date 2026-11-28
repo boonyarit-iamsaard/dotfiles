@@ -79,18 +79,45 @@ Every tool in the table below follows this Mac's active theme, chosen with
 config selects a theme. Catppuccin Macchiato, Catppuccin Mocha, Dark 2026 and
 Default Dark Modern are available.
 
+### Install
+
+Run both by full path, since the `set-theme` link only reaches `PATH` in a new
+shell:
+
 ```bash
-~/dotfiles/macos/scripts/check-links --create # links ~/.local/bin/set-theme
-set-theme --list                # complete themes; * marks the active one
-set-theme dark-2026             # check, apply, then save the choice
-set-theme                       # reapply the saved theme, or Catppuccin Macchiato
-set-theme --check               # report tools that do not use the active theme
+~/dotfiles/macos/scripts/check-links --create # every declared link, ~/.local/bin/set-theme too
+~/dotfiles/macos/scripts/set-theme            # generate every tool's config for Catppuccin Macchiato
 ```
 
 On a Mac that still links `~/.config/lazydocker` or `~/.config/superfile` whole
-into this folder, run `~/dotfiles/macos/scripts/set-theme` (it works before a
-new shell loads the `set-theme` link) to replace them with real folders, then
-`check-links --create` again to link the theme files into them.
+into this folder, `check-links --create` reports them; the `set-theme` run
+replaces them with real folders, so run `check-links --create` once more
+afterwards to link the theme files into them.
+
+### Switch
+
+```bash
+set-theme --list                # complete themes; * marks the active one
+set-theme dark-2026             # check, apply, then save the choice
+set-theme                       # reapply the saved theme, or Catppuccin Macchiato
+```
+
+### Verify
+
+In a new shell:
+
+```bash
+set-theme --check                     # every tool on the active theme: "0 problems"
+~/dotfiles/macos/scripts/check-links  # every declared link: "0 problems"
+git -C ~/dotfiles status --short      # unchanged: switching writes nothing in the checkout
+```
+
+`FreshInstallTest` in `scripts/test_set_theme.py` runs this install on an empty
+`$HOME`, then applies every theme in turn; after each it expects "0 problems"
+from both checks, the theme named in every generated config, and an unchanged
+checkout.
+
+### How each tool follows the theme
 
 The choice is saved in `${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/theme`;
 with none saved, Catppuccin Macchiato is used. `.zshrc` names no theme: it reads
