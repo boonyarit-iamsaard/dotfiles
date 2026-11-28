@@ -72,14 +72,13 @@ see the merged settings.
 
 ## Themes
 
-starship and lazygit follow this Mac's active theme, chosen with `set-theme` and
-saved outside the checkout (see
+starship, lazygit, tmux and Ghostty follow this Mac's active theme, chosen with
+`set-theme` and saved outside the checkout (see
 [ADR 0004](../docs/adr/0004-active-theme-local-per-machine.md)). The other tools
-in the table below still run Catppuccin Mocha from tracked config, with
-JetBrainsMono Nerd Font Mono in Ghostty; `ActiveThemeScopeTest` in
-`scripts/test_theme_extras.py` fails when one of them is not on Mocha.
-Catppuccin Macchiato, Catppuccin Mocha, Dark 2026 and Default Dark Modern are
-available.
+in the table below still run Catppuccin Mocha from tracked config;
+`ActiveThemeScopeTest` in `scripts/test_theme_extras.py` fails when one of them
+is not on Mocha. Catppuccin Macchiato, Catppuccin Mocha, Dark 2026 and Default
+Dark Modern are available.
 
 ```bash
 ~/dotfiles/macos/scripts/check-links --create # links ~/.local/bin/set-theme
@@ -92,15 +91,16 @@ set-theme --check               # report tools that do not use the active theme
 The choice is saved in `${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/theme`;
 with none saved, Catppuccin Macchiato is used. `.zshrc` names no theme: it reads
 `set-theme --env`, which warns and uses the default when the saved theme is
-unknown or incomplete. Open a new shell after a switch. The btop, lazydocker,
-lazygit, Neovim and tmux theme folders here are links into
-[`shared/themes/`](../shared/themes/README.md); Ghostty and superfile keep their
-themes in this folder. Settings and theme variants are separate:
+unknown or incomplete. Open a new shell, reload Ghostty and restart the tmux
+server after a switch. The btop, lazydocker, lazygit, Neovim and tmux theme
+folders here are links into [`shared/themes/`](../shared/themes/README.md);
+Ghostty and superfile keep their themes in this folder. Settings and theme
+variants are separate:
 
 | Tool       | Switch                                                                                                                                                                                                                                            |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ghostty    | Uncomment one `theme` line in `.config/ghostty/config`; variants live under `.config/ghostty/themes/`.                                                                                                                                            |
-| tmux       | Change `@theme` in `.tmux.conf` to `catppuccin-macchiato`, `catppuccin` (Mocha), `dark-2026`, or `default-dark-modern`; restart the server for a clean switch.                                                                                    |
+| Ghostty    | `set-theme`; generates `~/.config/ghostty/config` from `.config/ghostty/base` plus the `theme` line; variants live under `.config/ghostty/themes/`.                                                                                               |
+| tmux       | `set-theme`; generates `~/.tmux.conf` with `@theme` and the `~/.tmux/base.conf` include (Mocha keeps the file name `catppuccin.conf`); restart the server for a clean switch.                                                                     |
 | lazygit    | `set-theme`; shell startup sets `LG_CONFIG_FILE` to `config.yml` followed by the variant under `.config/lazygit/themes/`.                                                                                                                         |
 | lazydocker | Copy the selected variant body into `config.yml` between the theme markers, omitting leading comments.                                                                                                                                            |
 | Neovim     | Change `colorscheme` in the LazyVim opts in `lua/plugins/colorscheme.lua`; Catppuccin Mocha is active. Keep exactly one `themes.*` import uncommented to match it: `themes.catppuccin-mocha`, `themes.dark-2026` or `themes.default-dark-modern`. |
@@ -108,15 +108,20 @@ themes in this folder. Settings and theme variants are separate:
 | btop       | Change `color_theme` in `.config/btop/btop.conf`; only the linked themes in `.config/btop/themes/` are managed.                                                                                                                                   |
 | starship   | `set-theme`; shell startup sets `STARSHIP_CONFIG` to `.config/starship.<name>.toml`, linked from `shared/themes/starship/` (Dark 2026 lives in this folder).                                                                                      |
 
-`~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the tmux
-configurations include them without naming the checkout.
+`~/.tmux/base.conf` and `~/.tmux/themes` link into `.tmux/` here, so the
+generated `~/.tmux.conf` includes them without naming the checkout.
+
+`set-theme` owns `~/.tmux.conf` and `~/.config/ghostty/config`: their first line
+says edits are overwritten, so put lasting settings in the tracked base. It
+replaces the old links from those paths into this folder, and refuses any other
+link or file there, or a parent folder that leads into the checkout, with "move
+it aside" before it writes anything.
 
 Ghostty sets `background-opacity` to 0.8 with a 20 blur radius. Neovim's
 Catppuccin Mocha uses `transparent_background` and transparent floats, so its
 backgrounds show the Ghostty background through. lazygit and lazydocker set no
-background, so they show it through already. tmux runs the Catppuccin Mocha
-theme, whose status line and pane styles use the default background, so it is
-transparent too.
+background, so they show it through already. The tmux themes' status line and
+pane styles use the default background, so tmux is transparent too.
 
 btop saves its settings on exit, so changing options inside btop edits the
 tracked `btop.conf`.

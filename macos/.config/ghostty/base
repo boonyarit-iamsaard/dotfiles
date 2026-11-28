@@ -1,17 +1,14 @@
-font-family             = "IoskeleyMonoTerm Nerd Font Mono"
-font-size               = 14.5
-adjust-cell-height      = 2.5%
+# font-family             = "IoskeleyMonoTerm Nerd Font Mono"
+# font-size               = 14.5
+# adjust-cell-height      = 2.5%
 
-# font-family             = "JetBrainsMono Nerd Font Mono"
-# font-size               = 14
+font-family             = "JetBrainsMono Nerd Font Mono"
+font-size               = 14
 # Ghostty draws box glyphs (─├└) at the exact cell centre, which leaves JetBrains Mono's
 # ">" sitting low beside them (tmux tree "├─>"); nudge the text baseline up to meet the line.
-# adjust-font-baseline    = 2
+adjust-font-baseline    = 2
 
-theme                   = "catppuccin-mocha"
-# theme                   = "default-dark-modern"
-# theme                   = "catppuccin-macchiato"
-# theme                   = "dark-2026"
+# set-theme adds the theme setting when it generates ~/.config/ghostty/config.
 
 background-opacity      = 0.8
 background-blur-radius  = 20

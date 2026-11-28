@@ -1,11 +1,11 @@
 # Hand-made macOS links: target under $HOME<TAB>source under this checkout.
 # Check with scripts/check-links; scripts/check-links --create adds missing ones.
 # Links into agents/ and claude/ are owned by scripts/update-skills (Stow).
+# scripts/set-theme generates ~/.tmux.conf and ~/.config/ghostty/config.
 .config/btop/btop.conf	.config/btop/btop.conf
 .config/btop/themes/catppuccin-mocha.theme	.config/btop/themes/catppuccin-mocha.theme
 .config/btop/themes/dark-2026.theme	.config/btop/themes/dark-2026.theme
 .config/btop/themes/default-dark-modern.theme	.config/btop/themes/default-dark-modern.theme
-.config/ghostty/config	.config/ghostty/config
 .config/ghostty/themes/catppuccin-macchiato	.config/ghostty/themes/catppuccin-macchiato
 .config/ghostty/themes/catppuccin-mocha	.config/ghostty/themes/catppuccin-mocha
 .config/ghostty/themes/dark-2026	.config/ghostty/themes/dark-2026
@@ -38,7 +38,6 @@
 .ideavimrc	.ideavimrc
 .local/bin/gh	.local/bin/gh
 .local/bin/set-theme	scripts/set-theme
-.tmux.conf	.tmux.conf
 .tmux/base.conf	.tmux/base.conf
 .tmux/themes	.tmux/themes
 .zshenv	.zshenv
