@@ -58,8 +58,8 @@ each prints a step summary and exits 1 when any error-severity step failed
 ## Themes
 
 Four themes are maintained: default dark modern, catppuccin mocha, catppuccin
-macchiato and dark 2026. Default dark modern is active in Neovim, tmux, lazygit,
-lazydocker and btop; starship runs its built-in default prompt. Each tool has a
+macchiato and dark 2026. The current WSL checkout selects Default Dark Modern in
+tracked configs, and Starship runs its built-in default prompt. Each tool has a
 base config plus one theme variant per theme in
 [`../shared/themes/`](../shared/themes/), which every platform shares. The theme
 folders and starship files here are relative symlinks into it
@@ -74,6 +74,21 @@ one-line edit per tool:
 | Neovim     | `colorscheme` in `config/nvim/lua/plugins/colorscheme.lua`; keep exactly one `{ import = "themes.<name>" }` line uncommented for dark 2026 or default dark modern      |
 | starship   | `STARSHIP_CONFIG` in `zsh/.zshrc` (`config/starship.<name>.toml`; catppuccin mocha, catppuccin macchiato and default dark modern only); unset for the built-in default |
 | btop       | `color_theme` in `config/btop/btop.conf` (variants in `shared/themes/btop/`)                                                                                           |
+
+Ticket [#27](https://github.com/boonyarit-iamsaard/dotfiles/issues/27) defines
+the move to a per-machine active theme. Its selector will cover Starship,
+LazyGit, tmux, LazyDocker, Neovim and btop. It will save the canonical theme
+name at `${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/theme`, default to
+Catppuccin Macchiato when no choice exists, and keep that state separate from
+Windows' theme state. Shell startup will use `set-theme --env` for Starship and
+LazyGit; tmux, LazyDocker, Neovim and btop will use generated or runtime-owned
+configs outside the checkout. The Dark 2026 Starship hand port will move into
+`shared/themes/starship/` so macOS and WSL use the same file.
+
+Until #27 is implemented, follow the tracked-config table above. The planned
+first migration will restow the WSL packages and run
+`~/dotfiles/wsl/scripts/set-theme` by full path. A new shell and restarted
+tmux/Neovim processes are required after a switch.
 
 Stow links the files in each theme folder one at a time, so a theme file added
 to `shared/themes/` is not in `~/.config` until the `config` package is
