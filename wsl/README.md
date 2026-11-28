@@ -72,10 +72,12 @@ stow --restow --target="$HOME" tmux bin
 ```
 
 The `bin` package provides `~/.local/bin/set-theme` for later shells. On an
-existing checkout, run the full-path selector before relying on that link; it
-replaces the old generated or repo-owned links only when it can prove they are
-owned by this checkout. A new shell and restarted tmux/Neovim processes are
-required after a switch.
+existing checkout, run the same three commands. Restowing `config` with
+`--no-folding` comes first because an older stow may have linked
+`~/.config/nvim/lua` as one folder, and `set-theme` then refuses with "leads
+into the checkout". The selector replaces the old generated or repo-owned links
+only when it can prove they are owned by this checkout. A new shell and
+restarted tmux/Neovim processes are required after a switch.
 
 ```bash
 set-theme --list                # complete themes; * marks the active one
