@@ -24,11 +24,11 @@ if ($List) {
 }
 
 if ($Name) {
-    Invoke-ActiveTheme -CheckoutRoot $checkoutRoot -Name $Name -Save
+    Set-ActiveTheme -CheckoutRoot $checkoutRoot -Name $Name -Save
 }
 else {
     # A name is not needed to recover from a corrupt state file, so read it only here.
     $Name = Get-ActiveTheme
-    Invoke-ActiveTheme -CheckoutRoot $checkoutRoot -Name $Name
+    Set-ActiveTheme -CheckoutRoot $checkoutRoot -Name $Name
 }
 Write-Host "Applied theme $Name. Open a new shell, and restart running tools, to see it."

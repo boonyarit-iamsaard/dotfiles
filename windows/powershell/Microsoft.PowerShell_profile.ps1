@@ -64,15 +64,23 @@ function jdk25 { Set-JavaVersion -MajorVersion 25 }
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
-# Oh My Posh and LazyGit follow this machine's active theme, saved by
-# set-theme; the default matches scripts\modules\ActiveTheme.psm1.
-$activeTheme = 'catppuccin-macchiato'
-$themeStatePath = Join-Path $env:LOCALAPPDATA 'dotfiles\theme'
-if (Test-Path -LiteralPath $themeStatePath -PathType Leaf) {
-    $savedTheme = (Get-Content -Raw -LiteralPath $themeStatePath).Trim()
-    if ($savedTheme -match '^[a-z0-9-]+$') { $activeTheme = $savedTheme }
+# This file is symlinked into the platform folder, so the link target locates
+# the checkout without a hard-coded path.
+$profileItem = Get-Item -LiteralPath $PROFILE -Force -ErrorAction SilentlyContinue
+$profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
+$profileDir = if ($profileTarget) { Split-Path $profileTarget -Parent } else { $PSScriptRoot }
+$platformRoot = Split-Path $profileDir -Parent
+$checkoutRoot = Split-Path $platformRoot -Parent
+
+# Oh My Posh and LazyGit follow this machine's active theme, saved by set-theme.
+Import-Module (Join-Path $platformRoot 'scripts\modules\ActiveTheme.psm1')
+$activeTheme = try { Get-ActiveTheme } catch { Write-Warning $_; Get-DefaultTheme }
+$ompTheme = Join-Path $profileDir "oh-my-posh\$activeTheme.omp.json"
+if (-not (Test-Path -LiteralPath $ompTheme -PathType Leaf)) {
+    Write-Warning "Theme '$activeTheme' has no Oh My Posh prompt; using the default theme. Run set-theme -List."
+    $activeTheme = Get-DefaultTheme
+    $ompTheme = Join-Path $profileDir "oh-my-posh\$activeTheme.omp.json"
 }
-$ompTheme = Join-Path $PSScriptRoot "oh-my-posh\$activeTheme.omp.json"
 $ompCommand = Get-Command oh-my-posh -ErrorAction SilentlyContinue
 
 if ($ompCommand) {
@@ -118,16 +126,9 @@ Set-Alias -Name lzd -Value lazydocker
 # Dotfiles scripts
 # ---------------------------------------------------------------------------
 # Alias the scripts that are run by hand, under the same names the README
-# uses. This file is symlinked into the platform folder, so the link target
-# locates that folder without a hard-coded path.
-$profileItem = Get-Item -LiteralPath $PROFILE -Force -ErrorAction SilentlyContinue
-$profileTarget = if ($profileItem) { @($profileItem.Target)[0] }
-
+# uses.
 if ($profileTarget) {
-    $platformRoot = Split-Path (Split-Path $profileTarget -Parent) -Parent
-
     # LazyGit reads the shared base first, then the active theme's variant.
-    $checkoutRoot = Split-Path $platformRoot -Parent
     $env:LG_CONFIG_FILE = @(
         Join-Path $checkoutRoot 'shared\config\lazygit\config.yml'
         Join-Path $checkoutRoot "shared\themes\lazygit\$activeTheme.yml"

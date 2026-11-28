@@ -43,9 +43,17 @@ try {
     $profileLink = Join-Path $testRoot 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
     New-Item -ItemType Directory -Force -Path (Split-Path -Parent $profileLink) | Out-Null
     New-Item -ItemType SymbolicLink -Path $profileLink -Target $profilePath | Out-Null
-    New-Item -ItemType SymbolicLink -Path (Join-Path (Split-Path -Parent $profileLink) 'oh-my-posh') -Target (Join-Path (Split-Path -Parent $profilePath) 'oh-my-posh') | Out-Null
     $PROFILE = $profileLink
 
+    # A corrupt saved theme, or one with no Oh My Posh prompt, falls back to the default.
+    foreach ($saved in 'not a theme!', 'no-such-theme') {
+        [IO.File]::WriteAllText((Join-Path $env:LOCALAPPDATA 'dotfiles\theme'), "$saved`n")
+        . $profileLink 3>$null
+        Assert-True ($ompTheme -like '*\oh-my-posh\catppuccin-macchiato.omp.json') "saved theme '$saved' did not fall back to the default prompt: $ompTheme"
+        Assert-True ($env:LG_CONFIG_FILE -like '*\shared\themes\lazygit\catppuccin-macchiato.yml') "saved theme '$saved' did not fall back to the default LazyGit theme"
+    }
+
+    [IO.File]::WriteAllText((Join-Path $env:LOCALAPPDATA 'dotfiles\theme'), "dark-2026`n")
     . $profileLink
 
     Assert-True ($ompTheme -like '*\oh-my-posh\dark-2026.omp.json') "Oh My Posh does not use the saved theme: $ompTheme"
